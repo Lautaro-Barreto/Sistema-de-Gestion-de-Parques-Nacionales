@@ -2,23 +2,7 @@
 <SqlWorkbenchSqlProject xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" Name="SGParquesNacionales">
   <Items>
     <LogicalFolder Name="Conexiones" Type="2" Sorted="true">
-      <Items>
-        <ConnectionNode Name="LAUTARO:LAUTARO\lauta">
-          <Created>2026-05-31T13:09:56.3872249-03:00</Created>
-          <Type>SQL</Type>
-          <Server>LAUTARO</Server>
-          <UserName />
-          <Authentication>Autenticación de Windows</Authentication>
-          <InitialDB />
-          <LoginTimeout>30</LoginTimeout>
-          <TrustServerCertificate>True</TrustServerCertificate>
-          <HostNameInServerCertificate />
-          <EncryptionOption>True</EncryptionOption>
-          <ExecutionTimeout>0</ExecutionTimeout>
-          <ConnectionProtocol>NotSpecified</ConnectionProtocol>
-          <ApplicationName>Microsoft SQL Server Management Studio - Consulta</ApplicationName>
-        </ConnectionNode>
-      </Items>
+      <Items />
     </LogicalFolder>
     <LogicalFolder Name="Consultas" Type="0" Sorted="true">
       <Items />
