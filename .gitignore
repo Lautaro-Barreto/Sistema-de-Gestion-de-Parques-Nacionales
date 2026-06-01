@@ -1,0 +1,10 @@
+# SSMS User-specific files
+*.suo
+*.user
+*.ssmssln.user
+*.mdf
+*.ldf
+
+# Backup and temp files
+*.bak
+*.tmp
