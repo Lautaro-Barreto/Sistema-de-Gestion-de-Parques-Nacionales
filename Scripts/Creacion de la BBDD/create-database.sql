@@ -10,6 +10,8 @@
 -- =============================================
 
 /*
+-- Como borrar la BBDD
+
 -- Cambiar al contexto master
 USE master;
 GO

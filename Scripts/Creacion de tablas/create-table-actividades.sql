@@ -37,7 +37,7 @@ BEGIN
             IdEspecialidad INT IDENTITY(1,1) PRIMARY KEY,
             Descripcion VARCHAR(50)
         )
-END 
+END
 GO
 
 IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE 
