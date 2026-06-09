@@ -1,22 +1,36 @@
+/*
+#Universidad Nacional de la Matanza
+#Materia: 3641 - Bases de Datos Aplicada 
+#Fecha: 09/06/2026
+#Integrantes: Barreto Lautaro, Losada Agustina, Miranda Guillermo, Villar Facundo
+#Descripción: En este sript se crea la base de datos "SGParquesNacionales"
+*/
 -- =============================================
--- Create database template
+-- _Creación de la Base de datos.
 -- =============================================
-USE master
+
+/*
+-- Cambiar al contexto master
+USE master;
 GO
 
--- Drop the database if it already exists
-IF  EXISTS (SELECT name FROM sys.databases WHERE name = 'SGParquesNacionales')
+-- Forzar modo SINGLE_USER y cerrar todas las conexiones
+ALTER DATABASE SGParquesNacionales
+SET SINGLE_USER WITH ROLLBACK IMMEDIATE;
+GO
+
+-- Eliminar la base
+DROP DATABASE SGParquesNacionales;
+GO
+*/
+
+
+IF NOT EXISTS (SELECT name FROM master.dbo.sysdatabases WHERE name = 'SGParquesNacionales')
 BEGIN
-	-- Forzar modo SINGLE_USER y cerrar todas las conexiones
-	print('altering database to single user');
-	ALTER DATABASE SGParquesNacionales
-	SET SINGLE_USER WITH ROLLBACK IMMEDIATE;
-	-- Eliminar la base
-	print('deleting database');
-	DROP DATABASE SGParquesNacionales;
-	print('deleted database');
-	CREATE DATABASE SGParquesNacionales;
-	print('created database SGParquesNacionales')
+	CREATE DATABASE SGParquesNacionales
+	COLLATE Latin1_General_CI_AS;
 END
 GO
 
+USE SGParquesNacionales
+GO
