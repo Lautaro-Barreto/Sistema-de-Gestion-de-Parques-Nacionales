@@ -26,8 +26,8 @@ GO
 IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'Area_Infraestructura' AND TABLE_NAME='Region')
 BEGIN 
 	CREATE TABLE Area_Infraestructura.Region (
-		IdRegion integer identity(1,1) primary key,
-		Nombre varchar(80)
+		IdRegion INT IDENTITY(1,1) primary key,
+		Nombre VARCHAR(80)
 	)
 END
 GO
@@ -36,9 +36,9 @@ GO
 IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'Area_Infraestructura' AND TABLE_NAME='Provincia')
 BEGIN 
 	CREATE TABLE Area_Infraestructura.Provincia (
-		IdProvincia integer identity(1,1) primary key,
-		IdRegion integer,
-		Nombre varchar(80),
+		IdProvincia INT IDENTITY(1,1) primary key,
+		IdRegion INT,
+		Nombre VARCHAR(80),
 		CONSTRAINT Fk_Provincia_De_Region FOREIGN KEY (IdRegion) REFERENCES Area_Infraestructura.Region(IdRegion)
 	)
 END
@@ -48,8 +48,8 @@ GO
 IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'Area_Infraestructura' AND TABLE_NAME='Tipo_Parque')
 BEGIN 
 	CREATE TABLE Area_Infraestructura.Tipo_Parque (
-		IdTipoParque integer identity(1,1) primary key,
-		Descripcion varchar(50)
+		IdTipoParque INT IDENTITY(1,1) primary key,
+		Descripcion VARCHAR(50)
 	)
 END
 GO
@@ -58,30 +58,29 @@ GO
 IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'Area_Infraestructura' AND TABLE_NAME='Parque')
 BEGIN 
 	CREATE TABLE Area_Infraestructura.Parque (
-		IdParque integer primary key,
-		IdProvincia integer,
-		IdTipoParque integer,
-		Nombre varchar(80),
-		Superficie decimal(14,4),
+		IdParque INT IDENTITY(1,1) primary key,
+		IdProvincia INT,
+		IdTipoParque INT,
+		Nombre VARCHAR(80),
+		Superficie DECIMAL(14,4),
 		CONSTRAINT Fk_Parque_Provincia FOREIGN KEY (IdProvincia) REFERENCES Area_Infraestructura.Provincia(IdProvincia),
 		CONSTRAINT Fk_Parque_TipoParque FOREIGN KEY (IdTipoParque) REFERENCES Area_Infraestructura.Tipo_Parque(IdTipoParque)
 	)
 END
 GO
 
-
 --6. Creación de la tabla "Guardaparque"
 IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'Area_Infraestructura' AND TABLE_NAME='Guardaparque')
 BEGIN 
 	CREATE TABLE Area_Infraestructura.Guardaparque (
-		IdGuardaparque integer primary key,
-		IdParque integer,
-		Dni char(8),
-		Nombre varchar(30),
-		Apellido varchar(30),
-		Fecha_Ingreso date,
-		Fecha_Egreso date,
-		Activo bit,
+		IdGuardaparque INT IDENTITY(1,1) primary key,
+		IdParque INT,
+		Dni CHAR(8),
+		Nombre VARCHAR(30),
+		Apellido VARCHAR(30),
+		Fecha_Ingreso DATE,
+		Fecha_Egreso DATE,
+		Activo BIT,
 		CONSTRAINT Fk_Guardaparque_Parque FOREIGN KEY (IdParque) REFERENCES Area_Infraestructura.Parque(IdParque)
 	)
 END
@@ -92,13 +91,15 @@ GO
 IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'Area_Infraestructura' AND TABLE_NAME='Historial_Trabajo_Guardaparque')
 BEGIN 
 	CREATE TABLE Area_Infraestructura.Historial_Trabajo_Guardaparque (
-		IdHistorial integer,
-		IdParque integer,
-		IdGuardaparque integer,
+		IdHistorial INT IDENTITY(1,1),
+		IdParque INT,
+		IdGuardaparque INT,
 		Fecha_Inicio DATE,
 		Fecha_Fin DATE,
-		Motivo_Egreso varchar(80),
-		CONSTRAINT Pk_Guardaparque_Historial PRIMARY KEY (IdHistorial, IdGuardaparque)
+		Motivo_Egreso VARCHAR(80),
+		CONSTRAINT Pk_Guardaparque_Historial PRIMARY KEY (IdHistorial, IdGuardaparque),
+        CONSTRAINT Fk_Historial_Trabajo_Guardaparque_Parque FOREIGN KEY (IdParque) REFERENCES Area_Infraestructura.Parque(IdParque),
+        CONSTRAINT Fk_Historial_Trabajo_Guardaparque_Guardaparque FOREIGN KEY (IdGuardaparque) REFERENCES Area_Infraestructura.Guardaparque(IdGuardaparque)
 	)
 END
 GO
