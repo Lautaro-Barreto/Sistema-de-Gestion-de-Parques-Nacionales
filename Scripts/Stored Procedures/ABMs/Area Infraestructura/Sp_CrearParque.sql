@@ -1,9 +1,18 @@
+/*
+#Universidad Nacional de la Matanza
+#Materia: 3641 - Bases de Datos Aplicada 
+#Fecha: 09/06/2026
+#Integrantes: Barreto Lautaro, Losada Agustina, Miranda Guillermo, Villar Facundo
+#Descripción: Este script se encarga de la creación del Stored Procedure utilizado para
+crear un parque nacional. 
+*/
+
 use SGParquesNacionales
 go
 
 CREATE OR ALTER PROCEDURE Area_Infraestructura.SP_CrearParque 
 	@Nombre VARCHAR(80),
-	@TipoParqueDesc VARCHAR(80),
+	@TipoParqueDesc VARCHAR(50),
 	@Provincia VARCHAR(80),
 	@Superficie DECIMAL(14,4)
 AS
@@ -28,7 +37,7 @@ BEGIN
 				RETURN @IdParqueRepetido;
 			END
 
-			-- Validamos provincia ingresada. Si es valida, limpiamos el string
+			-- Validamos provincia ingresada. Si es valida, quitamos espacios al string
 			IF @Provincia = '' OR @Provincia LIKE '%[^a-zA-Z ]%' OR LEN(@Provincia) > 80
 			BEGIN
 				PRINT('La provincia ingresada no es valida')
@@ -45,7 +54,7 @@ BEGIN
 				RAISERROR('.', 16,1)
 			END
 
-			-- Validamos tipo de parque ingresado. Si es valido, limpiamos el string
+			-- Validamos tipo de parque ingresado. Si es valido, quitamos espacios al string
 			IF @TipoParqueDesc = '' OR @TipoParqueDesc LIKE '%[^a-zA-Z ]%' OR LEN(@TipoParqueDesc) > 80
 			BEGIN
 				PRINT('El tipo de parque ingresado no es valido')

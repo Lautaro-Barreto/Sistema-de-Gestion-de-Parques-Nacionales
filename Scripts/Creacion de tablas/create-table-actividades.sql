@@ -73,7 +73,7 @@ TABLE_SCHEMA = 'Area_Excursiones' AND TABLE_NAME = 'Guia')
 BEGIN 
         CREATE TABLE Area_Excursiones.Guia(
             IdGuia INT IDENTITY(1,1),
-            DNI INT NOT NULL,
+            DNI char(8) NOT NULL,
             IdParque INT,
             IdEspecialidad INT,
 

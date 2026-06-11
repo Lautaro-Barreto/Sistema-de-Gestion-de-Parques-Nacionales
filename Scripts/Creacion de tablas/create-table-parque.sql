@@ -49,11 +49,10 @@ IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'Are
 BEGIN 
 	CREATE TABLE Area_Infraestructura.Tipo_Parque (
 		IdTipoParque integer identity(1,1) primary key,
-		Descripcion varchar(80)
+		Descripcion varchar(50)
 	)
 END
 GO
-
 
 --5. Creación de la tabla "Parque"
 IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'Area_Infraestructura' AND TABLE_NAME='Parque')
@@ -77,13 +76,13 @@ BEGIN
 	CREATE TABLE Area_Infraestructura.Guardaparque (
 		IdGuardaparque integer primary key,
 		IdParque integer,
-		Dni integer,
-		Nombre varchar(80),
-		Apellido varchar(80),
+		Dni char(8),
+		Nombre varchar(30),
+		Apellido varchar(30),
 		Fecha_Ingreso date,
 		Fecha_Egreso date,
 		Activo bit,
-		CONSTRAINT Fk_Guardaparque_Provincia FOREIGN KEY (IdParque) REFERENCES Area_Infraestructura.Parque(IdParque)
+		CONSTRAINT Fk_Guardaparque_Parque FOREIGN KEY (IdParque) REFERENCES Area_Infraestructura.Parque(IdParque)
 	)
 END
 GO
