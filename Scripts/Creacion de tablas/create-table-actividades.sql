@@ -104,7 +104,7 @@ END
 GO
 
 IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE 
-TABLE_SCHEMA = 'Area_Excursiones' AND TABLE_NAME = 'Guia_por_Actividad')
+TABLE_SCHEMA = 'Area_Excursiones' AND TABLE_NAME = 'Guias_por_Actividad')
 BEGIN 
         CREATE TABLE Area_Excursiones.Guias_por_Actividad(
             IdGuia INT NOT NULL,
