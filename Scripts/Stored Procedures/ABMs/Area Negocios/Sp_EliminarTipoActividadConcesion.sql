@@ -19,16 +19,17 @@ BEGIN
         IF @IdTipoActividadConcesionExiste IS NULL
         BEGIN
             PRINT('No existe un Tipo de Actividad con ese Id')
-            RAISERROR("TipoActividadConcesion Inexistente",16,1)
+            RAISERROR('TipoActividadConcesion Inexistente',16,1)
         END
+        DELETE FROM Area_Negocios.Tipo_Actividad_Concesion WHERE IdTipoActividadConcesion = @IdTipoActividadConcesion;
     END TRY
     BEGIN CATCH
         IF ERROR_SEVERITY()>10
         BEGIN	
-            RAISERROR('Algo salio mal en la eliminacion del Tipo de Actividad Concesion',16,1);
-            ROLLBACK;
+            RAISERROR('Algo salio mal en la eliminación del Tipo de Actividad Concesion',16,1);
+            RETURN;
         END
     END CATCH
-    DELETE FROM Area_Negocios.Tipo_Actividad_Concesion WHERE IdTipoActividadConcesion = @IdTipoActividadConcesion;
+    
 END
 GO

@@ -12,7 +12,7 @@ GO
 
 CREATE OR ALTER PROCEDURE Area_Negocios.SP_ModificarEstadoCanon
 	@IdEstadoCanon INT,
-	@Descripcion varchar(100)
+	@Descripcion varchar(150)
 AS
 BEGIN
 	BEGIN TRY
@@ -24,7 +24,7 @@ BEGIN
         END
 
 		-- La nueva descripcion debe ser valida
-		IF @Descripcion IS NOT NULL AND @Descripcion <> '' AND @Descripcion LIKE '%[^a-zA-Z ]%' AND LEN(@Descripcion) < 100
+		IF @Descripcion IS NOT NULL AND @Descripcion <> '' AND @Descripcion NOT LIKE '%[^a-zA-Z ]%' AND LEN(@Descripcion) < 100
 		BEGIN
 			UPDATE Area_Negocios.Estado_Canon
 			SET Descripcion = @Descripcion
@@ -41,8 +41,8 @@ BEGIN
         -- Lanzar Rollback
 		IF ERROR_SEVERITY() > 10
 		BEGIN	
-			RAISERROR('Algo salio mal en la modifiacion del Estado del Canon', 16, 1);
-			ROLLBACK;
+			RAISERROR('Algo salio mal en la modificación del Estado del Canon', 16, 1);
+			RETURN;
 		END
 	END CATCH
 END

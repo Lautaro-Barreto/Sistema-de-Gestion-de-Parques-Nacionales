@@ -7,6 +7,7 @@
 un Canon.
 */
 USE SGParquesNacionales
+GO
 
 CREATE OR ALTER PROCEDURE Area_Negocios.SP_CrearCanon
     @IdEstado INTEGER,
@@ -16,34 +17,41 @@ CREATE OR ALTER PROCEDURE Area_Negocios.SP_CrearCanon
 AS
 BEGIN
 	BEGIN TRY
-        -- Busca el IdCanon en la tabla de Canon.
-       IF NOT EXISTS ( SELECT 1 FROM Area_Negocios.Estado_Canon WHERE IdEstado = @IdEstado)
+        -- Busca el IdEstado en la tabla de Estados.
+       IF NOT EXISTS ( SELECT 1 FROM Area_Negocios.Estado_Canon WHERE IdEstadoCanon = @IdEstado)
         BEGIN
-            PRINT('No Existe el Canon Ingresado')
-            RAISERROR('Canon Invalido',16,1)
+            PRINT('No Existe el Estado de canon Ingresado')
+            RAISERROR('EstadoCanon Invalido',16,1)
         END
+        --Busca el IdConcesion en la tabla de Concesiones.
+        IF NOT EXISTS ( SELECT 1 FROM Area_Negocios.Concesion WHERE IdConcesion = @IdConcesion)
+        BEGIN
+            PRINT('No Existe la Concesión Ingresada')
+            RAISERROR('Concesión Invalida',16,1)
+        END
+
         -- Valida el Monto ingresado
-        IF NOT @Monto_Abonado > 0
+        IF NOT @Monto_Mensual > 0 OR @Monto_Mensual IS NULL 
         BEGIN
             PRINT('El Monto Ingresado no es valido')
             RAISERROR('Monto Invalido',16,1)
         END
         -- Valida la fecha ingresada, comprobando que no sea nula.
-		IF @Fecha_Pago IS NULL
+		IF @Fecha_Vencimiento IS NULL
 		BEGIN
             PRINT('La fecha no puede ser nula')
             RAISERROR('Fecha Invalida', 16, 1)
         END
-        
+            INSERT INTO Area_Negocios.Canon(IdEstado,IdConcesion,Monto_Mensual,Fecha_Vencimiento) VALUES (@IdEstado,@IdConcesion,@Monto_Mensual,@Fecha_Vencimiento)
+
     END TRY
     BEGIN CATCH
-        -- Lanzamos Rollback
+        -- Lanzamos return
         IF ERROR_SEVERITY()>10
         BEGIN	
-            RAISERROR('Algo salio mal en la creación del pago del canon',16,1);
-            ROLLBACK;
+            RAISERROR('Algo salio mal en la creación del Canon',16,1);
+            Return;
         END
     END CATCH
-    INSERT INTO Area_Negocios.Pago_Canon(IdCanon,Monto_Abonado,Fecha_Pago) VALUES (@IdCanon,@Monto_Abonado,@Fecha_Pago)
 END
 GO

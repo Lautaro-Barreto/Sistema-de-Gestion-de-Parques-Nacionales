@@ -7,7 +7,7 @@
 un Pago de un Canon.
 */
 USE SGParquesNacionales
-
+GO
 CREATE OR ALTER PROCEDURE Area_Negocios.SP_CrearPagoCanon
 	@IdCanon INTEGER,
     @Monto_Abonado DECIMAL(13,3),
@@ -16,6 +16,7 @@ AS
 BEGIN
 	BEGIN TRY
         -- Busca el IdCanon en la tabla de Canon.
+        --Verifica que existe
        IF NOT EXISTS ( SELECT 1 FROM Area_Negocios.Canon WHERE IdCanon = @IdCanon)
         BEGIN
             PRINT('No Existe el Canon Ingresado')
@@ -33,16 +34,15 @@ BEGIN
             PRINT('La fecha no puede ser nula')
             RAISERROR('Fecha Invalida', 16, 1)
         END
-        
+        INSERT INTO Area_Negocios.Pago_Canon(IdCanon,Monto_Abonado,Fecha_Pago) VALUES (@IdCanon,@Monto_Abonado,@Fecha_Pago)
     END TRY
     BEGIN CATCH
-        -- Lanzamos Rollback
+        -- Lanzamos return
         IF ERROR_SEVERITY()>10
         BEGIN	
             RAISERROR('Algo salio mal en la creación del pago del canon',16,1);
-            ROLLBACK;
+            Return;
         END
     END CATCH
-    INSERT INTO Area_Negocios.Pago_Canon(IdCanon,Monto_Abonado,Fecha_Pago) VALUES (@IdCanon,@Monto_Abonado,@Fecha_Pago)
 END
 GO

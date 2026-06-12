@@ -20,33 +20,42 @@ EXEC Area_Negocios.SP_CrearEmpresaConcesionaria 'Jumbolan'
 
 --Casos  Exitosos.
 
-EXEC Area_Negocios.SP_ModificarEmpresaConcesionaria @IdEmpresaConcesionaria = 1,@Nombre = 'Enterprise'
+EXEC Area_Negocios.SP_ModificarEmpresaConcesionaria @IdEmpresaConcesionaria = 1,@Nombre = 'Enterprise', @Estado = 1
 
-EXEC Area_Negocios.SP_ModificarEmpresaConcesionaria 2,'Ayudin'
+EXEC Area_Negocios.SP_ModificarEmpresaConcesionaria 2,'Ayudin', 0
 
-EXEC Area_Negocios.SP_ModificarEmpresaConcesionaria 3,'Lavryol'
+EXEC Area_Negocios.SP_ModificarEmpresaConcesionaria 3,'Lavryol',1
 
 GO
 -- Casos No Permitidos:
 
 -- Nombre Vacío
-EXEC Area_Negocios.SP_ModificarEmpresaConcesionaria 1,''
+EXEC Area_Negocios.SP_ModificarEmpresaConcesionaria 1,'',1
 --Resultado: Algo salio mal en la modifiacion de la Empresa
 
 --Nombre Nulo
-EXEC Area_Negocios.SP_ModificarEmpresaConcesionaria 1, NULL
+EXEC Area_Negocios.SP_ModificarEmpresaConcesionaria 1, NULL,1
 --Resultado: Algo salio mal en la modifiacion de la Empresa
 
 
 --Nombre muy grande
-EXEC Area_Negocios.SP_ModificarEmpresaConcesionaria 1, 'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAbbbb'
---Resultado: Algo salio mal en la modifiacion de la Empresa
+EXEC Area_Negocios.SP_ModificarEmpresaConcesionaria 1, 'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAbbbb',1
+--Resultado: Algo salio mal en la modificacion de la Empresa
 
 -- Nombre no compuesto por letras
-EXEC Area_Negocios.SP_ModificarEmpresaConcesionaria 1,'123'
---Resultado: Algo salio mal en la modifiacion de la Empresa
+EXEC Area_Negocios.SP_ModificarEmpresaConcesionaria 1,'123',1
+--Resultado: Algo salio mal en la modificacion de la Empresa
+
+
+-- Estado Nulo
+EXEC Area_Negocios.SP_ModificarEmpresaConcesionaria 1,'Horije',NULL
+--Resultado: Algo salio mal en la modificacion de la Empresa
 
 
 -- Nombre Repetido
-EXEC Area_Negocios.SP_ModificarEmpresaConcesionaria 1,'Lavryol'
---Resultado: Algo salio mal en la modifiacion de la Empresa
+EXEC Area_Negocios.SP_ModificarEmpresaConcesionaria 1,'Lavryol',1
+--Resultado: Algo salio mal en la modificacion de la Empresa
+
+-- Intentar colocar otro tipo de dato en el estado
+EXEC Area_Negocios.SP_ModificarEmpresaConcesionaria 1,'Horije','HOLA'
+--Resultado: Error al convertir el tipo de datos varchar a bit.

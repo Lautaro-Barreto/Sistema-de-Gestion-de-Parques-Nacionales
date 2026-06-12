@@ -38,15 +38,21 @@ BEGIN
 			PRINT('La empresa ya se encuentra registrada.');
 			RAISERROR('EmpresaConcesionaria Invalida', 16, 1);
 		END
+		-- El estado no puede ser vacio
+		IF @Estado IS NULL
+		BEGIN
+			PRINT('No puede colocar un estado vacío')
+			RAISERROR('Estado Invalido', 16, 1);
+		END
 			UPDATE Area_Negocios.Empresa_Concesionaria
-			SET Nombre = @Nombre
+			SET Nombre = @Nombre, Estado = @Estado
 			WHERE IdEmpresa = @IdEmpresaConcesionaria; 
 
 	END TRY
 	BEGIN CATCH
 		IF ERROR_SEVERITY() > 10
 		BEGIN	
-			RAISERROR('Algo salio mal en la modifiacion de la Empresa', 16, 1);
+			RAISERROR('Algo salio mal en la modificación de la Empresa', 16, 1);
 			RETURN;
 		END
 	END CATCH

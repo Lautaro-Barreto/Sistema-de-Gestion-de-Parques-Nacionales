@@ -344,7 +344,7 @@ GO
 IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'Area_Negocios' AND TABLE_NAME = 'Tipo_Actividad_Concesion')
 BEGIN
     CREATE TABLE Area_Negocios.Tipo_Actividad_Concesion(
-        Id INT identity(1,1) primary key,
+        IdTipoActividadConcesion INT identity(1,1) primary key,
         Descripcion varchar(100)
     )
 END
@@ -366,12 +366,12 @@ IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'Are
 BEGIN
     CREATE TABLE Area_Negocios.Concesion(
         IdConcesion integer identity(1,1) primary key,
-        IdTipoAct integer,
+        IdTipoActividadConcesion integer,
         IdEmpresa integer,
         IdParque integer,
         Fecha_Inicio date,
         Fecha_Fin date,
-        CONSTRAINT Fk_Concesion_Tipo_Actividad FOREIGN KEY (IdTipoAct) REFERENCES Area_Negocios.Tipo_Actividad_Concesion(Id),
+        CONSTRAINT Fk_Concesion_Tipo_Actividad FOREIGN KEY (IdTipoActividadConcesion) REFERENCES Area_Negocios.Tipo_Actividad_Concesion(IdTipoActividadConcesion),
         CONSTRAINT Fk_Concesion_Empresa FOREIGN KEY (IdEmpresa) REFERENCES Area_Negocios.Empresa_Concesionaria(IdEmpresa),
         CONSTRAINT Fk_Concesion_Parque FOREIGN KEY (IdParque) REFERENCES Area_Infraestructura.Parque(IdParque)
     )
@@ -400,13 +400,10 @@ BEGIN
     CREATE TABLE Area_Negocios.Pago_Canon(
         IdPagoCanon INT IDENTITY(1,1) PRIMARY KEY,
         IdCanon INT,
-        IdConcesion INT,
-        Estado VARCHAR(20),
         Monto_Abonado DECIMAL(13,3),
         Fecha_Pago DATE,
 
         FOREIGN KEY (IdCanon) REFERENCES Area_Negocios.Canon(IdCanon),
-        FOREIGN KEY (IdConcesion) REFERENCES Area_Negocios.Concesion(IdConcesion)
     )
 END
 GO

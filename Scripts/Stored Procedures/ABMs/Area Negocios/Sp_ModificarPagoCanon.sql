@@ -47,7 +47,7 @@ BEGIN
         -- Lanzar Rollback
 		IF ERROR_SEVERITY() > 10
 		BEGIN	
-			RAISERROR('Algo salio mal en la modifiacion del Pago del Canon', 16, 1);
+			RAISERROR('Algo salio mal en la modificación del Pago del Canon', 16, 1);
 			ROLLBACK;
 		END
 	END CATCH

@@ -6,13 +6,17 @@
 #Descripción: Este script se encarga del Stored Procedure utilizado para crear 
 un Estado del canon.
 */
+USE SGParquesNacionales
+GO
+
+
 CREATE OR ALTER PROCEDURE Area_Negocios.SP_CrearEstadoCanon
-	@Descripcion varchar(100)
+	@Descripcion varchar(150)
 AS
 BEGIN
 	BEGIN TRY
         -- Validamos descripcion ingresada.
-        IF @Descripcion ='' OR NOT REGEXP_LIKE(@Descripcion,'^[a-zA-ZñÑ\s]+$')  OR LEN(@Descripcion) > 100
+        IF @Descripcion ='' OR @Descripcion LIKE '%[^a-zA-ZñÑ ]%'  OR LEN(@Descripcion) > 100 OR @Descripcion IS NULL
         BEGIN
             PRINT('La descripcion ingresada no es valida')
             RAISERROR('Descripcion Invalida', 16,1)

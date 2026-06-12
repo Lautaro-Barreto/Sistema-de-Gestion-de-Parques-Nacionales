@@ -12,7 +12,7 @@ GO
 
 CREATE OR ALTER PROCEDURE Area_Negocios.SP_ModificarTipoActividadConcesion
 	@IdTipoActividadConcesion INT,
-	@Descripcion varchar(100)
+	@Descripcion varchar(150)
 AS
 BEGIN
 	BEGIN TRY
@@ -24,25 +24,29 @@ BEGIN
         END
 
 		-- La nueva descripcion debe ser valida
-		IF @Descripcion IS NOT NULL AND @Descripcion <> '' AND @Descripcion LIKE '%[^a-zA-Z ]%' AND LEN(@Descripcion) < 100
+		IF @Descripcion IS  NULL OR @Descripcion = '' OR @Descripcion LIKE '%[^a-zA-Z ]%' OR LEN(@Descripcion) > 100
 		BEGIN
-			UPDATE Area_Negocios.Tipo_Actividad_Concesion
+			PRINT('La nueva descripción no es válida.');
+			RAISERROR('Descripcion Invalida', 16, 1);
+		END
+
+		--La nueva Descripcion no puede ser una repetida
+		IF EXISTS (SELECT 1 FROM Area_Negocios.Tipo_Actividad_Concesion WHERE Descripcion = @Descripcion)
+		BEGIN
+			-- Lanzar el error
+			PRINT('La nueva descripción ya se encuentra registrada.');
+			RAISERROR('Descripcion Invalida', 16, 1);
+		END
+		UPDATE Area_Negocios.Tipo_Actividad_Concesion
 			SET Descripcion = @Descripcion
 			WHERE IdTipoActividadConcesion = @IdTipoActividadConcesion;
-		END
-        ELSE
-        BEGIN
-            -- Lanzar el error
-			PRINT('La nueva descripción no es valida.');
-			RAISERROR('Descripcion Invalida', 16, 1);
-        END
 	END TRY
 	BEGIN CATCH
-        -- Lanzar Rollback
+        -- Lanzar return
 		IF ERROR_SEVERITY() > 10
 		BEGIN	
-			RAISERROR('Algo salio mal en la modifiacion del Tipo De Actividad de la concesion', 16, 1);
-			ROLLBACK;
+			RAISERROR('Algo salio mal en la modificación del Tipo De Actividad de la concesion', 16, 1);
+			Return;
 		END
 	END CATCH
 END
