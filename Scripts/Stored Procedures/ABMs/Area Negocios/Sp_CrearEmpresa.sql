@@ -7,14 +7,16 @@
 un Store Procedure. 
 */
 
+USE SGParquesNacionales
+GO
 
 CREATE OR ALTER PROCEDURE Area_Negocios.SP_CrearEmpresaConcesionaria
-	@Nombre varchar(80)
+	@Nombre varchar(150)
 AS
 BEGIN
 	BEGIN TRY
         -- Validamos nombre ingresado.
-        IF @Nombre ='' OR @Nombre LIKE '%[^a-zA-Z ]%' OR LEN(@Nombre) > 80
+        IF @Nombre ='' OR NOT @Nombre NOT LIKE '%[^a-zA-ZñÑ ]%' OR LEN(@Nombre) > 80 OR @Nombre IS NULL
         BEGIN
             PRINT('El nombre de la empresa ingresado no es valido')
             RAISERROR('Nombre Invalido', 16,1)
@@ -34,9 +36,9 @@ BEGIN
         IF ERROR_SEVERITY()>10
         BEGIN	
             RAISERROR('Algo salio mal en el registro del nombre de la empresa',16,1);
-            ROLLBACK;
+            RETURN;
         END
     END CATCH
-    INSERT INTO Area_Negocios.Empresa_Concesionaria(Nombre) VALUES (@Nombre)
+    INSERT INTO Area_Negocios.Empresa_Concesionaria(Nombre, Estado) VALUES (@Nombre, 1)
 END
 GO

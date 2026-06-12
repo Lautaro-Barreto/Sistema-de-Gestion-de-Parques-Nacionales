@@ -12,21 +12,23 @@ AS
 BEGIN
 	BEGIN TRY
         -- Validamos descripcion ingresada.
-        IF @Descripcion ='' OR @Descripcion NOT LIKE '%[^a-zA-Z ]%' OR LEN(@Descripcion) > 100
+        IF @Descripcion ='' OR NOT REGEXP_LIKE(@Descripcion,'^[a-zA-ZñÑ\s]+$')  OR LEN(@Descripcion) > 100
         BEGIN
-            PRINT('La descripcion ingresada no es valido')
+            PRINT('La descripcion ingresada no es valida')
             RAISERROR('Descripcion Invalida', 16,1)
         END
-        
+   
     END TRY
     BEGIN CATCH
-        -- Lanzamos Rollback
+        -- Lanzamos Return
         IF ERROR_SEVERITY()>10
         BEGIN	
             RAISERROR('Algo salio mal en la creación del estado del canon',16,1);
-            ROLLBACK;
+            RETURN;
         END
     END CATCH
-    INSERT INTO Area_Negocios.Estado_Canon(Descripcion) VALUES (@Descripcion)
+     INSERT INTO Area_Negocios.Estado_Canon(Descripcion) VALUES (@Descripcion)  
 END
 GO
+
+--Crear estado canon

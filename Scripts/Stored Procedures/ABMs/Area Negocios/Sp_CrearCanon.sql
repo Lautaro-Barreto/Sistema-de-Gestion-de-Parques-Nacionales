@@ -4,19 +4,20 @@
 #Fecha: 12/06/2026
 #Integrantes: Barreto Lautaro, Losada Agustina, Miranda Guillermo, Villar Facundo
 #Descripción: Este script se encarga del Stored Procedure utilizado para crear 
-un Pago de un Canon.
+un Canon.
 */
 USE SGParquesNacionales
 
-CREATE OR ALTER PROCEDURE Area_Negocios.SP_CrearPagoCanon
-	@IdCanon INTEGER,
-    @Monto_Abonado DECIMAL(13,3),
-    @Fecha_Pago DATE
+CREATE OR ALTER PROCEDURE Area_Negocios.SP_CrearCanon
+    @IdEstado INTEGER,
+    @IdConcesion INTEGER,
+    @Monto_Mensual DECIMAL(13,3),
+    @Fecha_Vencimiento DATE
 AS
 BEGIN
 	BEGIN TRY
         -- Busca el IdCanon en la tabla de Canon.
-       IF NOT EXISTS ( SELECT 1 FROM Area_Negocios.Canon WHERE IdCanon = @IdCanon)
+       IF NOT EXISTS ( SELECT 1 FROM Area_Negocios.Estado_Canon WHERE IdEstado = @IdEstado)
         BEGIN
             PRINT('No Existe el Canon Ingresado')
             RAISERROR('Canon Invalido',16,1)

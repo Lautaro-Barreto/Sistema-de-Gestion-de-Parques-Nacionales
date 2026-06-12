@@ -55,7 +55,8 @@ IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'Are
 BEGIN
     CREATE TABLE Area_Negocios.Empresa_Concesionaria(
         IdEmpresa integer identity(1,1) primary key,
-        Nombre varchar(80)
+        Nombre varchar(80),
+        Estado BIT
     )
 END
 GO

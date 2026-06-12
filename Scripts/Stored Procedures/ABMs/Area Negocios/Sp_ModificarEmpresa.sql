@@ -12,7 +12,8 @@ GO
 
 CREATE OR ALTER PROCEDURE Area_Negocios.SP_ModificarEmpresaConcesionaria
 	@IdEmpresaConcesionaria INT,
-	@Nombre varchar(80)
+	@Nombre varchar(150),
+	@Estado bit
 AS
 BEGIN
 	BEGIN TRY
@@ -25,25 +26,28 @@ BEGIN
         END
 
 		-- El nuevo nombre debe ser valido
-		IF @Nombre IS NOT NULL AND @Nombre <> '' AND @Nombre LIKE '%[^a-zA-Z ]%' AND LEN(@Nombre) < 80
+		IF @Nombre IS NULL OR @Nombre='' OR @Nombre LIKE '%[^a-zA-ZñÑ ]%' OR LEN(@Nombre) > 80
 		BEGIN
+			PRINT('El Nuevo nombre de la empresa no es valido.');
+			RAISERROR('EmpresaConcesionaria Invalida', 16, 1);
+		END
+		-- La modificacion de Nombre no puede estar repetida.
+		IF EXISTS (SELECT 1 FROM Area_Negocios.Empresa_Concesionaria WHERE Nombre = @Nombre)
+        BEGIN
+			-- Lanzar el error
+			PRINT('La empresa ya se encuentra registrada.');
+			RAISERROR('EmpresaConcesionaria Invalida', 16, 1);
+		END
 			UPDATE Area_Negocios.Empresa_Concesionaria
 			SET Nombre = @Nombre
-			WHERE IdEmpresa = @IdEmpresaConcesionaria;
-		END
-        ELSE
-        BEGIN
-            -- Lanzar el error
-			PRINT('El Nuevo nombre de la empresa no es valido.');
-			RAISERROR('EmpresaConcesionariaInvalida', 16, 1);
-        END
+			WHERE IdEmpresa = @IdEmpresaConcesionaria; 
+
 	END TRY
 	BEGIN CATCH
-        -- Lanzar Rollback
 		IF ERROR_SEVERITY() > 10
 		BEGIN	
 			RAISERROR('Algo salio mal en la modifiacion de la Empresa', 16, 1);
-			ROLLBACK;
+			RETURN;
 		END
 	END CATCH
 END
