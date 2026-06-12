@@ -56,7 +56,7 @@ BEGIN
         END
     END CATCH
     
-    INSERT INTO Area_Infraestructura.Provincia(Nombre, Region) VALUES (@Nombre, @Region)
+    INSERT INTO Area_Infraestructura.Provincia(Nombre, IDRegion) VALUES (@Nombre, @IdRegion)
     DECLARE @IdNuevaProvincia INT
 	SET @IdNuevaProvincia = SCOPE_IDENTITY()
 	RETURN @IdNuevaProvincia

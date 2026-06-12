@@ -37,13 +37,12 @@ BEGIN
 				RETURN @IdParqueRepetido;
 			END
 
-			-- Validamos provincia ingresada. Si es valida, quitamos espacios al string
+			-- Validamos provincia ingresada
 			IF @Provincia = '' OR @Provincia LIKE '%[^a-zA-Z ]%' OR LEN(@Provincia) > 80
 			BEGIN
 				PRINT('La provincia ingresada no es valida')
 				RAISERROR('.', 16,1)
 			END
-			SET @Provincia = TRIM(@Provincia)
 
 			-- La provincia debe existir en la bbdd
 			DECLARE @IdProvincia INT;
@@ -54,13 +53,12 @@ BEGIN
 				RAISERROR('.', 16,1)
 			END
 
-			-- Validamos tipo de parque ingresado. Si es valido, quitamos espacios al string
+			-- Validamos tipo de parque ingresado
 			IF @TipoParqueDesc = '' OR @TipoParqueDesc LIKE '%[^a-zA-Z ]%' OR LEN(@TipoParqueDesc) > 80
 			BEGIN
 				PRINT('El tipo de parque ingresado no es valido')
 				RAISERROR('.', 16,1)
 			END
-			SET @Nombre = TRIM(@Nombre)
 
 			-- EL tipo de parque debe estar cargado en la bbdd
 			DECLARE @IdTipoParque INT;
@@ -88,7 +86,7 @@ BEGIN
 	END CATCH
 
 	INSERT INTO Area_Infraestructura.Parque(IdProvincia, IdTipoParque, Nombre, Superficie) VALUES
-	(@Provincia, @TipoParqueDesc, @Nombre, @Superficie);
+	(@IdProvincia, @IdTipoParque, @Nombre, @Superficie);
 	DECLARE @IdNuevoParque INT
 	SET @IdNuevoParque = SCOPE_IDENTITY()
 	RETURN @IdNuevoParque

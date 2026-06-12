@@ -4,14 +4,15 @@
 #Fecha: 09/06/2026
 #Integrantes: Barreto Lautaro, Losada Agustina, Miranda Guillermo, Villar Facundo
 #Descripción: Este script se encarga de la creación del Stored Procedure utilizado para
-eliminar una región. 
+modificar una región. 
 */
 
 USE SGParquesNacionales
 GO
 
-CREATE OR ALTER PROCEDURE Area_Infraestructura.Sp_EliminarRegion
-	@IdRegion INT
+CREATE OR ALTER PROCEDURE Area_Infraestructura.Sp_ModificarRegion
+	@IdRegion INT,
+	@Nombre VARCHAR(50) = NULL
 AS
 BEGIN
 	BEGIN TRY
@@ -24,21 +25,27 @@ BEGIN
 			RETURN;
 		END
 
-        -- Seteamos en null la región para las provincias que la tengan asignado
-        UPDATE Area_Infraestructura.Provincia
-        SET IdRegion = NULL
-        WHERE IdRegion = @IdRegion;
+		-- Modificar Nombre
+		IF @Nombre IS NOT NULL AND @Nombre <> ''
+		BEGIN
+			SET @Nombre = TRIM(@Nombre);
+			IF @Nombre LIKE '%[^a-zA-Z ]%' OR LEN(@Nombre) > 50
+			BEGIN
+				PRINT('El nombre no es válido');
+				RAISERROR('.', 16, 1);
+			END
 
-		-- Eliminar región
-		DELETE FROM Area_Infraestructura.Region
-		WHERE IdRegion = @IdRegion;
+			UPDATE Area_Infraestructura.Region
+			SET Nombre = @Nombre
+			WHERE IdRegion = @IdRegion;
+		END
 
 	END TRY
 
 	BEGIN CATCH
 		IF ERROR_SEVERITY() > 10
 		BEGIN
-			RAISERROR('Ocurrió  un error al eliminar la región.', 16, 1);
+			RAISERROR('Ocurrió  un error al modificar la región.', 16, 1);
 			RETURN;
 		END
 	END CATCH

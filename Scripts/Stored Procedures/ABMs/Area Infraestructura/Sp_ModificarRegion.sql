@@ -4,14 +4,15 @@
 #Fecha: 09/06/2026
 #Integrantes: Barreto Lautaro, Losada Agustina, Miranda Guillermo, Villar Facundo
 #Descripción: Este script se encarga de la creación del Stored Procedure utilizado para
-eliminar un tipo de parque. 
+modificar un tipo de parque. 
 */
 
 USE SGParquesNacionales
 GO
 
-CREATE OR ALTER PROCEDURE Area_Infraestructura.Sp_EliminarTipoParque
-	@IdTipoParque INT
+CREATE OR ALTER PROCEDURE Area_Infraestructura.Sp_ModificarTipoParque
+	@IdTipoParque INT,
+	@Descripcion VARCHAR(50) = NULL
 AS
 BEGIN
 	BEGIN TRY
@@ -24,21 +25,27 @@ BEGIN
 			RETURN;
 		END
 
-        -- Seteamos en null el tipo para los parques que lo tengan asignado
-        UPDATE Area_Infraestructura.Parque
-        SET IdTipoParque = NULL
-        WHERE IdTipoParque = @IdTipoParque;
+		-- Modificar Descripción
+		IF @Descripcion IS NOT NULL AND @Descripcion <> ''
+		BEGIN
+			SET @Descripcion = TRIM(@Descripcion);
+			IF @Descripcion LIKE '%[^a-zA-Z ]%' OR LEN(@Descripcion) > 50
+			BEGIN
+				PRINT('La descripción no es válida');
+				RAISERROR('.', 16, 1);
+			END
 
-		-- Eliminar tipo de parque
-		DELETE FROM Area_Infraestructura.TipoParque
-		WHERE IdTipoParque = @IdTipoParque;
+			UPDATE Area_Infraestructura.TipoParque
+			SET Descripcion = @Descripcion
+			WHERE IdTipoParque = @IdTipoParque;
+		END
 
 	END TRY
 
 	BEGIN CATCH
 		IF ERROR_SEVERITY() > 10
 		BEGIN
-			RAISERROR('Ocurrió  un error al eliminar el tipo de parque.', 16, 1);
+			RAISERROR('Ocurrió  un error al modificar el tipo de parque.', 16, 1);
 			RETURN;
 		END
 	END CATCH

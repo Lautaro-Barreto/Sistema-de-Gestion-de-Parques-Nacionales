@@ -27,7 +27,7 @@ BEGIN
         -- La descripcion no puede ser repetida
         SET NOCOUNT ON;
         DECLARE @IdTipoParqueRepetido INT;
-        SELECT @IdTipoParqueRepetido = tp.IdTipoParque FROM Area_Infraestructura.TipoParque tp WHERE tp.Descripcion = @Descripcion;
+        SELECT @IdTipoParqueRepetido = tp.IdTipoParque FROM Area_Infraestructura.Tipo_Parque tp WHERE tp.Descripcion = @Descripcion;
         IF @IdTipoParqueRepetido IS NOT NULL
         BEGIN
             PRINT('Ya existe un tipo de parque con esa descripcion')
@@ -43,7 +43,7 @@ BEGIN
         END
     END CATCH
 
-    INSERT INTO Area_Infraestructura.TipoParque(Descripcion) VALUES (@Descripcion)
+    INSERT INTO Area_Infraestructura.Tipo_Parque(Descripcion) VALUES (@Descripcion)
     DECLARE @IdNuevoTipoParque INT
 	SET @IdNuevoTipoParque = SCOPE_IDENTITY()
 	RETURN @IdNuevoTipoParque
