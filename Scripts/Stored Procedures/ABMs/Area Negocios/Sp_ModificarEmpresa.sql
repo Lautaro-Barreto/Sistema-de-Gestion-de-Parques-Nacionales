@@ -35,14 +35,14 @@ BEGIN
         BEGIN
             -- Lanzar el error
 			PRINT('El Nuevo nombre de la empresa no es valido.');
-			RAISERROR('.', 16, 1);
+			RAISERROR('EmpresaConcesionariaInvalida', 16, 1);
         END
 	END TRY
 	BEGIN CATCH
         -- Lanzar Rollback
 		IF ERROR_SEVERITY() > 10
 		BEGIN	
-			RAISERROR('Algo salio mal en la modifiacion de la forma de pago', 16, 1);
+			RAISERROR('Algo salio mal en la modifiacion de la Empresa', 16, 1);
 			ROLLBACK;
 		END
 	END CATCH

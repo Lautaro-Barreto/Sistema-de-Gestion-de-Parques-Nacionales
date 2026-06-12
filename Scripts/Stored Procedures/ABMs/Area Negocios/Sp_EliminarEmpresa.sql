@@ -15,9 +15,9 @@ BEGIN
     BEGIN TRY
 
         -- Validamos que la id ingresado exista en la Base de Datos
-        DECLARE @IdEmpresa INT;
-        SELECT @IdEmpresa = SELECT IdEmpresa FROM Area_Negocios.Empresa_Concesionaria WHERE IdEmpresa = @IdEmpresa;
-        IF @IdEmpresa IS NULL
+        DECLARE @IdEmpresaExiste INT;
+        SELECT @IdEmpresaExiste = IdEmpresa FROM Area_Negocios.Empresa_Concesionaria WHERE IdEmpresa = @IdEmpresa;
+        IF @IdEmpresaExiste IS NULL
         BEGIN
             PRINT('No existe una Empresa Concesionaria con ese Id')
             RAISERROR("Empresa Inexistente",16,1)
