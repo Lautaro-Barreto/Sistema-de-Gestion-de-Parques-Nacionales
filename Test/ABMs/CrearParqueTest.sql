@@ -10,7 +10,7 @@ verificando que no se pueda crear un parque con datos inválidos.
 USE SGParquesNacionales
 GO
 
--- Test 1: Creación exitosa de un parque nacional en una provincia existente, con nombre y tipo de parque válidos (y existente) y superficie positiva
+-- Test 1: Creación exitosa de un parque nacional en una provincia existente, con nombre y tipo de parque (existente) válidos y superficie positiva
 BEGIN TRY
 
     EXEC Area_Infraestructura.Sp_CrearRegion
@@ -24,7 +24,7 @@ BEGIN TRY
         @Descripcion = 'TipoParqueTest'
 
     EXEC Area_Infraestructura.Sp_CrearParque
-        @Nombre = 'Este es un parque de prueba',
+        @Nombre = 'ParquePrueba',
         @TipoParqueDesc = 'TipoParqueTest',
         @Provincia = 1,
         @Superficie = 50000.00
@@ -33,36 +33,57 @@ BEGIN TRY
     JOIN Area_Infraestructura.Provincia pro ON pro.IdProvincia = par.IdProvincia
     WHERE par.Nombre = 'Este es un parque de prueba' AND pro.Nombre = 'ProvinciaTest' AND par.Superficie = 50000.00;
 
-    EXEC Area_Infraestructura.Sp_EliminarParque
-        @Nombre = 'Este es un parque de prueba'
-
-    EXEC Area_Infraestructura.Sp_EliminarRegion
-        @Nombre = 'RegionTest'
-    
-    EXEC Area_Infraestructura.Sp_EliminarProvincia
-        @Nombre = 'ProvinciaTest'
-
-    EXEC Area_Infraestructura.Sp_EliminarTipoParque
-        @Descripcion = 'TipoParqueTest'
-
 END TRY
 BEGIN CATCH
     PRINT 'Error al crear el parque: ' + ERROR_MESSAGE();
 END CATCH
 GO
 
--- Test 2: Intentar crear un parque con un nombre inválido (contiene números)
-
--- Test 3: Intentar crear un parque con un nombre que ya existe en la base de datos
-
--- Test 4: Intentar crear un parque con una provincia que no existe en la base de datos
-
--- Test 5: Intentar crear un parque con una provincia inválida (contiene números)
+-- Test 2: Intentar crear un parque con un nombre inválido
 BEGIN TRY
     EXEC Area_Infraestructura.Sp_CrearParque
-        @Provincia = 'Springfield',
-        @TipoParqueDesc = 'Nacional',
-        @Nombre = 'Parque Nacional Lihuel Calel',
+        @Provincia = 'ProvinciaTest',
+        @TipoParqueDesc = 'TipoParqueTest',
+        @Nombre = 'Parque$###||',
+        @Superficie = 50000.00
+END TRY
+BEGIN CATCH
+    PRINT 'Error al crear el parque: ' + ERROR_MESSAGE();
+END CATCH
+GO
+
+-- Test 3: Intentar crear un parque con un nombre que ya existe en la base de datos
+BEGIN TRY
+    EXEC Area_Infraestructura.Sp_CrearParque
+        @Provincia = 'ProvinciaTest',
+        @TipoParqueDesc = 'TipoParqueTest',
+        @Nombre = 'ParqueTest',
+        @Superficie = 50000.00
+END TRY
+BEGIN CATCH
+    PRINT 'Error al crear el parque: ' + ERROR_MESSAGE();
+END CATCH
+GO
+
+-- Test 4: Intentar crear un parque con una provincia que no existe en la base de datos
+BEGIN TRY
+    EXEC Area_Infraestructura.Sp_CrearParque
+        @Provincia = 'ProvinciaQueNoExiste',
+        @TipoParqueDesc = 'TipoParqueTest',
+        @Nombre = 'ParqueTest',
+        @Superficie = 50000.00
+END TRY
+BEGIN CATCH
+    PRINT 'Error al crear el parque: ' + ERROR_MESSAGE();
+END CATCH
+GO
+
+-- Test 5: Intentar crear un parque con una provincia inválida
+BEGIN TRY
+    EXEC Area_Infraestructura.Sp_CrearParque
+        @Provincia = '1231234123413###$$asda',
+        @TipoParqueDesc = 'TipoParqueTest',
+        @Nombre = 'ParquePrueba',
         @Superficie = 50000.00
 END TRY
 BEGIN CATCH
@@ -73,9 +94,9 @@ GO
 -- Test 6: Intentar crear un parque con un tipo de parque inválido (contiene caracteres especiales)
 BEGIN TRY
     EXEC Area_Infraestructura.Sp_CrearParque
-        @Provincia = 'Buenos Aires',
-        @TipoParqueDesc = 'Nacional@',
-        @Nombre = 'Parque Nacional Lihuel Calel',
+        @Provincia = 'ProvinciaTest',
+        @TipoParqueDesc = 'TipoParqueTest@',
+        @Nombre = 'ParquePrueba',
         @Superficie = 50000.00
 END TRY
 BEGIN CATCH
@@ -86,12 +107,24 @@ GO
 -- Test 7: Intentar crear un parque con una superficie negativa
 BEGIN TRY
     EXEC Area_Infraestructura.Sp_CrearParque
-        @Provincia = 'Buenos Aires',
-        @TipoParqueDesc = 'Nacional',
-        @Nombre = 'Parque Nacional Lihuel Calel',
+        @Provincia = 'ProvinciaTest',
+        @TipoParqueDesc = 'TipoParqueTest',
+        @Nombre = 'ParquePrueba',
         @Superficie = -50000.00
 END TRY
 BEGIN CATCH
     PRINT 'Error al crear el parque: ' + ERROR_MESSAGE();
 END CATCH
 GO
+
+EXEC Area_Infraestructura.Sp_EliminarParque
+    @Nombre = 'ParquePrueba'
+
+EXEC Area_Infraestructura.Sp_EliminarRegion
+    @Nombre = 'RegionTest'
+    
+EXEC Area_Infraestructura.Sp_EliminarProvincia
+    @Nombre = 'ProvinciaTest'
+
+EXEC Area_Infraestructura.Sp_EliminarTipoParque
+    @Descripcion = 'TipoParqueTest'

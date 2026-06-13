@@ -9,6 +9,8 @@
 #Integrantes: Barreto Lautaro, Losada Agustina, Miranda Guillermo, Villar Facundo
 #Descripción: En este sript se crea la base de datos "SGParquesNacionales"
 */
+USE master
+go
 
 IF NOT EXISTS (SELECT name FROM master.dbo.sysdatabases WHERE name = 'SGParquesNacionales')
 BEGIN

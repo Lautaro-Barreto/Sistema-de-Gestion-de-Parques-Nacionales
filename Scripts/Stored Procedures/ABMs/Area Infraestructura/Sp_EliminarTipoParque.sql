@@ -18,7 +18,7 @@ BEGIN
 		SET NOCOUNT ON;
 
 		-- Validamos existencia
-		IF NOT EXISTS (SELECT 1 FROM Area_Infraestructura.TipoParque WHERE IdTipoParque = @IdTipoParque)
+		IF NOT EXISTS (SELECT 1 FROM Area_Infraestructura.Tipo_Parque WHERE IdTipoParque = @IdTipoParque)
 		BEGIN
 			PRINT('No existe un tipo de parque con el Id proporcionado.');
 			RETURN;
@@ -30,7 +30,7 @@ BEGIN
         WHERE IdTipoParque = @IdTipoParque;
 
 		-- Eliminar tipo de parque
-		DELETE FROM Area_Infraestructura.TipoParque
+		DELETE FROM Area_Infraestructura.Tipo_Parque
 		WHERE IdTipoParque = @IdTipoParque;
 
 	END TRY

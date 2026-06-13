@@ -7,7 +7,7 @@
 # Materia: 3641 - Bases de Datos Aplicada 
 # Fecha: 09/06/2026
 # Integrantes: Barreto Lautaro, Losada Agustina, Miranda Guillermo, Villar Facundo
-# Descripción: En este sript se crea un esquema para testing
+# DescripciÃ³n: En este script se crea un esquema para testing
 */
 
 -- Cambiar al contexto master

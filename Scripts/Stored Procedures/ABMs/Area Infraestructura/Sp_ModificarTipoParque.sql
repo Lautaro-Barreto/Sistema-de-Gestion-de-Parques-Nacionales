@@ -4,7 +4,7 @@
 #Fecha: 09/06/2026
 #Integrantes: Barreto Lautaro, Losada Agustina, Miranda Guillermo, Villar Facundo
 #Descripción: Este script se encarga de la creación del Stored Procedure utilizado para
-modificar una región. 
+modificar un tipo de parque. 
 */
 
 USE SGParquesNacionales

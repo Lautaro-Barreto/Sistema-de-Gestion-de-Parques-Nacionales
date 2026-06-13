@@ -1,3 +1,7 @@
-# Sección de scripts de la base de datos
+# Sección de scripts de importación masiva de datos
 
-Acá van todos los scripts separados por tipos en sus respectivas carpetas
+Los datasets consultados son los siguientes:
+
+* https://sib.gob.ar/areas-protegidas#buscador-general (archivo xslx que se puede leer como xml/csv)
+* https://datos.gob.ar/dataset/turismo-parques-nacionales (csv)
+

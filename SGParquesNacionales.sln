@@ -6,8 +6,130 @@ MinimumVisualStudioVersion = 10.0.40219.1
 Project("{4F2E2C19-372F-40D8-9FA7-9D2138C6997A}") = "SGParquesNacionales", "SGParquesNacionales.ssmssqlproj", "{80140EF6-C2E4-5648-EE5B-3F9C742DBECA}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Elementos de la solución", "Elementos de la solución", "{D107F4C8-89CC-BEA8-D3D7-CA6B7733353D}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Scripts", "Scripts", "{02EA681E-C7D8-13C7-8484-4AC65E1B71E8}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Creacion de la BBDD", "Creacion de la BBDD", "{DC186AB8-A99A-40A2-8F35-F0934940B9E3}"
 	ProjectSection(SolutionItems) = preProject
 		Scripts\Creacion de la BBDD\create-database.sql = Scripts\Creacion de la BBDD\create-database.sql
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Creacion de tablas", "Creacion de tablas", "{DE0B9493-8B43-4002-B98C-993FCF3510EE}"
+	ProjectSection(SolutionItems) = preProject
+		Scripts\Creacion de tablas\create-table-actividades.sql = Scripts\Creacion de tablas\create-table-actividades.sql
+		Scripts\Creacion de tablas\create-table-concesion.sql = Scripts\Creacion de tablas\create-table-concesion.sql
+		Scripts\Creacion de tablas\create-table-parque.sql = Scripts\Creacion de tablas\create-table-parque.sql
+		Scripts\Creacion de tablas\create-table-ventas.sql = Scripts\Creacion de tablas\create-table-ventas.sql
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Generacion de datos aleatorios", "Generacion de datos aleatorios", "{C3C9DE33-B6A6-45E2-AE26-761B9486793C}"
+	ProjectSection(SolutionItems) = preProject
+		Scripts\Generacion de datos aleatorios\README.md = Scripts\Generacion de datos aleatorios\README.md
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Importacion de datos", "Importacion de datos", "{F1A81ECA-6F1B-4AC3-8206-237E21688845}"
+	ProjectSection(SolutionItems) = preProject
+		Scripts\Importacion de datos\README.md = Scripts\Importacion de datos\README.md
+		Scripts\Importacion de datos\sheet1.xml = Scripts\Importacion de datos\sheet1.xml
+		Scripts\Importacion de datos\Sp_ImportarDatosParques = Scripts\Importacion de datos\Sp_ImportarDatosParques
+		Scripts\Importacion de datos\Sp_ImportarDatosParquesCSVTemporal = Scripts\Importacion de datos\Sp_ImportarDatosParquesCSVTemporal
+		Scripts\Importacion de datos\Sp_ImportarDatosParquesXMLTemporal = Scripts\Importacion de datos\Sp_ImportarDatosParquesXMLTemporal
+		Scripts\Importacion de datos\Áreas protegidas de Argentina - Sistema de Información de Biodiversidad.csv = Scripts\Importacion de datos\Áreas protegidas de Argentina - Sistema de Información de Biodiversidad.csv
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Stored Procedures", "Stored Procedures", "{8DCBE9F9-C9AC-477F-91A5-FB1CF4CCECF5}"
+	ProjectSection(SolutionItems) = preProject
+		Scripts\Stored Procedures\README.md = Scripts\Stored Procedures\README.md
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Triggers", "Triggers", "{574FF2F6-C92C-43AC-8F21-136B48F6F438}"
+	ProjectSection(SolutionItems) = preProject
+		Scripts\Triggers\README.md = Scripts\Triggers\README.md
+		Scripts\Triggers\Tg_ActualizarHistoricoGuardaparque.sql = Scripts\Triggers\Tg_ActualizarHistoricoGuardaparque.sql
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Test", "Test", "{31ED92BE-3439-419E-9DFA-05455862623F}"
+	ProjectSection(SolutionItems) = preProject
+		Scripts\Creacion de la BBDD\drop-database.sql = Scripts\Creacion de la BBDD\drop-database.sql
+		Test\README.md = Test\README.md
+		Test\setup-test-environment.sql = Test\setup-test-environment.sql
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ABMs", "ABMs", "{C19EF737-7D73-42BE-B607-7025502CEC0E}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Transacciones", "Transacciones", "{A3AB3739-3BE3-40E8-9522-0CE27AF5707E}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Area Comercial", "Area Comercial", "{98A0F2B9-8B7E-46B7-A5C3-606A3F93FD35}"
+	ProjectSection(SolutionItems) = preProject
+		Scripts\Stored Procedures\ABMs\Area Comercial\Sp_CrearDetalleVentaEntrada.sql = Scripts\Stored Procedures\ABMs\Area Comercial\Sp_CrearDetalleVentaEntrada.sql
+		Scripts\Stored Procedures\ABMs\Area Comercial\Sp_CrearEntrada.sql = Scripts\Stored Procedures\ABMs\Area Comercial\Sp_CrearEntrada.sql
+		Scripts\Stored Procedures\ABMs\Area Comercial\Sp_CrearFormaDePago.sql = Scripts\Stored Procedures\ABMs\Area Comercial\Sp_CrearFormaDePago.sql
+		Scripts\Stored Procedures\ABMs\Area Comercial\Sp_CrearPuntoDeVenta.sql = Scripts\Stored Procedures\ABMs\Area Comercial\Sp_CrearPuntoDeVenta.sql
+		Scripts\Stored Procedures\ABMs\Area Comercial\Sp_CrearTipoVisitante.sql = Scripts\Stored Procedures\ABMs\Area Comercial\Sp_CrearTipoVisitante.sql
+		Scripts\Stored Procedures\ABMs\Area Comercial\Sp_CrearVenta.sql = Scripts\Stored Procedures\ABMs\Area Comercial\Sp_CrearVenta.sql
+		Scripts\Stored Procedures\ABMs\Area Comercial\Sp_EliminarDetalleVentaEntrada.sql = Scripts\Stored Procedures\ABMs\Area Comercial\Sp_EliminarDetalleVentaEntrada.sql
+		Scripts\Stored Procedures\ABMs\Area Comercial\Sp_EliminarFormaDePago.sql = Scripts\Stored Procedures\ABMs\Area Comercial\Sp_EliminarFormaDePago.sql
+		Scripts\Stored Procedures\ABMs\Area Comercial\Sp_EliminarPuntoDeVenta.sql = Scripts\Stored Procedures\ABMs\Area Comercial\Sp_EliminarPuntoDeVenta.sql
+		Scripts\Stored Procedures\ABMs\Area Comercial\Sp_EliminarTipoVisitante.sql = Scripts\Stored Procedures\ABMs\Area Comercial\Sp_EliminarTipoVisitante.sql
+		Scripts\Stored Procedures\ABMs\Area Comercial\Sp_ModificarFormaDePago.sql = Scripts\Stored Procedures\ABMs\Area Comercial\Sp_ModificarFormaDePago.sql
+		Scripts\Stored Procedures\ABMs\Area Comercial\Sp_ModificarPuntoDeVenta.sql = Scripts\Stored Procedures\ABMs\Area Comercial\Sp_ModificarPuntoDeVenta.sql
+		Scripts\Stored Procedures\ABMs\Area Comercial\Sp_ModificarTipoVisitante.sql = Scripts\Stored Procedures\ABMs\Area Comercial\Sp_ModificarTipoVisitante.sql
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Area Infraestructura", "Area Infraestructura", "{32DA30B5-48AC-4AB1-BB96-EDAB2EDF5801}"
+	ProjectSection(SolutionItems) = preProject
+		Scripts\Stored Procedures\ABMs\Area Infraestructura\Sp_CrearGuardaparque.sql = Scripts\Stored Procedures\ABMs\Area Infraestructura\Sp_CrearGuardaparque.sql
+		Scripts\Stored Procedures\ABMs\Area Infraestructura\Sp_CrearParque.sql = Scripts\Stored Procedures\ABMs\Area Infraestructura\Sp_CrearParque.sql
+		Scripts\Stored Procedures\ABMs\Area Infraestructura\Sp_CrearProvincia.sql = Scripts\Stored Procedures\ABMs\Area Infraestructura\Sp_CrearProvincia.sql
+		Scripts\Stored Procedures\ABMs\Area Infraestructura\Sp_CrearRegion.sql = Scripts\Stored Procedures\ABMs\Area Infraestructura\Sp_CrearRegion.sql
+		Scripts\Stored Procedures\ABMs\Area Infraestructura\Sp_CrearTipoParque.sql = Scripts\Stored Procedures\ABMs\Area Infraestructura\Sp_CrearTipoParque.sql
+		Scripts\Stored Procedures\ABMs\Area Infraestructura\Sp_EliminarGuardaparque.sql = Scripts\Stored Procedures\ABMs\Area Infraestructura\Sp_EliminarGuardaparque.sql
+		Scripts\Stored Procedures\ABMs\Area Infraestructura\Sp_EliminarParque.sql = Scripts\Stored Procedures\ABMs\Area Infraestructura\Sp_EliminarParque.sql
+		Scripts\Stored Procedures\ABMs\Area Infraestructura\Sp_EliminarProvincia.sql = Scripts\Stored Procedures\ABMs\Area Infraestructura\Sp_EliminarProvincia.sql
+		Scripts\Stored Procedures\ABMs\Area Infraestructura\Sp_EliminarRegion.sql = Scripts\Stored Procedures\ABMs\Area Infraestructura\Sp_EliminarRegion.sql
+		Scripts\Stored Procedures\ABMs\Area Infraestructura\Sp_EliminarTipoParque.sql = Scripts\Stored Procedures\ABMs\Area Infraestructura\Sp_EliminarTipoParque.sql
+		Scripts\Stored Procedures\ABMs\Area Infraestructura\Sp_ModificarGuardaparque.sql = Scripts\Stored Procedures\ABMs\Area Infraestructura\Sp_ModificarGuardaparque.sql
+		Scripts\Stored Procedures\ABMs\Area Infraestructura\Sp_ModificarParque.sql = Scripts\Stored Procedures\ABMs\Area Infraestructura\Sp_ModificarParque.sql
+		Scripts\Stored Procedures\ABMs\Area Infraestructura\Sp_ModificarRegion.sql = Scripts\Stored Procedures\ABMs\Area Infraestructura\Sp_ModificarRegion.sql
+		Scripts\Stored Procedures\ABMs\Area Infraestructura\Sp_ModificarTipoParque.sql = Scripts\Stored Procedures\ABMs\Area Infraestructura\Sp_ModificarTipoParque.sql
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Area Negocios", "Area Negocios", "{40333810-62AA-445B-8F10-83B150C07D8F}"
+	ProjectSection(SolutionItems) = preProject
+		Scripts\Stored Procedures\ABMs\Area Negocios\Sp_CrearEmpresa.sql = Scripts\Stored Procedures\ABMs\Area Negocios\Sp_CrearEmpresa.sql
+		Scripts\Stored Procedures\ABMs\Area Negocios\Sp_CrearEstadoCanon.sql = Scripts\Stored Procedures\ABMs\Area Negocios\Sp_CrearEstadoCanon.sql
+		Scripts\Stored Procedures\ABMs\Area Negocios\Sp_CrearPagoCanon.sql = Scripts\Stored Procedures\ABMs\Area Negocios\Sp_CrearPagoCanon.sql
+		Scripts\Stored Procedures\ABMs\Area Negocios\Sp_CrearTipoActividadConcesion.sql = Scripts\Stored Procedures\ABMs\Area Negocios\Sp_CrearTipoActividadConcesion.sql
+		Scripts\Stored Procedures\ABMs\Area Negocios\Sp_EliminarEmpresa.sql = Scripts\Stored Procedures\ABMs\Area Negocios\Sp_EliminarEmpresa.sql
+		Scripts\Stored Procedures\ABMs\Area Negocios\Sp_EliminarEstadoCanon.sql = Scripts\Stored Procedures\ABMs\Area Negocios\Sp_EliminarEstadoCanon.sql
+		Scripts\Stored Procedures\ABMs\Area Negocios\Sp_EliminarPagoCanon.sql = Scripts\Stored Procedures\ABMs\Area Negocios\Sp_EliminarPagoCanon.sql
+		Scripts\Stored Procedures\ABMs\Area Negocios\Sp_EliminarTipoActividadConcesion.sql = Scripts\Stored Procedures\ABMs\Area Negocios\Sp_EliminarTipoActividadConcesion.sql
+		Scripts\Stored Procedures\ABMs\Area Negocios\Sp_ModificarEmpresa.sql = Scripts\Stored Procedures\ABMs\Area Negocios\Sp_ModificarEmpresa.sql
+		Scripts\Stored Procedures\ABMs\Area Negocios\Sp_ModificarEstadoCanon.sql = Scripts\Stored Procedures\ABMs\Area Negocios\Sp_ModificarEstadoCanon.sql
+		Scripts\Stored Procedures\ABMs\Area Negocios\Sp_ModificarPagoCanon.sql = Scripts\Stored Procedures\ABMs\Area Negocios\Sp_ModificarPagoCanon.sql
+		Scripts\Stored Procedures\ABMs\Area Negocios\Sp_ModificarTipoActividadConcesion.sql = Scripts\Stored Procedures\ABMs\Area Negocios\Sp_ModificarTipoActividadConcesion.sql
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Area Excursiones", "Area Excursiones", "{908E3FBC-C73D-467E-852C-AFE72B790E7F}"
+	ProjectSection(SolutionItems) = preProject
+		Scripts\Stored Procedures\ABMs\Area Excursiones\Sp_CrearActividad.sql = Scripts\Stored Procedures\ABMs\Area Excursiones\Sp_CrearActividad.sql
+		Scripts\Stored Procedures\ABMs\Area Excursiones\Sp_CrearContratacionActividad.sql = Scripts\Stored Procedures\ABMs\Area Excursiones\Sp_CrearContratacionActividad.sql
+		Scripts\Stored Procedures\ABMs\Area Excursiones\Sp_CrearEspecialidad.sql = Scripts\Stored Procedures\ABMs\Area Excursiones\Sp_CrearEspecialidad.sql
+		Scripts\Stored Procedures\ABMs\Area Excursiones\Sp_CrearGuia.sql = Scripts\Stored Procedures\ABMs\Area Excursiones\Sp_CrearGuia.sql
+		Scripts\Stored Procedures\ABMs\Area Excursiones\Sp_CrearGuiasPorActividad.sql = Scripts\Stored Procedures\ABMs\Area Excursiones\Sp_CrearGuiasPorActividad.sql
+		Scripts\Stored Procedures\ABMs\Area Excursiones\Sp_CrearHabilitacion.sql = Scripts\Stored Procedures\ABMs\Area Excursiones\Sp_CrearHabilitacion.sql
+		Scripts\Stored Procedures\ABMs\Area Excursiones\Sp_CrearHabilitacionGuia.sql = Scripts\Stored Procedures\ABMs\Area Excursiones\Sp_CrearHabilitacionGuia.sql
+		Scripts\Stored Procedures\ABMs\Area Excursiones\Sp_CrearTipoActividad.sql = Scripts\Stored Procedures\ABMs\Area Excursiones\Sp_CrearTipoActividad.sql
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ABMs", "ABMs", "{C12F448F-2854-406A-90F0-A5BC33AC9071}"
+	ProjectSection(SolutionItems) = preProject
+		Test\ABMs\CrearParqueTest.sql = Test\ABMs\CrearParqueTest.sql
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Importación de datos masivos", "Importación de datos masivos", "{DEF9719D-211F-41DC-B33F-EAE8EBE04158}"
+	ProjectSection(SolutionItems) = preProject
+		Test\Importacion de datos masivos\ImportarDatosTest.sql = Test\Importacion de datos masivos\ImportarDatosTest.sql
 	EndProjectSection
 EndProject
 Global
@@ -16,10 +138,26 @@ Global
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{80140EF6-C2E4-5648-EE5B-3F9C742DBECA}.Default|Default.ActiveCfg = Default
-		{04164B61-4D5D-4426-9273-5B1A9D1531D9}.Default|Default.ActiveCfg = Default
+		{F127ED0A-66F3-4704-80CB-E55AEA15CDE0}.Default|Default.ActiveCfg = Default
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{DC186AB8-A99A-40A2-8F35-F0934940B9E3} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{DE0B9493-8B43-4002-B98C-993FCF3510EE} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{C3C9DE33-B6A6-45E2-AE26-761B9486793C} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{F1A81ECA-6F1B-4AC3-8206-237E21688845} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{8DCBE9F9-C9AC-477F-91A5-FB1CF4CCECF5} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{574FF2F6-C92C-43AC-8F21-136B48F6F438} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{C19EF737-7D73-42BE-B607-7025502CEC0E} = {8DCBE9F9-C9AC-477F-91A5-FB1CF4CCECF5}
+		{A3AB3739-3BE3-40E8-9522-0CE27AF5707E} = {8DCBE9F9-C9AC-477F-91A5-FB1CF4CCECF5}
+		{98A0F2B9-8B7E-46B7-A5C3-606A3F93FD35} = {C19EF737-7D73-42BE-B607-7025502CEC0E}
+		{32DA30B5-48AC-4AB1-BB96-EDAB2EDF5801} = {C19EF737-7D73-42BE-B607-7025502CEC0E}
+		{40333810-62AA-445B-8F10-83B150C07D8F} = {C19EF737-7D73-42BE-B607-7025502CEC0E}
+		{908E3FBC-C73D-467E-852C-AFE72B790E7F} = {C19EF737-7D73-42BE-B607-7025502CEC0E}
+		{C12F448F-2854-406A-90F0-A5BC33AC9071} = {31ED92BE-3439-419E-9DFA-05455862623F}
+		{DEF9719D-211F-41DC-B33F-EAE8EBE04158} = {31ED92BE-3439-419E-9DFA-05455862623F}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {B1D91C9D-183A-4969-AC91-E410096009E9}

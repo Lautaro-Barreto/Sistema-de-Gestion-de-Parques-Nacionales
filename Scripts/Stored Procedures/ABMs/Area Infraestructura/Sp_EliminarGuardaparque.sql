@@ -34,7 +34,7 @@ BEGIN
             RETURN;
         END
     END CATCH
-    DELETE FROM Area_Infraestructura.HistorialTrabajoGuardaparque WHERE IdGuardaparque = @IdGuardaparque;
+    DELETE FROM Area_Infraestructura.Historial_Trabajo_Guardaparque WHERE IdGuardaparque = @IdGuardaparque;
     DELETE FROM Area_Infraestructura.Guardaparque WHERE IdGuardaparque = @IdGuardaparque;
 END
 GO

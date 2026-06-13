@@ -21,7 +21,7 @@ BEGIN
     BEGIN TRY
         IF UPDATE(Fecha_Egreso)
         BEGIN
-            INSERT INTO Area_Infraestructura.HistorialTrabajoGuardaparque (IdGuardaparque, IdParque, Fecha_Ingreso, Fecha_Egreso)
+            INSERT INTO Area_Infraestructura.Historial_Trabajo_Guardaparque (IdGuardaparque, IdParque, Fecha_Inicio, Fecha_Fin)
             SELECT g.IdGuardaparque, g.IdParque, g.Fecha_Ingreso, g.Fecha_Egreso
             FROM INSERTED g
             INNER JOIN DELETED d ON g.IdGuardaparque = d.IdGuardaparque
