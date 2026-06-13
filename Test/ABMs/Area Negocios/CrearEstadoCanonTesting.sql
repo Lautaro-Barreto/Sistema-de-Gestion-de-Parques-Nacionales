@@ -7,6 +7,8 @@
 crear Estado_Canon.
 */
 
+
+--Select * FROM Area_Negocios.Estado_Canon
 --Caso  Exitoso.
 EXEC Area_Negocios.SP_CrearEstadoCanon 'Pagado'
 

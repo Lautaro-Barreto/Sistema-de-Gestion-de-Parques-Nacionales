@@ -26,7 +26,7 @@ BEGIN TRY
     EXEC Area_Infraestructura.Sp_CrearParque
         @Nombre = 'Este es un parque de prueba',
         @TipoParqueDesc = 'TipoParqueTest',
-        @Provincia = 'ProvinciaTest',
+        @Provincia = 1,
         @Superficie = 50000.00
     
     SELECT par.IdParque, par.Nombre, par.Superficie, pro.Nombre AS Provincia FROM Area_Infraestructura.Parque par

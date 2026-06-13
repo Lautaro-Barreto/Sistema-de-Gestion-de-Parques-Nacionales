@@ -32,7 +32,7 @@ BEGIN
 			RAISERROR('EmpresaConcesionaria Invalida', 16, 1);
 		END
 		-- La modificacion de Nombre no puede estar repetida.
-		IF EXISTS (SELECT 1 FROM Area_Negocios.Empresa_Concesionaria WHERE Nombre = @Nombre)
+		IF EXISTS (SELECT 1 FROM Area_Negocios.Empresa_Concesionaria WHERE Nombre = @Nombre AND IdEmpresa <> @IdEmpresaConcesionaria)
         BEGIN
 			-- Lanzar el error
 			PRINT('La empresa ya se encuentra registrada.');

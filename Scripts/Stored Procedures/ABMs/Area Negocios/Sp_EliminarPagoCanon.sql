@@ -8,7 +8,7 @@ utilizando un Store Procedure.
 */
 
 
-CREATE OR ALTER PROCEDURE Area_Negocios.SP_EliminarEstadoCanon
+CREATE OR ALTER PROCEDURE Area_Negocios.SP_EliminarPagoCanon
     @IdPagoCanon INT
 AS
 BEGIN
@@ -20,14 +20,14 @@ BEGIN
         IF @IdPagoCanonExiste IS NULL
         BEGIN
             PRINT('No existe un Pago de Canon con ese Id')
-            RAISERROR("PagoCanon Inexistente",16,1)
+            RAISERROR('PagoCanon Inexistente',16,1)
         END
     END TRY
     BEGIN CATCH
         IF ERROR_SEVERITY()>10
         BEGIN	
-            RAISERROR('Algo salio mal en la eliminacion del Pago de Canon',16,1);
-            ROLLBACK;
+            RAISERROR('Algo salio mal en la eliminación del Pago de Canon',16,1);
+            RETURN;
         END
     END CATCH
     DELETE FROM Area_Negocios.Pago_Canon WHERE IdPagoCanon = @IdPagoCanon;

@@ -23,7 +23,7 @@ BEGIN
             RAISERROR('Canon Invalido',16,1)
         END
         -- Valida el Monto ingresado
-        IF NOT @Monto_Abonado > 0
+        IF NOT @Monto_Abonado > 0 OR @Monto_Abonado IS NULL
         BEGIN
             PRINT('El Monto Ingresado no es valido')
             RAISERROR('Monto Invalido',16,1)

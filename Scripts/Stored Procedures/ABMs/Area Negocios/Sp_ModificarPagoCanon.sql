@@ -31,7 +31,7 @@ BEGIN
             RAISERROR('Canon Invalido',16,1)
         END
 		-- Valida el Monto ingresado
-        IF NOT @Monto_Abonado > 0
+        IF NOT @Monto_Abonado > 0 OR @Monto_Abonado IS NULL
         BEGIN
             PRINT('El Monto Ingresado no es valido')
             RAISERROR('Monto Invalido',16,1)
@@ -44,11 +44,11 @@ BEGIN
         END
 	END TRY
 	BEGIN CATCH
-        -- Lanzar Rollback
+        -- Lanzar RETURN
 		IF ERROR_SEVERITY() > 10
 		BEGIN	
 			RAISERROR('Algo salio mal en la modificación del Pago del Canon', 16, 1);
-			ROLLBACK;
+			RETURN;
 		END
 	END CATCH
 	--Se completa la operación

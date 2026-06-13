@@ -10,39 +10,59 @@ Pago de canon.
 USE SGParquesNacionales
 GO
 
-CREATE OR ALTER PROCEDURE Area_Negocios.SP_ModificarEstadoCanon
+CREATE OR ALTER PROCEDURE Area_Negocios.SP_ModificarCanon
+	@IdCanon Integer,
 	@IdEstadoCanon INT,
-	@Descripcion varchar(100)
+    @IdConcesion INTEGER,
+    @Monto_Mensual DECIMAL(13,3),
+    @Fecha_Vencimiento DATE
 AS
 BEGIN
 	BEGIN TRY
+		--Busca el Canon verificando que existe en la base de datos
+		IF NOT EXISTS (SELECT 1 FROM Area_Negocios.Canon WHERE IdCanon = @IdCanon)
+        BEGIN
+            PRINT('Canon inexistente')
+            RAISERROR('Canon Inexistente', 16, 1)
+        END
 		--Busca el Estado Canon verificando que existe en la base de datos
 		IF NOT EXISTS (SELECT 1 FROM Area_Negocios.Estado_Canon WHERE IdEstadoCanon = @IdEstadoCanon)
         BEGIN
-            PRINT('Estado Canon inexistente')
-            RAISERROR('Estado Canon Inexistente', 16, 1)
+            PRINT('Estado de Canon inexistente')
+            RAISERROR('Estado de Canon Inexistente', 16, 1)
         END
 
-		-- La nueva descripcion debe ser valida
-		IF @Descripcion IS NOT NULL AND @Descripcion <> '' AND @Descripcion LIKE '%[^a-zA-Z ]%' AND LEN(@Descripcion) < 100
-		BEGIN
-			UPDATE Area_Negocios.Estado_Canon
-			SET Descripcion = @Descripcion
-			WHERE IdEstadoCanon = @IdEstadoCanon;
-		END
-        ELSE
+		--Busca la Concesión verificando que existe en la base de datos
+		IF NOT EXISTS (SELECT 1 FROM Area_Negocios.Concesion WHERE IdConcesion = @IdConcesion)
         BEGIN
-            -- Lanzar el error
-			PRINT('La nueva descripción no es valida.');
-			RAISERROR('Descripcion Invalida', 16, 1);
+            PRINT('Concesión inexistente')
+            RAISERROR('Concesión Inexistente', 16, 1)
         END
+		 -- Valida el Monto ingresado
+        IF NOT @Monto_Mensual > 0 OR @Monto_Mensual IS NULL 
+        BEGIN
+            PRINT('El Monto Ingresado no es valido')
+            RAISERROR('Monto Invalido',16,1)
+        END
+        -- Valida la fecha ingresada, comprobando que no sea nula.
+		IF @Fecha_Vencimiento IS NULL
+		BEGIN
+            PRINT('La fecha no puede ser nula')
+            RAISERROR('Fecha Invalida', 16, 1)
+        END
+		UPDATE Area_Negocios.Canon 
+		SET  IdEstado = @IdEstadoCanon,
+		IdConcesion = @IdConcesion,
+		Monto_Mensual = @Monto_Mensual,
+		Fecha_Vencimiento = @Fecha_Vencimiento
+		WHERE IdCanon = @IdCanon 
 	END TRY
 	BEGIN CATCH
-        -- Lanzar Rollback
+        -- Lanzar return
 		IF ERROR_SEVERITY() > 10
 		BEGIN	
-			RAISERROR('Algo salio mal en la modifiacion del Estado del Canon', 16, 1);
-			ROLLBACK;
+			RAISERROR('Algo salio mal en la modificación del Canon', 16, 1);
+			RETURN;
 		END
 	END CATCH
 END

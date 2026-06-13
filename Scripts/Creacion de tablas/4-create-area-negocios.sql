@@ -104,7 +104,6 @@ BEGIN
         Fecha_Pago DATE,
 
         FOREIGN KEY (IdCanon) REFERENCES Area_Negocios.Canon(IdCanon),
-        FOREIGN KEY (IdConcesion) REFERENCES Area_Negocios.Concesion(IdConcesion)
     )
 END
 GO
