@@ -169,13 +169,11 @@ IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'Are
 BEGIN
     CREATE TABLE Area_Comercial.Entrada(
         IdEntrada INT IDENTITY(1,1) PRIMARY KEY,
-        IdVenta INT,
         IdParque INT,
         IdTipoVisitante INT,
         Precio DECIMAL(13,3),
         Fecha_Acceso DATE,
 
-        FOREIGN KEY (IdVenta) REFERENCES Area_Comercial.Venta(IdVenta),
         FOREIGN KEY (IdParque) REFERENCES Area_Infraestructura.Parque(IdParque),
         FOREIGN KEY (IdTipoVisitante) REFERENCES Area_Comercial.Tipo_Visitante(IdTipoVisitante)
     )
@@ -194,6 +192,35 @@ BEGIN
 
         FOREIGN KEY (IdVenta) REFERENCES Area_Comercial.Venta(IdVenta),
         FOREIGN KEY (IdEntrada) REFERENCES Area_Comercial.Entrada(IdEntrada)
+    )
+END
+GO
+
+--8. Creación de la tabla "Precio_Parque_Tipo_Visitante"
+IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'Area_Comercial' AND TABLE_NAME = 'Precio_Parque_Tipo_Visitante')
+BEGIN
+    CREATE TABLE Area_Comercial.Precio_Parque_Tipo_Visitante(
+        IdPrecioParqueTipoVis INT IDENTITY(1,1) PRIMARY KEY
+        IdParque INT, 
+        IdTipoVisitante INT, 
+        Precio DECIMAL(10,2), 
+
+        FOREIGN KEY (IdParque) REFERENCES Area_Infraestructura.Parque(IdParque),
+        FOREIGN KEY (IdTipoVisitante) REFERENCES Area_Infraestructura.Tipo_Visitante(IdTipoVisitante)
+    )
+END
+GO
+
+--9. Creación de la tabla "Descuento_Parque"
+IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'Area_Comercial' AND TABLE_NAME = 'Descuento_Parque')
+BEGIN
+    CREATE TABLE Area_Comercial.Descuento_Parque(
+        IdDescuento INT IDENTITY(1,1) PRIMARY KEY,
+        IdParque INT,
+        Porcentaje DECIMAL(2,2),
+        Descripcion VARCHAR(100),
+
+        FOREIGN KEY (IdParque) REFERENCES Area_Infraestructura.Parque(IdParque)
     )
 END
 GO
