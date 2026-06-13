@@ -85,8 +85,8 @@ BEGIN
 		END
 	END CATCH
 
-	INSERT INTO Area_Infraestructura.Parque(IdProvincia, IdTipoParque, Nombre, Superficie) VALUES
-	(@IdProvincia, @IdTipoParque, @Nombre, @Superficie);
+	INSERT INTO Area_Infraestructura.Parque(IdProvincia, IdTipoParque, Nombre, Superficie, Activo) VALUES
+	(@IdProvincia, @IdTipoParque, @Nombre, @Superficie, 1);
 	DECLARE @IdNuevoParque INT
 	SET @IdNuevoParque = SCOPE_IDENTITY()
 	RETURN @IdNuevoParque

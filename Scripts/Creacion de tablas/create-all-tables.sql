@@ -63,6 +63,7 @@ BEGIN
 		IdTipoParque INT,
 		Nombre VARCHAR(80),
 		Superficie DECIMAL(14,4),
+        Activo BIT DEFAULT 1,
 		CONSTRAINT Fk_Parque_Provincia FOREIGN KEY (IdProvincia) REFERENCES Area_Infraestructura.Provincia(IdProvincia),
 		CONSTRAINT Fk_Parque_TipoParque FOREIGN KEY (IdTipoParque) REFERENCES Area_Infraestructura.Tipo_Parque(IdTipoParque)
 	)
@@ -80,7 +81,7 @@ BEGIN
 		Apellido VARCHAR(30),
 		Fecha_Ingreso DATE,
 		Fecha_Egreso DATE,
-		Activo BIT,
+		Activo BIT DEFAULT 1,
 		CONSTRAINT Fk_Guardaparque_Parque FOREIGN KEY (IdParque) REFERENCES Area_Infraestructura.Parque(IdParque)
 	)
 END
