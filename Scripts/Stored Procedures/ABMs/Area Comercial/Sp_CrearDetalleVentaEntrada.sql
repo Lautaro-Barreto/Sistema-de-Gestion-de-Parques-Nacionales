@@ -32,7 +32,7 @@ BEGIN
         END
 
 		--La cantidad debe ser mayor a cero
-		IF @Precio <= 0
+		IF @Cantidad <= 0
 			BEGIN
 				PRINT('La cantidad no es valida')
 				RAISERROR('.', 16, 1)
