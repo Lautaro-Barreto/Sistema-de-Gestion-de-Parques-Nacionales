@@ -63,6 +63,7 @@ BEGIN
 		IdTipoParque INT,
 		Nombre VARCHAR(80),
 		Superficie DECIMAL(14,4),
+        Activo BIT DEFAULT 1,
 		CONSTRAINT Fk_Parque_Provincia FOREIGN KEY (IdProvincia) REFERENCES Area_Infraestructura.Provincia(IdProvincia),
 		CONSTRAINT Fk_Parque_TipoParque FOREIGN KEY (IdTipoParque) REFERENCES Area_Infraestructura.Tipo_Parque(IdTipoParque)
 	)
@@ -80,7 +81,7 @@ BEGIN
 		Apellido VARCHAR(30),
 		Fecha_Ingreso DATE,
 		Fecha_Egreso DATE,
-		Activo BIT,
+		Activo BIT DEFAULT 1,
 		CONSTRAINT Fk_Guardaparque_Parque FOREIGN KEY (IdParque) REFERENCES Area_Infraestructura.Parque(IdParque)
 	)
 END
@@ -168,13 +169,11 @@ IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'Are
 BEGIN
     CREATE TABLE Area_Comercial.Entrada(
         IdEntrada INT IDENTITY(1,1) PRIMARY KEY,
-        IdVenta INT,
         IdParque INT,
         IdTipoVisitante INT,
         Precio DECIMAL(13,3),
         Fecha_Acceso DATE,
 
-        FOREIGN KEY (IdVenta) REFERENCES Area_Comercial.Venta(IdVenta),
         FOREIGN KEY (IdParque) REFERENCES Area_Infraestructura.Parque(IdParque),
         FOREIGN KEY (IdTipoVisitante) REFERENCES Area_Comercial.Tipo_Visitante(IdTipoVisitante)
     )
@@ -193,6 +192,35 @@ BEGIN
 
         FOREIGN KEY (IdVenta) REFERENCES Area_Comercial.Venta(IdVenta),
         FOREIGN KEY (IdEntrada) REFERENCES Area_Comercial.Entrada(IdEntrada)
+    )
+END
+GO
+
+-- 8. Creación de la tabla "Precio_Parque_Tipo_Visitante"
+IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'Area_Comercial' AND TABLE_NAME = 'Precio_Parque_Tipo_Visitante')
+BEGIN
+    CREATE TABLE Area_Comercial.Precio_Parque_Tipo_Visitante(
+        IdPrecioParqueTipoVis INT IDENTITY(1,1) PRIMARY KEY
+        IdParque INT, 
+        IdTipoVisitante INT, 
+        Precio DECIMAL(10,2), 
+
+        FOREIGN KEY (IdParque) REFERENCES Area_Infraestructura.Parque(IdParque),
+        FOREIGN KEY (IdTipoVisitante) REFERENCES Area_Infraestructura.Tipo_Visitante(IdTipoVisitante)
+    )
+END
+GO
+
+--9. Creación de la tabla "Descuento_Parque"
+IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'Area_Comercial' AND TABLE_NAME = 'Descuento_Parque')
+BEGIN
+    CREATE TABLE Area_Comercial.Descuento_Parque(
+        IdDescuento INT IDENTITY(1,1) PRIMARY KEY,
+        IdParque INT,
+        Porcentaje DECIMAL(2,2),
+        Descripcion VARCHAR(100),
+
+        FOREIGN KEY (IdParque) REFERENCES Area_Infraestructura.Parque(IdParque)
     )
 END
 GO
@@ -240,7 +268,7 @@ GO
 IF NOT EXISTS( SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE 
 TABLE_SCHEMA = 'Area_Excursiones' AND TABLE_NAME = 'Actividad')
 BEGIN 
-        CREATE TABLE Area_Excursiones.actividad(
+        CREATE TABLE Area_Excursiones.Actividad(
             IdActividad INT identity(1,1) PRIMARY KEY,
             IdTipoActividad INT NOT NULL,
             IdParque INT NOT NULL,
@@ -283,7 +311,7 @@ BEGIN
             Monto DECIMAL(10,2),
             IdVenta INT,
             IdActividad INT,
-            
+            Fecha_Contratacion DATE,
             CONSTRAINT FK_Contratacion_Actividad_Venta FOREIGN KEY (idVenta) REFERENCES Area_Comercial.Venta(IdVenta),
             CONSTRAINT FK_Contratacion_Actividad_Actividad FOREIGN KEY (idActividad) REFERENCES Area_Excursiones.Actividad(IdActividad),
         )
@@ -355,8 +383,8 @@ IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'Are
 BEGIN
     CREATE TABLE Area_Negocios.Empresa_Concesionaria(
         IdEmpresa integer identity(1,1) primary key,
-        Nombre varchar(80),
-        Estado BIT
+        Nombre varchar(120),
+        Estado BIT DEFAULT 1
     )
 END
 GO

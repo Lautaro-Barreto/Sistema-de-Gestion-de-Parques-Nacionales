@@ -15,7 +15,8 @@ CREATE OR ALTER PROCEDURE Area_Infraestructura.Sp_ModificarParque
 	@Provincia VARCHAR(30) = NULL,
 	@TipoParque VARCHAR(30) = NULL,
 	@Nombre VARCHAR(80) = NULL,
-	@Superficie DECIMAL(14,4) = NULL
+	@Superficie DECIMAL(14,4) = NULL,
+	@Activo BIT = NULL
 AS
 BEGIN
 	BEGIN TRY
@@ -82,6 +83,14 @@ BEGIN
         UPDATE Area_Infraestructura.Parque
 		SET Superficie = @Superficie
 		WHERE IdParque = @IdParque;
+
+		-- Modficar si esta o no activo
+		IF @Activo IS NOT NULL
+		BEGIN
+			UPDATE Area_Infraestructura.Parque
+			SET Activo = @Activo
+			WHERE IdParque = @IdParque;
+		END
 
 		PRINT('Parque actualizado correctamente.');
 	END TRY
