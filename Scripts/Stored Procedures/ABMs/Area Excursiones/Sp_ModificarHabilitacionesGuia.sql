@@ -3,13 +3,13 @@
 #Materia: 3641 - Bases de Datos Aplicada 
 #Fecha: 09/06/2026
 #Integrantes: Barreto Lautaro, Losada Agustina, Miranda Guillermo, Villar Facundo
-#Descripción: Este script se encarga de la creación del Stored Procedure utilizado para crear una habilitación para un guía.
+#Descripción: Este script se encarga de la creación del Stored Procedure utilizado para modificar la fecha de validez de una habilitación para un guía.
 */
 
-
 USE SGParquesNacionales
-go
-CREATE OR ALTER PROCEDURE Area_Excursiones.Sp_CrearHabilitacionGuia
+GO
+
+CREATE OR ALTER PROCEDURE Area_Excursiones.Sp_ModificarHabilitacionesGuia
     @IdGuia INT,
     @IdHabilitacion INT,
     @FechaInicio DATE,
@@ -17,17 +17,15 @@ CREATE OR ALTER PROCEDURE Area_Excursiones.Sp_CrearHabilitacionGuia
 AS
 BEGIN
     SET NOCOUNT ON;
-    BEGIN TRY
+    BEGIN TRY 
         IF NOT EXISTS (SELECT 1 FROM Area_Excursiones.Guia WHERE IdGuia = @IdGuia)
         BEGIN
             RAISERROR('El guía no existe.', 16, 1)
-            
         END
 
         IF NOT EXISTS (SELECT 1 FROM Area_Excursiones.Habilitacion WHERE IdHabilitaciones = @IdHabilitacion)
         BEGIN
             RAISERROR('La habilitación no existe.', 16, 1)
-            
         END
 
         IF @FechaFin < @FechaInicio
@@ -39,10 +37,12 @@ BEGIN
         BEGIN
             RAISERROR('La fecha de la finalizacion de la validez de la habilitacion no puede ser anterior a la fecha actual.', 16, 1)
         END
-            
-        
-    INSERT INTO Area_Excursiones.Habilitacion_Guia (IdGuia, IdHabilitacion, Fecha_Inicio_Validez, Fecha_Fin_Validez)
-    VALUES (@IdGuia, @IdHabilitacion, @FechaInicio, @FechaFin)
+
+        UPDATE Area_Excursiones.Habilitacion_Guia
+        SET Fecha_Inicio_Validez = @FechaInicio,
+            Fecha_Fin_Validez = @FechaFin
+        WHERE IdGuia = @IdGuia AND IdHabilitacion = @IdHabilitacion
+
     END TRY
 
     BEGIN CATCH
@@ -58,5 +58,6 @@ BEGIN
         RAISERROR(@ErrorMessage, @ErrorSeverity, @ErrorState);
     END CATCH
 
-END
+
+END 
 GO

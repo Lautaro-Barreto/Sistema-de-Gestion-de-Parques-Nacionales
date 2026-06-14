@@ -3,34 +3,45 @@
 #Materia: 3641 - Bases de Datos Aplicada 
 #Fecha: 09/06/2026
 #Integrantes: Barreto Lautaro, Losada Agustina, Miranda Guillermo, Villar Facundo
-#Descripción: Este script se encarga de la creación del Stored Procedure utilizado para crear un una contratación de actividad.
+#Descripción: Este script se encarga de la creación del Stored Procedure utilizado para modificar una contratación de actividad.
 */
 
-
 USE SGParquesNacionales
-go
-CREATE OR ALTER PROCEDURE Area_Excursiones.Sp_CrearContratacion_Actividad
-    @IdVenta INT, 
+GO
+
+CREATE OR ALTER PROCEDURE Area_Excursiones.Sp_ModificarContratacionActividad
+    @IdContratacionActividad INT,
     @IdActividad INT,
-    @Monto decimal(10, 2),
+    @IdVenta INT, 
+    @Monto DECIMAL(10, 2),
     @FechaContratacion DATE
+
 AS
 BEGIN
-    SET NOCOUNT ON;
     BEGIN TRY
+        -- Validar que la contratación de actividad exista
+        IF NOT EXISTS (SELECT 1 FROM Area_Excursiones.Contratacion_Actividad WHERE IdContratacion = @IdContratacionActividad)
+        BEGIN
+            RAISERROR('La contratación de actividad con el Id proporcionado no existe.', 16, 1)
+            
+        END
+        -- Validar que la actividad exista
         IF NOT EXISTS (SELECT 1 FROM Area_Excursiones.Actividad WHERE IdActividad = @IdActividad)
         BEGIN
-            RAISERROR('La actividad no existe.', 16, 1)
+            RAISERROR('La actividad con el Id proporcionado no existe.', 16, 1)
+            
         END
-
-        IF NOT EXISTS (SELECT 1 FROM Area_Comercial.Venta WHERE IdVenta = @IdVenta)
+        -- Validar que la venta exista
+        IF NOT EXISTS (SELECT 1 FROM Area_Comercio.Venta WHERE IdVenta = @IdVenta)
         BEGIN
-            RAISERROR('La venta no existe.', 16, 1)
+            RAISERROR('La venta con el Id proporcionado no existe.', 16, 1)
+            
         END
-
+        --validar que el monto sea positivo
         IF @Monto < 0
         BEGIN
             RAISERROR('El monto no puede ser negativo.', 16, 1)
+            
         END
         --validar que la fecha de contratación no sea futura
         IF @FechaContratacion > GETDATE()
@@ -38,13 +49,13 @@ BEGIN
             RAISERROR('La fecha de contratación no puede ser futura.', 16, 1)
         END
 
-    INSERT INTO Area_Excursiones.Contratacion_Actividad (IdVenta, IdActividad, Monto, Fecha_Contratacion)
-    VALUES (@IdVenta, @IdActividad, @Monto, @FechaContratacion)
-    DECLARE @idNueva_ContratacionActividad INT
-    SET @idNueva_ContratacionActividad = SCOPE_IDENTITY()   
-    RETURN @idNueva_ContratacionActividad
-
-
+    UPDATE Area_Excursiones.Contratacion_Actividad 
+    SET IdActividad = @IdActividad,
+        IdVenta = @IdVenta,
+        Monto = @Monto,
+        Fecha_Contratacion = @FechaContratacion
+    WHERE IdContratacion = @IdContratacionActividad
+    
     END TRY
 
     BEGIN CATCH
@@ -62,4 +73,3 @@ BEGIN
 
 
 END
-go

@@ -10,30 +10,38 @@
 USE SGParquesNacionales
 go
 
-CREATE PROCEDURE Area_Excursiones.SP_CrearTipoActividad
+CREATE OR ALTER PROCEDURE Area_Excursiones.SP_CrearTipoActividad
     @Descripcion VARCHAR(50)
 AS
 BEGIN
+    SET NOCOUNT ON;
     BEGIN TRY
         IF @Descripcion IS NULL OR LEN(@Descripcion) = 0
         BEGIN
             RAISERROR('La descripción debe tener entre 1 y 50 caracteres.', 16, 1)
             
         END
-    END TRY
-
-    BEGIN CATCH
-        IF ERROR_SEVERITY() > 10
-        BEGIN
-            RAISERROR('Ocurrió un error al crear el tipo de actividad.', 16, 1)
-            RETURN
-        END
-    END CATCH
 
     INSERT INTO Area_Excursiones.Tipo_Actividad (Descripcion)
     VALUES (@Descripcion)
     DECLARE @idNuevo_TipoActividad INT
     SET @idNuevo_TipoActividad = SCOPE_IDENTITY()
     RETURN @idNuevo_TipoActividad
+    
+    END TRY
+
+    BEGIN CATCH
+        -- 1. Capturamos los datos del error original
+        DECLARE @ErrorMessage NVARCHAR(4000) = ERROR_MESSAGE();
+        DECLARE @ErrorSeverity INT = ERROR_SEVERITY();
+        DECLARE @ErrorState INT = ERROR_STATE();
+
+        -- 2. Aseguramos que el estado sea válido para que no falle el RAISERROR
+        IF @ErrorState = 0 SET @ErrorState = 1;
+
+        -- 3. Volvemos a lanzar el mismo error exacto que saltó en el TRY
+        RAISERROR(@ErrorMessage, @ErrorSeverity, @ErrorState);
+    END CATCH
+
 END
 GO

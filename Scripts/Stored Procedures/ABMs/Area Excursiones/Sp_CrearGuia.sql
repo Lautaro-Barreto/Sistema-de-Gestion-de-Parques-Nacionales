@@ -10,7 +10,7 @@
 USE SGParquesNacionales
 go
 
-CREATE PROCEDURE Area_Excursiones.Sp_CrearGuia
+CREATE OR ALTER PROCEDURE Area_Excursiones.Sp_CrearGuia
     @DNI CHAR(8),
     @idParque INT,
     @idEspecialidad INT,
@@ -20,29 +20,33 @@ CREATE PROCEDURE Area_Excursiones.Sp_CrearGuia
 
 AS
 BEGIN
+    SET NOCOUNT ON;
     BEGIN TRY
         --El parque debe estar en la db
         IF NOT EXISTS(SELECT 1 FROM Area_Infraestructura.Parque WHERE IdParque = @idParque)
         BEGIN
             RAISERROR('El Parque no existe.', 16, 1)
-            
         END
+
         --La especialidad debe estar en la db
         IF NOT EXISTS(SELECT 1 FROM Area_Excursiones.Especialidad WHERE IdEspecialidad = @idEspecialidad)
         BEGIN
             RAISERROR('La especialidad no existe.', 16, 1)
             
         END
-        --El dni no debe exsitir en la db 
-        IF @DNI IS NULL OR LEN(@DNI) == 0
+        --validar que el dni sea válido
+        IF (@DNI LIKE '%[^0-9]%' OR LEN(@DNI) NOT BETWEEN 7 AND 8)
         BEGIN
-            RAISERROR('Debe ingresar un DNI valido', 16, 1)
+            RAISERROR('DNI inválido: debe contener solo números y tener entre 7 y 8 dígitos.', 16, 1);
         END
 
-        IF EXISTS(SELECT 1 FROM Area_Excursiones.Guia WHERE DNI = @DNI)
-        BEGIN 
-            RAISERROR('El DNI ya existe en la base de datos.', 16, 1)
-            
+        --El dni no debe existir en la db 
+        DECLARE @IdGuiaRepetido INT
+        SELECT @IdGuiaRepetido = IdGuia FROM Area_Excursiones.Guia WHERE DNI = @Dni
+        IF @IdGuiaRepetido IS NOT NULL
+        BEGIN
+            RAISERROR('El DNI proporcionado ya está registrado para otro guía.', 16, 1)
+            RETURN @IdGuiaRepetido 
         END
 
         IF( @Nombre IS NULL OR LEN(@Nombre) = 0)
@@ -63,19 +67,26 @@ BEGIN
             
         END
 
+        INSERT INTO Area_Excursiones.Guia (DNI, IdParque, IdEspecialidad, Nombre, Apellido, Titulo)
+        VALUES (@DNI, @idParque, @idEspecialidad, @Nombre, @Apellido, @Titulo)
+        DECLARE @Id_NuevoGuia INT
+        SET @Id_NuevoGuia = SCOPE_IDENTITY()
+        RETURN @Id_NuevoGuia
+
     END TRY
+
     BEGIN CATCH
-        IF ERROR_SEVERITY() > 10
-        BEGIN
-            RAISERROR('Error al crear el guía', 16, 1)
-            RETURN;
-        END
+        -- 1. Capturamos los datos del error original
+        DECLARE @ErrorMessage NVARCHAR(4000) = ERROR_MESSAGE();
+        DECLARE @ErrorSeverity INT = ERROR_SEVERITY();
+        DECLARE @ErrorState INT = ERROR_STATE();
+
+        -- 2. Aseguramos que el estado sea válido para que no falle el RAISERROR
+        IF @ErrorState = 0 SET @ErrorState = 1;
+
+        -- 3. Volvemos a lanzar el mismo error exacto que saltó en el TRY
+        RAISERROR(@ErrorMessage, @ErrorSeverity, @ErrorState);
     END CATCH
 
-    INSERT INTO Area_Excursiones.Guia (DNI, IdParque, IdEspecialidad, Nombre, Apellido, Titulo)
-    VALUES (@DNI, @idParque, @idEspecialidad, @Nombre, @Apellido, @Titulo)
-    DECLARE @Id_NuevoGuia INT
-    SET @Id_NuevoGuia = SCOPE_IDENTITY()
-    RETURN @Id_NuevoGuia
 END
 GO
