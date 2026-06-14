@@ -96,7 +96,7 @@ BEGIN
             Monto DECIMAL(10,2),
             IdVenta INT,
             IdActividad INT,
-            
+            Fecha_Contratacion DATE,
             CONSTRAINT FK_Contratacion_Actividad_Venta FOREIGN KEY (idVenta) REFERENCES Area_Comercial.Venta(IdVenta),
             CONSTRAINT FK_Contratacion_Actividad_Actividad FOREIGN KEY (idActividad) REFERENCES Area_Excursiones.Actividad(IdActividad),
         )
