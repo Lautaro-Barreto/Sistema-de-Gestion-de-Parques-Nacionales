@@ -196,7 +196,7 @@ BEGIN
 END
 GO
 
---8. Creación de la tabla "Precio_Parque_Tipo_Visitante"
+-- 8. Creación de la tabla "Precio_Parque_Tipo_Visitante"
 IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'Area_Comercial' AND TABLE_NAME = 'Precio_Parque_Tipo_Visitante')
 BEGIN
     CREATE TABLE Area_Comercial.Precio_Parque_Tipo_Visitante(
@@ -268,7 +268,7 @@ GO
 IF NOT EXISTS( SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE 
 TABLE_SCHEMA = 'Area_Excursiones' AND TABLE_NAME = 'Actividad')
 BEGIN 
-        CREATE TABLE Area_Excursiones.actividad(
+        CREATE TABLE Area_Excursiones.Actividad(
             IdActividad INT identity(1,1) PRIMARY KEY,
             IdTipoActividad INT NOT NULL,
             IdParque INT NOT NULL,
@@ -311,7 +311,7 @@ BEGIN
             Monto DECIMAL(10,2),
             IdVenta INT,
             IdActividad INT,
-            
+            Fecha_Contratacion DATE,
             CONSTRAINT FK_Contratacion_Actividad_Venta FOREIGN KEY (idVenta) REFERENCES Area_Comercial.Venta(IdVenta),
             CONSTRAINT FK_Contratacion_Actividad_Actividad FOREIGN KEY (idActividad) REFERENCES Area_Excursiones.Actividad(IdActividad),
         )
@@ -383,8 +383,8 @@ IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'Are
 BEGIN
     CREATE TABLE Area_Negocios.Empresa_Concesionaria(
         IdEmpresa integer identity(1,1) primary key,
-        Nombre varchar(80),
-        Estado BIT
+        Nombre varchar(120),
+        Estado BIT DEFAULT 1
     )
 END
 GO
