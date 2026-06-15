@@ -32,11 +32,6 @@ BEGIN
         BEGIN
             RAISERROR('El monto no puede ser negativo.', 16, 1)
         END
-        --validar que la fecha de contratación no sea futura
-        IF @FechaContratacion > GETDATE()
-        BEGIN
-            RAISERROR('La fecha de contratación no puede ser futura.', 16, 1)
-        END
 
     INSERT INTO Area_Excursiones.Contratacion_Actividad (IdVenta, IdActividad, Monto, Fecha_Contratacion)
     VALUES (@IdVenta, @IdActividad, @Monto, @FechaContratacion)

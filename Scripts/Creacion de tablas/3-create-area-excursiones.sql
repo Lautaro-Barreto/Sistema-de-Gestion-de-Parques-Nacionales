@@ -131,3 +131,16 @@ BEGIN
         )
 END
 GO
+
+IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE 
+TABLE_SCHEMA = 'Area_Excursiones' AND TABLE_NAME = 'Habilitaciones_por_Actividad')
+BEGIN 
+        CREATE TABLE Area_Excursiones.Habilitaciones_por_Actividad(
+            IdActividad INT NOT NULL,
+            IdHabilitacion INT NOT NULL,
+            
+            CONSTRAINT PK_Habilitaciones_por_Actividad PRIMARY KEY(IdActividad, IdHabilitacion),
+            CONSTRAINT FK_Habilitaciones_por_Actividad_Actividad FOREIGN KEY(IdActividad) REFERENCES Area_Excursiones.Actividad(IdActividad),
+            CONSTRAINT FK_Habilitaciones_por_Actividad_Habilitacion FOREIGN KEY(IdHabilitacion) REFERENCES Area_Excursiones.Habilitacion(IdHabilitaciones)
+        )
+END

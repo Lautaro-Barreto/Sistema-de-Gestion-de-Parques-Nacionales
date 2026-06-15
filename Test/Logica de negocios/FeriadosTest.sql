@@ -7,6 +7,21 @@
 #Descripción: Este script se encarga de probar la conexión con la API de feriados
 */
 
+
+-- Primero vamos a probar la importación de feriados desde la API para un año que no tenemos cargado en la DB, para corroborar que el procedimiento SP_ObtenerFeriadosDesdeAPI
+-- funciona correctamente y que luego podemos validar los feriados importados correctamente también.
+--El año 2026 no lo tenemos cargado en la DB, así que el procedimiento debería consultar a la API e importar los feriados de ese año para luego validar la fecha que le pasamos por parámetro
+
+declare @fecha date;
+set @fecha = '2026-01-01';
+EXEC Area_Comercial.SP_ObtenerFeriadosDesdeAPI @Fecha = @fecha;
+go
+
+declare @fecha date;
+set @fecha = '2026-01-01';
+select * from Area_Comercial.Feriado_Nacional where YEAR(Fecha) = YEAR(@fecha) --Corroboramos que se hayan importado los feriados del año 2026 correctamente.
+go
+
 DECLARE @EsFeriado BIT
 
 -- Primero validamos una fecha que sabemos que es feriado, para corroborar que el procedimiento nos devuelve el resultado esperado.

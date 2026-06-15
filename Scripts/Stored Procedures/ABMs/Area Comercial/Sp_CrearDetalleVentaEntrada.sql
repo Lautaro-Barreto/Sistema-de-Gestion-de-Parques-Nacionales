@@ -3,7 +3,7 @@
 #Materia: 3641 - Bases de Datos Aplicada 
 #Fecha: 09/06/2026
 #Integrantes: Barreto Lautaro, Losada Agustina, Miranda Guillermo, Villar Facundo
-#Descripción: Este script se encarga de la creación del Stored Procedure utilizado para crear un detalle de venta de entradas.
+#Descripciï¿½n: Este script se encarga de la creaciï¿½n del Stored Procedure utilizado para crear un detalle de venta de entradas.
 */
 
 USE SGParquesNacionales
@@ -56,8 +56,5 @@ BEGIN
 
 	INSERT INTO Area_Comercial.Detalle_Venta_Entrada(IdVenta, IdEntrada, Cantidad, Subtotal) VALUES
 	(@IdVenta, @IdEntrada, @Cantidad, @Subtotal);
-	DECLARE @IdNuevoDetalle INT
-	SET @IdNuevoDetalle = SCOPE_IDENTITY()
-	RETURN @IdNuevoDetalle
 END
 GO

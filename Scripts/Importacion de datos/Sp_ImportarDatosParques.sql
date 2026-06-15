@@ -12,7 +12,6 @@ GO
 
 CREATE OR ALTER PROCEDURE Area_Infraestructura.Sp_ImportarDatosParques
     @RutaArchivoParques VARCHAR(500),
-    @RutaArchivoVisitas VARCHAR(500)
 AS
 BEGIN
 

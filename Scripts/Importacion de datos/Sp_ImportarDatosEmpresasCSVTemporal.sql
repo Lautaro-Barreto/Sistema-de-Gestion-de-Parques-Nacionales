@@ -64,11 +64,10 @@ BEGIN
             fecha_distincion VARCHAR(50), fecha_revalidacion VARCHAR(50)
         );
         
-        DECLARE @RutaArchivo NVARCHAR(500) = 'C:\ArchivosTPBDA\registro-organizaciones-distinguidas-sact.csv';
         DECLARE @Sql NVARCHAR(MAX);
         SET @Sql = N'
         BULK INSERT #Staging_Raw_CSV
-        FROM ''' + @RutaArchivo + '''
+        FROM ''' + @RutaArchivoEmpresas + '''
         WITH (FORMAT = ''CSV'', FIELDQUOTE = ''"'', FIELDTERMINATOR = '','', ROWTERMINATOR = ''0x0a'', FIRSTROW = 2, CODEPAGE = ''65001'');';
 
         EXEC sp_executesql @sql;
