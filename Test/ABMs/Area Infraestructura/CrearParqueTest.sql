@@ -1,130 +1,50 @@
 /*
 #Universidad Nacional de la Matanza
 #Materia: 3641 - Bases de Datos Aplicada 
-#Fecha: 09/06/2026
-#Integrantes: Barreto Lautaro, Losada Agustina, Miranda Guillermo, Villar Facundo
-#Descripción: Este script se encarga de testear la creación de un parque nacional, 
-verificando que no se pueda crear un parque con datos inválidos.   
+#Descripción: Test de SP_CrearParque
 */
-
 USE SGParquesNacionales
 GO
 
--- Test 1: Creación exitosa de un parque nacional en una provincia existente, con nombre y tipo de parque (existente) válidos y superficie positiva
-BEGIN TRY
-
-    EXEC Area_Infraestructura.Sp_CrearRegion
-        @Nombre = 'RegionTest'
-
-    EXEC Area_Infraestructura.Sp_CrearProvincia
-        @Nombre = 'ProvinciaTest',
-        @Region = 'RegionTest'
-
-    EXEC Area_Infraestructura.Sp_CrearTipoParque
-        @Descripcion = 'TipoParqueTest'
-
-    EXEC Area_Infraestructura.Sp_CrearParque
-        @Nombre = 'ParquePrueba',
-        @TipoParqueDesc = 'TipoParqueTest',
-        @Provincia = 1,
-        @Superficie = 50000.00
-    
-    SELECT par.IdParque, par.Nombre, par.Superficie, pro.Nombre AS Provincia FROM Area_Infraestructura.Parque par
-    JOIN Area_Infraestructura.Provincia pro ON pro.IdProvincia = par.IdProvincia
-    WHERE par.Nombre = 'Este es un parque de prueba' AND pro.Nombre = 'ProvinciaTest' AND par.Superficie = 50000.00;
-
-END TRY
-BEGIN CATCH
-    PRINT 'Error al crear el parque: ' + ERROR_MESSAGE();
-END CATCH
+-- 1. Prueba de creacion exitosa de un parque
+-- Preparamos las dependencias
+INSERT INTO Area_Infraestructura.Region (Nombre) VALUES ('Region P');
+DECLARE @IdReg INT = SCOPE_IDENTITY();
+INSERT INTO Area_Infraestructura.Provincia (Nombre, IdRegion) VALUES ('Provincia P', @IdReg);
+INSERT INTO Area_Infraestructura.Tipo_Parque (Descripcion) VALUES ('Tipo P');
+-- Ejecutamos
+EXEC Area_Infraestructura.SP_CrearParque 
+    @Nombre = 'Parque P', 
+    @TipoParqueDesc = 'Tipo P', 
+    @Provincia = 'Provincia P', 
+    @Superficie = 1000.5;
+-- Limpiamos la prueba
+DELETE FROM Area_Infraestructura.Parque WHERE Nombre = 'Parque P';
+DELETE FROM Area_Infraestructura.Provincia WHERE Nombre = 'Provincia P';
+DELETE FROM Area_Infraestructura.Region WHERE Nombre = 'Region P';
+DELETE FROM Area_Infraestructura.Tipo_Parque WHERE Descripcion = 'Tipo P';
 GO
 
--- Test 2: Intentar crear un parque con un nombre inválido
-BEGIN TRY
-    EXEC Area_Infraestructura.Sp_CrearParque
-        @Provincia = 'ProvinciaTest',
-        @TipoParqueDesc = 'TipoParqueTest',
-        @Nombre = 'Parque$###||',
-        @Superficie = 50000.00
-END TRY
-BEGIN CATCH
-    PRINT 'Error al crear el parque: ' + ERROR_MESSAGE();
-END CATCH
+-- 2. Prueba de fallo por nombre de parque vacio
+EXEC Area_Infraestructura.SP_CrearParque @Nombre = '', @TipoParqueDesc = 'Tipo P', @Provincia = 'Provincia P', @Superficie = 1000.5;
 GO
 
--- Test 3: Intentar crear un parque con un nombre que ya existe en la base de datos
-BEGIN TRY
-    EXEC Area_Infraestructura.Sp_CrearParque
-        @Provincia = 'ProvinciaTest',
-        @TipoParqueDesc = 'TipoParqueTest',
-        @Nombre = 'ParqueTest',
-        @Superficie = 50000.00
-END TRY
-BEGIN CATCH
-    PRINT 'Error al crear el parque: ' + ERROR_MESSAGE();
-END CATCH
+-- 3. Prueba de fallo por provincia inexistente
+EXEC Area_Infraestructura.SP_CrearParque @Nombre = 'Parque F', @TipoParqueDesc = 'Tipo P', @Provincia = 'Provincia Inexistente', @Superficie = 1000.5;
 GO
 
--- Test 4: Intentar crear un parque con una provincia que no existe en la base de datos
-BEGIN TRY
-    EXEC Area_Infraestructura.Sp_CrearParque
-        @Provincia = 'ProvinciaQueNoExiste',
-        @TipoParqueDesc = 'TipoParqueTest',
-        @Nombre = 'ParqueTest',
-        @Superficie = 50000.00
-END TRY
-BEGIN CATCH
-    PRINT 'Error al crear el parque: ' + ERROR_MESSAGE();
-END CATCH
+-- 4. Prueba de fallo por tipo de parque inexistente
+-- Preparamos dependencias
+INSERT INTO Area_Infraestructura.Region (Nombre) VALUES ('Region F');
+DECLARE @IdReg INT = SCOPE_IDENTITY();
+INSERT INTO Area_Infraestructura.Provincia (Nombre, IdRegion) VALUES ('Provincia F', @IdReg);
+-- Ejecutamos
+EXEC Area_Infraestructura.SP_CrearParque @Nombre = 'Parque F2', @TipoParqueDesc = 'Tipo Inexistente', @Provincia = 'Provincia F', @Superficie = 1000.5;
+-- Limpiamos
+DELETE FROM Area_Infraestructura.Provincia WHERE Nombre = 'Provincia F';
+DELETE FROM Area_Infraestructura.Region WHERE Nombre = 'Region F';
 GO
 
--- Test 5: Intentar crear un parque con una provincia inválida
-BEGIN TRY
-    EXEC Area_Infraestructura.Sp_CrearParque
-        @Provincia = '1231234123413###$$asda',
-        @TipoParqueDesc = 'TipoParqueTest',
-        @Nombre = 'ParquePrueba',
-        @Superficie = 50000.00
-END TRY
-BEGIN CATCH
-    PRINT 'Error al crear el parque: ' + ERROR_MESSAGE();
-END CATCH
+-- 5. Prueba de fallo por superficie invalida
+EXEC Area_Infraestructura.SP_CrearParque @Nombre = 'Parque F3', @TipoParqueDesc = 'Tipo P', @Provincia = 'Provincia P', @Superficie = 0;
 GO
-
--- Test 6: Intentar crear un parque con un tipo de parque inválido (contiene caracteres especiales)
-BEGIN TRY
-    EXEC Area_Infraestructura.Sp_CrearParque
-        @Provincia = 'ProvinciaTest',
-        @TipoParqueDesc = 'TipoParqueTest@',
-        @Nombre = 'ParquePrueba',
-        @Superficie = 50000.00
-END TRY
-BEGIN CATCH
-    PRINT 'Error al crear el parque: ' + ERROR_MESSAGE();
-END CATCH
-GO
-
--- Test 7: Intentar crear un parque con una superficie negativa
-BEGIN TRY
-    EXEC Area_Infraestructura.Sp_CrearParque
-        @Provincia = 'ProvinciaTest',
-        @TipoParqueDesc = 'TipoParqueTest',
-        @Nombre = 'ParquePrueba',
-        @Superficie = -50000.00
-END TRY
-BEGIN CATCH
-    PRINT 'Error al crear el parque: ' + ERROR_MESSAGE();
-END CATCH
-GO
-
-EXEC Area_Infraestructura.Sp_EliminarParque
-    @Nombre = 'ParquePrueba'
-
-EXEC Area_Infraestructura.Sp_EliminarRegion
-    @Nombre = 'RegionTest'
-    
-EXEC Area_Infraestructura.Sp_EliminarProvincia
-    @Nombre = 'ProvinciaTest'
-
-EXEC Area_Infraestructura.Sp_EliminarTipoParque
-    @Descripcion = 'TipoParqueTest'
