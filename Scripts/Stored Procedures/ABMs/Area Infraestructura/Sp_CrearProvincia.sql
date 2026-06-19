@@ -9,7 +9,7 @@ crear una provincia.
 
 CREATE OR ALTER PROCEDURE Area_Infraestructura.SP_CrearProvincia
     @Nombre VARCHAR(80),
-    @Region VARCHAR(30)
+    @NombreRegion VARCHAR(30)
 AS
 BEGIN
     BEGIN TRY
@@ -32,16 +32,16 @@ BEGIN
         END
 
         -- Validamos region ingresada. Si es valida, quitamos espacios al string
-        IF @Region = '' OR @Region LIKE '%[^a-zA-Z ]%' OR LEN(@Region) > 80
+        IF @NombreRegion = '' OR @NombreRegion LIKE '%[^a-zA-Z ]%' OR LEN(@NombreRegion) > 80
         BEGIN
             PRINT('La region ingresada no es valida')
             RAISERROR('.', 16,1)
         END
-        SET @Region = TRIM(@Region)
+        SET @NombreRegion = TRIM(@NombreRegion)
 
         -- La region debe existir en la bbdd
         DECLARE @IdRegion INT;
-        SELECT @IdRegion = r.IdRegion FROM Area_Infraestructura.Region r WHERE r.Nombre = @Region;
+        SELECT @IdRegion = r.IdRegion FROM Area_Infraestructura.Region r WHERE r.Nombre = @NombreRegion;
         IF @IdRegion IS NULL
         BEGIN
             PRINT('La region ingresada no existe')

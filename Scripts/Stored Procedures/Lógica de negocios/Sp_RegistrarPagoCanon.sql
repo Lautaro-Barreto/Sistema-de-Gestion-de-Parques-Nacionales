@@ -7,7 +7,6 @@
 canon, actualizar su estado y generar el próximo canon a pagar.   
 */
 
-
 CREATE OR ALTER PROCEDURE Area_Negocios.SP_Registrar_Pago_Canon
     @IdCanon INT,
     @IdConcesion INT,

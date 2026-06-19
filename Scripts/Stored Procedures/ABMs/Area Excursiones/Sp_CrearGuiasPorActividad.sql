@@ -16,10 +16,7 @@ USE SGParquesNacionales
 go
 CREATE OR ALTER PROCEDURE Area_Excursiones.Sp_CrearGuiasPorActividad
     @IdGuia INT,
-    @IdActividad INT,
-    @FechaInicio DATE, 
-    @FechaFin DATE
-
+    @IdActividad INT
 AS
 BEGIN
     SET NOCOUNT ON;

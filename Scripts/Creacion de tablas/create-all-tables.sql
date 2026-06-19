@@ -184,12 +184,12 @@ GO
 IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'Area_Comercial' AND TABLE_NAME = 'Detalle_Venta_Entrada')
 BEGIN
     CREATE TABLE Area_Comercial.Detalle_Venta_Entrada(
-        Item INT PRIMARY KEY,
         IdVenta INT,
         IdEntrada INT,
         Cantidad INT,
         Subtotal DECIMAL(13,3),
 
+        primary key (IdVenta, IdEntrada),
         FOREIGN KEY (IdVenta) REFERENCES Area_Comercial.Venta(IdVenta),
         FOREIGN KEY (IdEntrada) REFERENCES Area_Comercial.Entrada(IdEntrada)
     )
@@ -200,13 +200,13 @@ GO
 IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'Area_Comercial' AND TABLE_NAME = 'Precio_Parque_Tipo_Visitante')
 BEGIN
     CREATE TABLE Area_Comercial.Precio_Parque_Tipo_Visitante(
-        IdPrecioParqueTipoVis INT IDENTITY(1,1) PRIMARY KEY
+        IdPrecioParqueTipoVis INT IDENTITY(1,1) PRIMARY KEY,
         IdParque INT, 
         IdTipoVisitante INT, 
         Precio DECIMAL(10,2), 
 
         FOREIGN KEY (IdParque) REFERENCES Area_Infraestructura.Parque(IdParque),
-        FOREIGN KEY (IdTipoVisitante) REFERENCES Area_Infraestructura.Tipo_Visitante(IdTipoVisitante)
+        FOREIGN KEY (IdTipoVisitante) REFERENCES Area_Comercial.Tipo_Visitante(IdTipoVisitante)
     )
 END
 GO
@@ -224,6 +224,17 @@ BEGIN
     )
 END
 GO
+
+--10. Creación de la tabla "Feriado_Nacional"
+IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'Area_Comercial' AND TABLE_NAME = 'Feriado_Nacional')
+BEGIN
+    CREATE TABLE Area_Comercial.Feriado_Nacional(
+        IdFeriado INT IDENTITY(1,1) PRIMARY KEY,
+        Fecha DATE,
+        Tipo VARCHAR(50),
+        Descripcion VARCHAR(100)
+    )
+END
 
 -- ===========================================================================================
 --                          Creación de tablas del Área de Excursiones

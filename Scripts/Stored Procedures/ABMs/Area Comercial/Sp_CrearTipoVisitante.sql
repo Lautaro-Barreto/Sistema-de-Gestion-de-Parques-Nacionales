@@ -3,7 +3,7 @@
 #Materia: 3641 - Bases de Datos Aplicada 
 #Fecha: 09/06/2026
 #Integrantes: Barreto Lautaro, Losada Agustina, Miranda Guillermo, Villar Facundo
-#Descripción: Este script se encarga de la creación del Stored Procedure utilizado para crear un tipo de visitante.
+#Descripciï¿½n: Este script se encarga de la creaciï¿½n del Stored Procedure utilizado para crear un tipo de visitante.
 */
 
 USE SGParquesNacionales

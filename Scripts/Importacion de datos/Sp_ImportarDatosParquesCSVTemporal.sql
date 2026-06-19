@@ -6,6 +6,7 @@
 #Descripción: Este script se encarga de la creación del Stored Procedure utilizado para
 importar datos de parques nacionales desde archivos CSV a una tabla temporal.
 */
+
 USE SGParquesNacionales
 GO
 
