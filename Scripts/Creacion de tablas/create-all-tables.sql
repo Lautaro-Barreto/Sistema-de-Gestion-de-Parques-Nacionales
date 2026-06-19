@@ -323,6 +323,7 @@ BEGIN
             IdVenta INT,
             IdActividad INT,
             Fecha_Contratacion DATE,
+            Activo BIT NOT NULL DEFAULT 1,
             CONSTRAINT FK_Contratacion_Actividad_Venta FOREIGN KEY (idVenta) REFERENCES Area_Comercial.Venta(IdVenta),
             CONSTRAINT FK_Contratacion_Actividad_Actividad FOREIGN KEY (idActividad) REFERENCES Area_Excursiones.Actividad(IdActividad),
         )
