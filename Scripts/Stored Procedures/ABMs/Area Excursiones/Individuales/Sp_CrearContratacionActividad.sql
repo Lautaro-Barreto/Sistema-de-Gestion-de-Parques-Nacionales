@@ -6,7 +6,7 @@
 #Descripción: Este script se encarga de la creación del Stored Procedure utilizado para crear un una contratación de actividad.
 */
 
-
+--SELECT * FROM Area_Excursiones.Contratacion_Actividad 
 USE SGParquesNacionales
 go
 CREATE OR ALTER PROCEDURE Area_Excursiones.Sp_CrearContratacion_Actividad
