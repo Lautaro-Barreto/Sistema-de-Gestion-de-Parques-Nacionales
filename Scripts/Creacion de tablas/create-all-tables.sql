@@ -287,7 +287,7 @@ BEGIN
             Costo DECIMAL(10,2),
             Duracion INT,
             Cupo_maximo INT,
-            
+            Activo BIT NOT NULL DEFAULT 1,
             CONSTRAINT FK_Actividad_Tipo FOREIGN KEY (IdTipoActividad) REFERENCES Area_Excursiones.Tipo_Actividad(IdTipoActividad),
             CONSTRAINT FK_Actividad_Parque FOREIGN KEY (IdParque) REFERENCES Area_Infraestructura.Parque(IdParque)
         );
@@ -323,6 +323,7 @@ BEGIN
             IdVenta INT,
             IdActividad INT,
             Fecha_Contratacion DATE,
+            Activo BIT NOT NULL DEFAULT 1,
             CONSTRAINT FK_Contratacion_Actividad_Venta FOREIGN KEY (idVenta) REFERENCES Area_Comercial.Venta(IdVenta),
             CONSTRAINT FK_Contratacion_Actividad_Actividad FOREIGN KEY (idActividad) REFERENCES Area_Excursiones.Actividad(IdActividad),
         )

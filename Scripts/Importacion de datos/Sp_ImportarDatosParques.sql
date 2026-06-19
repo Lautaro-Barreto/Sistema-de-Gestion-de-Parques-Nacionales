@@ -11,7 +11,7 @@ USE SGParquesNacionales
 GO
 
 CREATE OR ALTER PROCEDURE Area_Infraestructura.Sp_ImportarDatosParques
-    @RutaArchivoParques VARCHAR(500),
+    @RutaArchivoParques VARCHAR(500)
 AS
 BEGIN
 
