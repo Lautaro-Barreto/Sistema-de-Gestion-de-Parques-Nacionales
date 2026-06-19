@@ -3,7 +3,7 @@
 #Materia: 3641 - Bases de Datos Aplicada 
 #Fecha: 11/06/2026
 #Integrantes: Barreto Lautaro, Losada Agustina, Miranda Guillermo, Villar Facundo
-#Descripción: Este script se encarga de la creación del Stored Procedure utilizado para modificar una forma de pago.
+#Descripciï¿½n: Este script se encarga de la creaciï¿½n del Stored Procedure utilizado para modificar una forma de pago.
 */
 
 USE SGParquesNacionales
@@ -11,7 +11,7 @@ GO
 
 CREATE OR ALTER PROCEDURE Area_Comercial.SP_ModificarFormaDePago
 	@IdFormaDePago INT,
-	@Descripcion INT
+	@Descripcion VARCHAR(30)
 AS
 BEGIN
 	BEGIN TRY

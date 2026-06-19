@@ -17,11 +17,11 @@ EXEC Area_Negocios.Sp_ImportarDatosEmpresas
 
 select concesion.IdConcesion, ec.Nombre, concesion.Fecha_Inicio, concesion.Fecha_Fin, tac.Descripcion as Actividad from area_negocios.concesion concesion
 INNER JOIN area_negocios.empresa_concesionaria ec ON concesion.IdEmpresa = ec.IdEmpresa
-INNER JOIN area_negocios.tipo_actividad_concesion tac ON concesion.IdTipoAct = tac.Id
+INNER JOIN area_negocios.tipo_actividad_concesion tac ON concesion.IdTipoActividadConcesion = tac.IdTipoActividadConcesion
 
 SELECT ca.IdCanon, ec.Nombre, p.Nombre as Parque, ec2.Descripcion as Estado, ca.Monto_Mensual, ca.Fecha_Vencimiento FROM area_negocios.canon ca
 INNER JOIN area_negocios.concesion c ON ca.IdConcesion = c.IdConcesion
 INNER JOIN area_negocios.empresa_concesionaria ec ON c.IdEmpresa = ec.IdEmpresa
-INNER JOIN area_negocios.tipo_actividad_concesion tac ON c.IdTipoAct = tac.Id
+INNER JOIN area_negocios.tipo_actividad_concesion tac ON c.IdTipoActividadConcesion = tac.IdTipoActividadConcesion
 INNER JOIN area_negocios.estado_canon ec2 ON ca.IdEstado = ec2.IdEstadoCanon
 INNER JOIN area_infraestructura.parque p ON c.IdParque = p.IdParque;
