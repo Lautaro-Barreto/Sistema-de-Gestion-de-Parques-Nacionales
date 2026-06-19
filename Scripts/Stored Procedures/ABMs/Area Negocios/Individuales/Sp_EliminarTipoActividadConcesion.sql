@@ -24,7 +24,7 @@ BEGIN
         --Reviso que la la actividad no se asocie a concesiones
         IF EXISTS (SELECT 1 FROM Area_Negocios.Concesion WHERE IdTipoActividadConcesion = @IdTipoActividadConcesion)
         BEGIN
-            PRINT('No existe un Tipo de Actividad con ese Id')
+            PRINT('No se puede eliminar poque existen concesiones asignadas a esta actividad.')
             RAISERROR('No se puede eliminar el Tipo de Actividad debido a que existen concesiones vigentes que dependen de él.', 16, 1);
         END
         DELETE FROM Area_Negocios.Tipo_Actividad_Concesion WHERE IdTipoActividadConcesion = @IdTipoActividadConcesion;

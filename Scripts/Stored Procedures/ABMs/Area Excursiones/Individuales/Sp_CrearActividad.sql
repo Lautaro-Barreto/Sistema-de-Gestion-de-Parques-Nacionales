@@ -8,7 +8,7 @@
 
 USE SGParquesNacionales
 go
-
+--Select * FROM Area_Excursiones.Actividad
 CREATE OR ALTER PROCEDURE Area_Excursiones.Sp_CrearActividad
     @tipoActividad INT,
     @idParque INT,
