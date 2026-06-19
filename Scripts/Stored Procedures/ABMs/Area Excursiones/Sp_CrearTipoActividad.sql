@@ -19,7 +19,6 @@ BEGIN
         IF @Descripcion IS NULL OR LEN(@Descripcion) = 0
         BEGIN
             RAISERROR('La descripción debe tener entre 1 y 50 caracteres.', 16, 1)
-            
         END
 
     INSERT INTO Area_Excursiones.Tipo_Actividad (Descripcion)
