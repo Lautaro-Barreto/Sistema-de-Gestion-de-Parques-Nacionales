@@ -24,7 +24,7 @@ BEGIN
         END
 
         -- Validar que la actividad exista
-        IF NOT EXISTS (SELECT 1 FROM Area_Excursiones.Actividad WHERE IdActividad = @IdActividad)
+        IF NOT EXISTS (SELECT 1 FROM Area_Excursiones.Actividad WHERE IdActividad = @IdActividad AND Activo = 1)
         BEGIN
             RAISERROR('La actividad con el Id proporcionado no existe.', 16, 1)
             RETURN
@@ -49,3 +49,4 @@ BEGIN
     END CATCH
 
 END
+GO

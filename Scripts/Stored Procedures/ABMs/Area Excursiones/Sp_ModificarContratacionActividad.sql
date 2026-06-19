@@ -20,19 +20,18 @@ AS
 BEGIN
     BEGIN TRY
         -- Validar que la contratación de actividad exista
-        IF NOT EXISTS (SELECT 1 FROM Area_Excursiones.Contratacion_Actividad WHERE IdContratacion = @IdContratacionActividad)
+        IF NOT EXISTS (SELECT 1 FROM Area_Excursiones.Contratacion_Actividad WHERE IdContratacion = @IdContratacionActividad AND Activo = 1)
         BEGIN
             RAISERROR('La contratación de actividad con el Id proporcionado no existe.', 16, 1)
-            
         END
         -- Validar que la actividad exista
-        IF NOT EXISTS (SELECT 1 FROM Area_Excursiones.Actividad WHERE IdActividad = @IdActividad)
+        IF NOT EXISTS (SELECT 1 FROM Area_Excursiones.Actividad WHERE IdActividad = @IdActividad AND Activo = 1)
         BEGIN
             RAISERROR('La actividad con el Id proporcionado no existe.', 16, 1)
             
         END
         -- Validar que la venta exista
-        IF NOT EXISTS (SELECT 1 FROM Area_Comercio.Venta WHERE IdVenta = @IdVenta)
+        IF NOT EXISTS (SELECT 1 FROM Area_Comercial.Venta WHERE IdVenta = @IdVenta)
         BEGIN
             RAISERROR('La venta con el Id proporcionado no existe.', 16, 1)
             

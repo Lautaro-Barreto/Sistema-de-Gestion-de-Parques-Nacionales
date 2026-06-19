@@ -18,7 +18,7 @@ AS
 BEGIN
     SET NOCOUNT ON;
     BEGIN TRY
-        IF NOT EXISTS (SELECT 1 FROM Area_Excursiones.Actividad WHERE IdActividad = @IdActividad)
+        IF NOT EXISTS (SELECT 1 FROM Area_Excursiones.Actividad WHERE IdActividad = @IdActividad AND Activo = 1)
         BEGIN
             RAISERROR('La actividad no existe.', 16, 1)
         END
