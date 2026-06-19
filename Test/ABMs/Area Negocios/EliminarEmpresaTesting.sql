@@ -12,6 +12,26 @@ GO
 --SELECT * FROM Area_Negocios.Empresa_Concesionaria
 
 --Preparacion de Testeo:
+--Preparacion del entorno de testing:
+--      específico
+
+-- Variables globales para cálculos de fechas dinámicas en el entorno de testing
+DECLARE @FechaVencimiento1 DATE = DATEADD(month, 3, CAST(GETDATE() AS DATE));
+DECLARE @FechaVencimiento2 DATE = DATEADD(month, 4, CAST(GETDATE() AS DATE));
+DECLARE @FechaPago DATE = CAST(GETDATE() AS DATE);
+
+EXEC Area_Infraestructura.Sp_CrearRegion @Nombre = 'Noreste'
+EXEC Area_Infraestructura.Sp_CrearProvincia @Nombre = 'Misiones', @Region = 'Noreste'
+EXEC Area_Infraestructura.Sp_CrearTipoParque @Descripcion = 'Selva'
+EXEC Area_Infraestructura.Sp_CrearParque @Nombre = 'Parque Nacional Iguazú', @TipoParqueDesc = 'Selva', @Provincia = 'Misiones', @Superficie = 50000.00
+
+EXEC Area_Negocios.SP_CrearEmpresaConcesionaria 'Reti Marley'
+EXEC Area_Negocios.SP_CrearEmpresaConcesionaria 'Turrontar'
+EXEC Area_Negocios.SP_CrearTipoActividadConcesion 'Taqueria'
+EXEC Area_Negocios.SP_CrearTipoActividadConcesion 'Puesto De Nachos'
+EXEC Area_Negocios.SP_CrearEstadoCanon 'Pagado'
+
+-- Creamos los cánones con fechas válidas a futuro
 
 EXEC Area_Negocios.SP_CrearEmpresaConcesionaria 'Winguluy'
 EXEC Area_Negocios.SP_CrearEmpresaConcesionaria 'Cardenal'

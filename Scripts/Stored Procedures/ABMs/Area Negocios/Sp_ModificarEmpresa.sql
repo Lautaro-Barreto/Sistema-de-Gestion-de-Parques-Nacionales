@@ -50,11 +50,8 @@ BEGIN
 
 	END TRY
 	BEGIN CATCH
-		IF ERROR_SEVERITY() > 10
-		BEGIN	
 			RAISERROR('Algo salio mal en la modificación de la Empresa', 16, 1);
 			RETURN;
-		END
 	END CATCH
 END
 GO

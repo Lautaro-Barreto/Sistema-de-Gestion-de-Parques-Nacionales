@@ -50,6 +50,11 @@ BEGIN
             PRINT('La fecha no puede ser nula')
             RAISERROR('Fecha Invalida', 16, 1)
         END
+		IF @Fecha_Vencimiento < CAST(GETDATE() AS DATE)
+		BEGIN
+			PRINT('La fecha no puede ser anterior al dia actual')
+			RAISERROR('La fecha de vencimiento no puede ser anterior a la fecha actual.', 16, 1);
+		END
 		UPDATE Area_Negocios.Canon 
 		SET  IdEstado = @IdEstadoCanon,
 		IdConcesion = @IdConcesion,
@@ -59,11 +64,8 @@ BEGIN
 	END TRY
 	BEGIN CATCH
         -- Lanzar return
-		IF ERROR_SEVERITY() > 10
-		BEGIN	
 			RAISERROR('Algo salio mal en la modificación del Canon', 16, 1);
 			RETURN;
-		END
 	END CATCH
 END
 GO

@@ -31,7 +31,7 @@ BEGIN
 		END
 
 		--La nueva Descripcion no puede ser una repetida
-		IF EXISTS (SELECT 1 FROM Area_Negocios.Tipo_Actividad_Concesion WHERE Descripcion = @Descripcion)
+		IF EXISTS (SELECT 1 FROM Area_Negocios.Tipo_Actividad_Concesion WHERE Descripcion = @Descripcion AND IdTipoActividadConcesion <> @IdTipoActividadConcesion)
 		BEGIN
 			-- Lanzar el error
 			PRINT('La nueva descripción ya se encuentra registrada.');
@@ -43,11 +43,8 @@ BEGIN
 	END TRY
 	BEGIN CATCH
         -- Lanzar return
-		IF ERROR_SEVERITY() > 10
-		BEGIN	
 			RAISERROR('Algo salio mal en la modificación del Tipo De Actividad de la concesion', 16, 1);
 			Return;
-		END
 	END CATCH
 END
 GO

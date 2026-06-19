@@ -24,26 +24,32 @@ BEGIN
         END
 
 		-- La nueva descripcion debe ser valida
-		IF @Descripcion IS NOT NULL AND @Descripcion <> '' AND @Descripcion NOT LIKE '%[^a-zA-Z ]%' AND LEN(@Descripcion) < 100
-		BEGIN
-			UPDATE Area_Negocios.Estado_Canon
-			SET Descripcion = @Descripcion
-			WHERE IdEstadoCanon = @IdEstadoCanon;
-		END
-        ELSE
+		-- 2. Validar formato de la descripción
+        IF @Descripcion IS NULL OR @Descripcion = '' OR LEN(@Descripcion) > 100
         BEGIN
-            -- Lanzar el error
-			PRINT('La nueva descripción no es valida.');
-			RAISERROR('Descripcion Invalida', 16, 1);
+            RAISERROR('La nueva descripción no es válida o excede el límite de caracteres.', 16, 1);
         END
+
+        IF @Descripcion LIKE '%[^a-zA-ZñÑ ]%'
+        BEGIN
+			PRINT('La nueva descripción no es valida.');
+            RAISERROR('La descripción contiene caracteres no permitidos (solo letras y espacios).', 16, 1);
+        END
+
+        -- 3. Validar duplicados EXCLUYENDO el registro actual
+        IF EXISTS (SELECT 1 FROM Area_Negocios.Estado_Canon WHERE Descripcion = @Descripcion AND IdEstadoCanon <> @IdEstadoCanon)
+        BEGIN
+			PRINT('La nueva descripción se encuentra repetida y ya existe.');
+            RAISERROR('Ya existe otro Estado de Canon con esa misma descripción.', 16, 1);
+        END
+		UPDATE Area_Negocios.Estado_Canon
+        SET Descripcion = @Descripcion
+        WHERE IdEstadoCanon = @IdEstadoCanon;
 	END TRY
 	BEGIN CATCH
         -- Lanzar Rollback
-		IF ERROR_SEVERITY() > 10
-		BEGIN	
 			RAISERROR('Algo salio mal en la modificación del Estado del Canon', 16, 1);
 			RETURN;
-		END
 	END CATCH
 END
 GO

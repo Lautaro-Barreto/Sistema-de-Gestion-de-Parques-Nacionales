@@ -23,7 +23,7 @@ BEGIN
 		SET NOCOUNT ON;
 
 		-- Validamos existencia
-		IF NOT EXISTS (SELECT 1 FROM Area_Infraestructura.Guardaparque WHERE Id_Guardaparque = @IdGuardaparque)
+		IF NOT EXISTS (SELECT 1 FROM Area_Infraestructura.Guardaparque WHERE IdGuardaparque = @IdGuardaparque)
 		BEGIN
 			PRINT('No existe un guardaparque con el Id proporcionado.');
 			RETURN;
@@ -41,7 +41,7 @@ BEGIN
 
 			UPDATE Area_Infraestructura.Guardaparque
 			SET Nombre = @Nombre
-			WHERE Id_Guardaparque = @IdGuardaparque;
+			WHERE IdGuardaparque = @IdGuardaparque;
 		END
 
 		-- Modificar Apellido
@@ -56,7 +56,7 @@ BEGIN
 
 			UPDATE Area_Infraestructura.Guardaparque
 			SET Apellido = @Apellido
-			WHERE Id_Guardaparque = @IdGuardaparque;
+			WHERE IdGuardaparque = @IdGuardaparque;
 		END
 
 		-- Modificar DNI
@@ -72,7 +72,7 @@ BEGIN
 			-- Validar que no exista otro guardaparque con el mismo DNI
 			IF EXISTS (
 				SELECT 1 FROM Area_Infraestructura.Guardaparque 
-				WHERE DNI = @DNI AND Id_Guardaparque <> @Id_Guardaparque
+				WHERE DNI = @DNI AND IdGuardaparque <> @IdGuardaparque
 			)
 			BEGIN
 				PRINT('Ya existe otro guardaparque con el DNI ingresado.');
@@ -81,7 +81,7 @@ BEGIN
 
 			UPDATE Area_Infraestructura.Guardaparque
 			SET DNI = @DNI
-			WHERE Id_Guardaparque = @Id_Guardaparque;
+			WHERE IdGuardaparque = @IdGuardaparque;
 		END
 
         -- Modificar Fecha de Ingreso
@@ -95,7 +95,7 @@ BEGIN
 
             UPDATE Area_Infraestructura.Guardaparque
             SET Fecha_Ingreso = @Fecha_Ingreso
-            WHERE Id_Guardaparque = @Id_Guardaparque;
+            WHERE IdGuardaparque = @IdGuardaparque;
         END
 
         -- Modificar Fecha de Egreso
@@ -109,7 +109,7 @@ BEGIN
 
             UPDATE Area_Infraestructura.Guardaparque
             SET Fecha_Egreso = @Fecha_Egreso
-            WHERE Id_Guardaparque = @Id_Guardaparque;
+            WHERE IdGuardaparque = @IdGuardaparque;
         END
 
 		PRINT('Guardaparque actualizado correctamente.');

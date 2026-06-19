@@ -22,14 +22,19 @@ BEGIN
             PRINT('No existe un Estado de Canon con ese Id')
             RAISERROR('EstadoCanon Inexistente',16,1)
         END
+        --No puede tener Canones asociados
+        IF EXISTS (SELECT 1 FROM Area_Negocios.Canon WHERE IdEstado = @IdEstadoCanon)
+        BEGIN
+            PRINT('No existe un Estado de Canon con ese Id')
+            RAISERROR('No se puede eliminar el Estado de Canon porque está siendo utilizado por registros de la tabla Canon.', 16, 1);
+        END
+
+        DELETE FROM Area_Negocios.Estado_Canon WHERE IdEstadoCanon = @IdEstadoCanon;
     END TRY
     BEGIN CATCH
-        IF ERROR_SEVERITY()>10
-        BEGIN	
             RAISERROR('Algo salio mal en la eliminacion del Estado de Canon',16,1);
             RETURN;
-        END
     END CATCH
-    DELETE FROM Area_Negocios.Estado_Canon WHERE IdEstadoCanon = @IdEstadoCanon;
+    
 END
 GO

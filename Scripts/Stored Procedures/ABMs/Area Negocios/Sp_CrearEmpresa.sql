@@ -16,7 +16,7 @@ AS
 BEGIN
 	BEGIN TRY
         -- Validamos nombre ingresado.
-        IF @Nombre ='' OR NOT @Nombre NOT LIKE '%[^a-zA-ZñÑ ]%' OR LEN(@Nombre) > 80 OR @Nombre IS NULL
+        IF  @Nombre IS NULL OR @Nombre ='' OR NOT @Nombre NOT LIKE '%[^a-zA-ZñÑ ]%' OR LEN(@Nombre) > 80 
         BEGIN
             PRINT('El nombre de la empresa ingresado no es valido')
             RAISERROR('Nombre Invalido', 16,1)
@@ -29,16 +29,13 @@ BEGIN
             PRINT('Ya existe una empresa con ese nombre')
             RAISERROR('Nombre Invalido',16,1)
         END
-        
+        INSERT INTO Area_Negocios.Empresa_Concesionaria(Nombre, Estado) VALUES (@Nombre, 1)
     END TRY
     BEGIN CATCH
         -- Lanzamos Rollback
-        IF ERROR_SEVERITY()>10
-        BEGIN	
             RAISERROR('Algo salio mal en el registro del nombre de la empresa',16,1);
             RETURN;
-        END
     END CATCH
-    INSERT INTO Area_Negocios.Empresa_Concesionaria(Nombre, Estado) VALUES (@Nombre, 1)
+    
 END
 GO

@@ -81,3 +81,12 @@ EXEC Area_Negocios.SP_CrearConcesion 1,1,NULL,'2025-06-06','2025-12-31'
 EXEC Area_Negocios.SP_CrearConcesion 1,1,99,'2025-06-06','2025-12-31'
 --Resultado: Algo salio mal en la creación de la Concesión
 
+--Fecha Inicio Nula
+EXEC Area_Negocios.SP_CrearConcesion 1,2,1,NULL,'2025-12-31'
+--Resultado: Algo salio mal en la creación de la Concesión
+--Fecha Fin Nula
+EXEC Area_Negocios.SP_CrearConcesion 1,2,1,'2025-06-06',NULL
+--Resultado: Algo salio mal en la creación de la Concesión
+--Fecha Fin anterior a Fecha Inicio
+EXEC Area_Negocios.SP_CrearConcesion 1,2,1,'2025-06-06','2024-12-31'
+--Resultado: Algo salio mal en la creación de la Concesión

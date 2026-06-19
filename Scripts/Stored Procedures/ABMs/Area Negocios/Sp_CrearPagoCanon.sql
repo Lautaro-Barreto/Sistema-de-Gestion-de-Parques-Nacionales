@@ -23,7 +23,7 @@ BEGIN
             RAISERROR('Canon Invalido',16,1)
         END
         -- Valida el Monto ingresado
-        IF NOT @Monto_Abonado > 0 OR @Monto_Abonado IS NULL
+        IF  @Monto_Abonado IS NULL OR  @Monto_Abonado <= 0 
         BEGIN
             PRINT('El Monto Ingresado no es valido')
             RAISERROR('Monto Invalido',16,1)
@@ -37,12 +37,9 @@ BEGIN
         INSERT INTO Area_Negocios.Pago_Canon(IdCanon,Monto_Abonado,Fecha_Pago) VALUES (@IdCanon,@Monto_Abonado,@Fecha_Pago)
     END TRY
     BEGIN CATCH
-        -- Lanzamos return
-        IF ERROR_SEVERITY()>10
-        BEGIN	
+        -- Lanzamos return	
             RAISERROR('Algo salio mal en la creación del pago del canon',16,1);
             Return;
-        END
     END CATCH
 END
 GO

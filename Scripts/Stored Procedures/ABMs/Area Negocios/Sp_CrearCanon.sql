@@ -31,9 +31,9 @@ BEGIN
         END
 
         -- Valida el Monto ingresado
-        IF NOT @Monto_Mensual > 0 OR @Monto_Mensual IS NULL 
+        IF @Monto_Mensual IS NULL OR  @Monto_Mensual <= 0 
         BEGIN
-            PRINT('El Monto Ingresado no es valido')
+            PRINT('El Monto Ingresado no es valido, debe ser mayor a 0')
             RAISERROR('Monto Invalido',16,1)
         END
         -- Valida la fecha ingresada, comprobando que no sea nula.
@@ -42,16 +42,19 @@ BEGIN
             PRINT('La fecha no puede ser nula')
             RAISERROR('Fecha Invalida', 16, 1)
         END
+
+        IF @Fecha_Vencimiento < CAST(GETDATE() AS DATE)
+        BEGIN
+            RAISERROR('La fecha de vencimiento no puede ser anterior a la fecha actual.', 16, 1);
+            RAISERROR('Fecha Invalida', 16, 1)
+        END
             INSERT INTO Area_Negocios.Canon(IdEstado,IdConcesion,Monto_Mensual,Fecha_Vencimiento) VALUES (@IdEstado,@IdConcesion,@Monto_Mensual,@Fecha_Vencimiento)
 
     END TRY
     BEGIN CATCH
         -- Lanzamos return
-        IF ERROR_SEVERITY()>10
-        BEGIN	
             RAISERROR('Algo salio mal en la creación del Canon',16,1);
             Return;
-        END
     END CATCH
 END
 GO

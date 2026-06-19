@@ -11,34 +11,27 @@ GO
 
 --SELECT * FROM Area_Negocios.Concesion
 --Preparacion del entorno de testing:
+--      específico
 
-EXEC Area_Infraestructura.Sp_CrearRegion
-        @Nombre = 'Noreste'
-        GO
-EXEC Area_Infraestructura.Sp_CrearProvincia
-        @Nombre = 'Misiones',
-        @Region = 'Noreste'
-GO
- EXEC Area_Infraestructura.Sp_CrearTipoParque
-        @Descripcion = 'Selva'
-GO
-    EXEC Area_Infraestructura.Sp_CrearParque
-        @Nombre = 'Parque Nacional Iguazú',
-        @TipoParqueDesc = 'Selva',
-        @Provincia = 'Misiones',
-        @Superficie = 50000.00
+-- Variables globales para cálculos de fechas dinámicas en el entorno de testing
+DECLARE @FechaVencimiento1 DATE = DATEADD(month, 3, CAST(GETDATE() AS DATE));
+DECLARE @FechaVencimiento2 DATE = DATEADD(month, 4, CAST(GETDATE() AS DATE));
+DECLARE @FechaPago DATE = CAST(GETDATE() AS DATE);
 
-GO
+EXEC Area_Infraestructura.Sp_CrearRegion @Nombre = 'Noreste'
+EXEC Area_Infraestructura.Sp_CrearProvincia @Nombre = 'Misiones', @Region = 'Noreste'
+EXEC Area_Infraestructura.Sp_CrearTipoParque @Descripcion = 'Selva'
+EXEC Area_Infraestructura.Sp_CrearParque @Nombre = 'Parque Nacional Iguazú', @TipoParqueDesc = 'Selva', @Provincia = 'Misiones', @Superficie = 50000.00
+
 EXEC Area_Negocios.SP_CrearEmpresaConcesionaria 'Reti Marley'
 EXEC Area_Negocios.SP_CrearEmpresaConcesionaria 'Turrontar'
-EXEC Area_Negocios.SP_CrearEmpresaConcesionaria 'Bairo'
-GO
 EXEC Area_Negocios.SP_CrearTipoActividadConcesion 'Taqueria'
 EXEC Area_Negocios.SP_CrearTipoActividadConcesion 'Puesto De Nachos'
-GO
+EXEC Area_Negocios.SP_CrearEstadoCanon 'Pagado'
 
-EXEC Area_Negocios.SP_ModificarEmpresaConcesionaria 3,'Bairo',0
-
+-- Creamos los cánones con fechas válidas a futuro
+EXEC Area_Negocios.SP_CrearCanon 1, 1, 95000.00, @FechaVencimiento1;
+EXEC Area_Negocios.SP_CrearCanon 1, 2, 5000.00, @FechaVencimiento2;
 
 --Caso  Exitoso.
 EXEC Area_Negocios.SP_EliminarConcesion @IdConcesion=3
@@ -52,4 +45,6 @@ EXEC Area_Negocios.SP_EliminarConcesion  NULL
 -- Concesion no encontrada
 EXEC Area_Negocios.SP_EliminarConcesion 99
 --Resultado: Algo salio mal en la eliminación de la Concesión
-
+-- Intentar borrar una concesion pero que ya tiene canones.
+EXEC Area_Negocios.SP_EliminarConcesion 1;
+--Resultado: Algo salio mal en la eliminación de la Concesión

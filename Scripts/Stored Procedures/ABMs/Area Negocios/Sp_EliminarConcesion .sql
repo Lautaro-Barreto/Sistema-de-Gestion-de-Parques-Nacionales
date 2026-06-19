@@ -21,16 +21,19 @@ BEGIN
             PRINT('No Existe la concesión ingresada')
             RAISERROR('Concesión Invalida',16,1)
         END
-        DELETE FROM Area_Negocios.Concesion WHERE IdConcesion=@IdConcesion
+        --Viendo que no hayan canones para esa concesión
+        IF EXISTS (SELECT 1 FROM Area_Negocios.Canon WHERE IdConcesion = @IdConcesion)
+        BEGIN
+            PRINT('La concesión ingresada tiene canones asociados')
+            RAISERROR('No se puede eliminar la Concesión porque tiene históricos de cánones vinculados.', 16, 1);
+        END
 
+        DELETE FROM Area_Negocios.Concesion WHERE IdConcesion=@IdConcesion
     END TRY
     BEGIN CATCH
         -- Lanzamos return
-        IF ERROR_SEVERITY()>10
-        BEGIN	
             RAISERROR('Algo salio mal en la eliminación de la Concesión',16,1);
             Return;
-        END
     END CATCH
 END
 GO

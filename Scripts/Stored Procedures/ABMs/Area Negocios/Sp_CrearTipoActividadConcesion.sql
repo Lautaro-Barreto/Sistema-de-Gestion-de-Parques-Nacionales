@@ -15,7 +15,7 @@ AS
 BEGIN
 	BEGIN TRY
         -- Validamos descripcion ingresada.
-        IF @Descripcion ='' OR @Descripcion LIKE '%[^a-zA-Z ]%' OR LEN(@Descripcion)>100 OR @Descripcion IS NULL
+        IF @Descripcion IS NULL OR @Descripcion ='' OR @Descripcion LIKE '%[^a-zA-Z ]%' OR LEN(@Descripcion)>100 
         BEGIN
             PRINT('La descripcion ingresada no es valida')
             RAISERROR('Descripcion Invalida', 16,1)
@@ -26,15 +26,13 @@ BEGIN
             PRINT('La descripcion ingresada ya se encuentra registrada')
             RAISERROR('Descripcion Invalida', 16,1)
         END
+        INSERT INTO Area_Negocios.Tipo_Actividad_Concesion(Descripcion) VALUES (@Descripcion)
     END TRY
     BEGIN CATCH
         -- Lanzamos RETURN
-        IF ERROR_SEVERITY()>10
-        BEGIN	
             RAISERROR('Algo salio mal en la creación del Tipo de actividad de Concesion',16,1);
             RETURN;
-        END
     END CATCH
-    INSERT INTO Area_Negocios.Tipo_Actividad_Concesion(Descripcion) VALUES (@Descripcion)
+    
 END
 GO

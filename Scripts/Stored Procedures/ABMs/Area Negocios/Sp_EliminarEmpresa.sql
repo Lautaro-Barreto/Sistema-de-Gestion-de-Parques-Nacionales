@@ -27,11 +27,8 @@ BEGIN
         UPDATE Area_Negocios.Empresa_Concesionaria SET Estado = 0 WHERE IdEmpresa = @IdEmpresa
     END TRY
     BEGIN CATCH
-        IF ERROR_SEVERITY()>10
-        BEGIN	
-            RAISERROR('Algo salio mal en la eliminacion del guardaparque',16,1);
+            RAISERROR('Algo salio mal en la eliminacion de la empresa concesionaria',16,1);
             RETURN;
-        END
     END CATCH
     --DELETE FROM Area_Negocios.Empresa_Concesionaria WHERE IdEmpresa = @IdEmpresa;
     

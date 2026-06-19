@@ -6,7 +6,8 @@
 #Descripción: Este script se encarga de la creación del Stored Procedure utilizado para
 crear una provincia. 
 */
-
+USE SGParquesNacionales
+go
 CREATE OR ALTER PROCEDURE Area_Infraestructura.SP_CrearProvincia
     @Nombre VARCHAR(80),
     @NombreRegion VARCHAR(30)

@@ -70,11 +70,8 @@ BEGIN
     END TRY
     BEGIN CATCH
         -- Lanzamos return
-        IF ERROR_SEVERITY()>10
-        BEGIN	
             RAISERROR('Algo salio mal en la modificación de la Concesión',16,1);
             Return;
-        END
     END CATCH
 END
 GO

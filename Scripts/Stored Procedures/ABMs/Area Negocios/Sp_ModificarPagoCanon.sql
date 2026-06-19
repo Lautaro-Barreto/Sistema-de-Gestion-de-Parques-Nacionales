@@ -42,20 +42,18 @@ BEGIN
             PRINT('La fecha no puede ser nula')
             RAISERROR('Fecha Invalida', 16, 1)
         END
-	END TRY
-	BEGIN CATCH
-        -- Lanzar RETURN
-		IF ERROR_SEVERITY() > 10
-		BEGIN	
-			RAISERROR('Algo salio mal en la modificación del Pago del Canon', 16, 1);
-			RETURN;
-		END
-	END CATCH
-	--Se completa la operación
+		--Se completa la operación
 	UPDATE Area_Negocios.Pago_Canon SET Monto_Abonado = @Monto_Abonado,
 			IdCanon = @IdCanon,
 			Fecha_Pago = @Fecha_Pago
 			WHERE IdPagoCanon = @IdPagoCanon;
+	END TRY
+	BEGIN CATCH
+        -- Lanzar RETURN
+			RAISERROR('Algo salio mal en la modificación del Pago del Canon', 16, 1);
+			RETURN;
+	END CATCH
+	
 
 END
 GO
