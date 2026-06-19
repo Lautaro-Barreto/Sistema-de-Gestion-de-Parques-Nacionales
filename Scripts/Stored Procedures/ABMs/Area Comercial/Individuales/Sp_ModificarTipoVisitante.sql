@@ -3,24 +3,24 @@
 #Materia: 3641 - Bases de Datos Aplicada 
 #Fecha: 11/06/2026
 #Integrantes: Barreto Lautaro, Losada Agustina, Miranda Guillermo, Villar Facundo
-#Descripción: Este script se encarga de la creación del Stored Procedure utilizado para modificar un punto de venta.
+#Descripciï¿½n: Este script se encarga de la creaciï¿½n del Stored Procedure utilizado para modificar un tipo de visitante.
 */
 
 USE SGParquesNacionales
 GO
 
-CREATE OR ALTER PROCEDURE Area_Comercial.SP_ModificarPuntoDeVenta
-	@IdPuntoDeVenta INT,
-	@Descripcion INT
+CREATE OR ALTER PROCEDURE Area_Comercial.SP_ModificarTipoVisitante
+	@IdTipoVisitante INT,
+	@Descripcion VARCHAR(30)
 AS
 BEGIN
 	BEGIN TRY
 		SET NOCOUNT ON;
 
-		--El punto de venta debe estar cargado en la DB
-		IF NOT EXISTS (SELECT 1 FROM Area_Comercial.Punto_De_Venta WHERE IdPuntoDeVenta = @IdPuntoDeVenta)
+		--El tipo de visitante debe estar cargado en la DB
+		IF NOT EXISTS (SELECT 1 FROM Area_Comercial.Tipo_Visitante WHERE IdTipoVisitante = @IdTipoVisitante)
         BEGIN
-            PRINT('Punto de venta inexistente')
+            PRINT('Tipo de visitante inexistente')
             RAISERROR('.', 16, 1)
         END
 
@@ -34,16 +34,16 @@ BEGIN
 				RAISERROR('.', 16, 1);
 			END
 
-			UPDATE Area_Comercial.Punto_De_Venta
+			UPDATE Area_Comercial.Tipo_Visitante
 			SET Descripcion = @Descripcion
-			WHERE IdPuntoDeVenta = @IdPuntoDeVenta;
+			WHERE IdTipoVisitante = @IdTipoVisitante;
 		END
 	END TRY
 
 	BEGIN CATCH
 		IF ERROR_SEVERITY() > 10
 		BEGIN	
-			RAISERROR('Algo salio mal en la modifiacion del punto de venta', 16, 1);
+			RAISERROR('Algo salio mal en la modifiacion del tipo de visitante', 16, 1);
 			RETURN;
 		END
 	END CATCH
