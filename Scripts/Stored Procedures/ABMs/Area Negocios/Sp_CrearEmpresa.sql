@@ -16,7 +16,7 @@ AS
 BEGIN
 	BEGIN TRY
         -- Validamos nombre ingresado.
-        IF  @Nombre IS NULL OR @Nombre ='' OR NOT @Nombre NOT LIKE '%[^a-zA-ZñÑ ]%' OR LEN(@Nombre) > 80 
+        IF  @Nombre IS NULL OR @Nombre ='' OR @Nombre LIKE '%[^a-zA-ZñÑ. ]%' OR LEN(@Nombre) > 80 
         BEGIN
             PRINT('El nombre de la empresa ingresado no es valido')
             RAISERROR('Nombre Invalido', 16,1)

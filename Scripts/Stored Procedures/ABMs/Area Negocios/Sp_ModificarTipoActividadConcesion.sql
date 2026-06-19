@@ -24,7 +24,7 @@ BEGIN
         END
 
 		-- La nueva descripcion debe ser valida
-		IF @Descripcion IS  NULL OR @Descripcion = '' OR @Descripcion LIKE '%[^a-zA-Z ]%' OR LEN(@Descripcion) > 100
+		IF @Descripcion IS  NULL OR @Descripcion = '' OR @Descripcion LIKE '%[^a-zA-ZñÑ. ]%' OR LEN(@Descripcion) > 100
 		BEGIN
 			PRINT('La nueva descripción no es válida.');
 			RAISERROR('Descripcion Invalida', 16, 1);

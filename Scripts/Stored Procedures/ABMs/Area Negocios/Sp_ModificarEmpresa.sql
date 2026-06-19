@@ -26,7 +26,7 @@ BEGIN
         END
 
 		-- El nuevo nombre debe ser valido
-		IF @Nombre IS NULL OR @Nombre='' OR @Nombre LIKE '%[^a-zA-ZñÑ ]%' OR LEN(@Nombre) > 80
+		IF @Nombre IS NULL OR @Nombre='' OR @Nombre LIKE '%[^a-zA-ZñÑ. ]%' OR LEN(@Nombre) > 80
 		BEGIN
 			PRINT('El Nuevo nombre de la empresa no es valido.');
 			RAISERROR('EmpresaConcesionaria Invalida', 16, 1);

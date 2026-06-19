@@ -133,7 +133,7 @@ AS
 BEGIN
 	BEGIN TRY
         -- Validamos nombre ingresado.
-        IF  @Nombre IS NULL OR @Nombre ='' OR NOT @Nombre NOT LIKE '%[^a-zA-ZñÑ ]%' OR LEN(@Nombre) > 80 
+        IF  @Nombre IS NULL OR @Nombre ='' OR NOT @Nombre NOT LIKE '%[^a-zA-ZñÑ. ]%' OR LEN(@Nombre) > 80 
         BEGIN
             PRINT('El nombre de la empresa ingresado no es valido')
             RAISERROR('Nombre Invalido', 16,1)
@@ -166,7 +166,7 @@ AS
 BEGIN
 	BEGIN TRY
         -- Validamos descripcion ingresada.
-        IF @Descripcion IS NULL OR @Descripcion ='' OR @Descripcion LIKE '%[^a-zA-ZñÑ ]%'  OR LEN(@Descripcion) > 100
+        IF @Descripcion IS NULL OR @Descripcion ='' OR @Descripcion LIKE '%[^a-zA-ZñÑ. ]%'  OR LEN(@Descripcion) > 100
         BEGIN
             PRINT('La descripcion ingresada no es valida')
             RAISERROR('Descripcion Invalida', 16,1)
@@ -231,7 +231,7 @@ AS
 BEGIN
 	BEGIN TRY
         -- Validamos descripcion ingresada.
-        IF @Descripcion IS NULL OR @Descripcion ='' OR @Descripcion LIKE '%[^a-zA-Z ]%' OR LEN(@Descripcion)>100 
+        IF @Descripcion IS NULL OR @Descripcion ='' OR @Descripcion LIKE '%[^a-zA-ZñÑ. ]%' OR LEN(@Descripcion)>100 
         BEGIN
             PRINT('La descripcion ingresada no es valida')
             RAISERROR('Descripcion Invalida', 16,1)
@@ -407,7 +407,7 @@ BEGIN
         END
 
 		-- El nuevo nombre debe ser valido
-		IF @Nombre IS NULL OR @Nombre='' OR @Nombre LIKE '%[^a-zA-ZñÑ ]%' OR LEN(@Nombre) > 80
+		IF @Nombre IS NULL OR @Nombre='' OR @Nombre LIKE '%[^a-zA-ZñÑ. ]%' OR LEN(@Nombre) > 80
 		BEGIN
 			PRINT('El Nuevo nombre de la empresa no es valido.');
 			RAISERROR('EmpresaConcesionaria Invalida', 16, 1);
@@ -459,7 +459,7 @@ BEGIN
             RAISERROR('La nueva descripción no es válida o excede el límite de caracteres.', 16, 1);
         END
 
-        IF @Descripcion LIKE '%[^a-zA-ZñÑ ]%'
+        IF @Descripcion LIKE '%[^a-zA-ZñÑ. ]%'
         BEGIN
 			PRINT('La nueva descripción no es valida.');
             RAISERROR('La descripción contiene caracteres no permitidos (solo letras y espacios).', 16, 1);
@@ -550,7 +550,7 @@ BEGIN
         END
 
 		-- La nueva descripcion debe ser valida
-		IF @Descripcion IS  NULL OR @Descripcion = '' OR @Descripcion LIKE '%[^a-zA-Z ]%' OR LEN(@Descripcion) > 100
+		IF @Descripcion IS  NULL OR @Descripcion = '' OR @Descripcion LIKE '%[^a-zA-ZñÑ. ]%' OR LEN(@Descripcion) > 100
 		BEGIN
 			PRINT('La nueva descripción no es válida.');
 			RAISERROR('Descripcion Invalida', 16, 1);

@@ -30,7 +30,7 @@ BEGIN
             RAISERROR('La nueva descripción no es válida o excede el límite de caracteres.', 16, 1);
         END
 
-        IF @Descripcion LIKE '%[^a-zA-ZñÑ ]%'
+        IF @Descripcion LIKE '%[^a-zA-ZñÑ. ]%'
         BEGIN
 			PRINT('La nueva descripción no es valida.');
             RAISERROR('La descripción contiene caracteres no permitidos (solo letras y espacios).', 16, 1);

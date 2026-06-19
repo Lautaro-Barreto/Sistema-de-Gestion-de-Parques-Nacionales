@@ -13,10 +13,10 @@ GO
 CREATE OR ALTER PROCEDURE Area_Negocios.SP_CrearEstadoCanon
 	@Descripcion varchar(150)
 AS
-BEGIN
+
 	BEGIN TRY
         -- Validamos descripcion ingresada.
-        IF @Descripcion IS NULL OR @Descripcion ='' OR @Descripcion LIKE '%[^a-zA-ZñÑ ]%'  OR LEN(@Descripcion) > 100
+        IF @Descripcion IS NULL OR @Descripcion ='' OR @Descripcion LIKE '%[^a-zA-ZñÑ. ]%'  OR LEN(@Descripcion) > 100
         BEGIN
             PRINT('La descripcion ingresada no es valida')
             RAISERROR('Descripcion Invalida', 16,1)

@@ -37,7 +37,7 @@ EXEC Area_Negocios.SP_CrearEmpresaConcesionaria 'Empresa Canon Test';
 EXEC Area_Negocios.SP_CrearTipoActividadConcesion 'Boleteria Temporal';
 EXEC Area_Negocios.SP_CrearEstadoCanon 'Vigente';
 GO
-
+-- SELECT * FROM Area_Negocios.Empresa_Concesionaria
 DECLARE @IdEmpresa INT = (SELECT MAX(IdEmpresa) FROM Area_Negocios.Empresa_Concesionaria);
 DECLARE @IdActividad INT = (SELECT MAX(IdTipoActividadConcesion) FROM Area_Negocios.Tipo_Actividad_Concesion);
 DECLARE @IdParque INT = (SELECT MAX(IdParque) FROM Area_Infraestructura.Parque);
@@ -58,6 +58,8 @@ EXEC Area_Negocios.SP_CrearCanon @IdEstado, @IdConcesion, 45000.00, @Vencimiento
 EXEC Area_Negocios.SP_CrearCanon @IdEstado, @IdConcesion, 55000.00, @Vencimiento2; -- Canon a eliminar
 GO
 
+
+--SELECT * FROM Area_negocios.Canon
 --Caso  Exitoso.
 EXEC Area_Negocios.SP_EliminarCanon @IdCanon=2
 
