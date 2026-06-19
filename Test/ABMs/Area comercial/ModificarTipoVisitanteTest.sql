@@ -3,14 +3,14 @@
 #Materia: 3641 - Bases de Datos Aplicada 
 #Fecha: 13/06/2026
 #Integrantes: Barreto Lautaro, Losada Agustina, Miranda Guillermo, Villar Facundo
-#Descripción: Este script se encarga de testear la modificación de un tipo de visitante,
-verificando que no se pueda modificar un tipo de visitante que no existe o con datos inválidos.
+#Descripciï¿½n: Este script se encarga de testear la modificaciï¿½n de un tipo de visitante,
+verificando que no se pueda modificar un tipo de visitante que no existe o con datos invï¿½lidos.
 */
 
 USE SGParquesNacionales
 GO
 
---Se crea un tipo de visitante de prueba para realizar los tests. El ID de este caso será 1
+--Se crea un tipo de visitante de prueba para realizar los tests. El ID de este caso serï¿½ 1
 BEGIN TRY
 	EXEC Area_Comercial.SP_CrearTipoVisitante @Descripcion = 'TipoVisitanteTest'
 END TRY
@@ -33,7 +33,7 @@ BEGIN CATCH
 END CATCH
 GO
 
---Test 2: Descripción inválida (vacía)
+--Test 2: Descripciï¿½n invï¿½lida (vacï¿½a)
 BEGIN TRY
 	EXEC Area_Comercial.SP_ModificarTipoVisitante
 		@IdTipoVisitante = 1,
@@ -44,7 +44,7 @@ BEGIN CATCH
 END CATCH
 GO
 
---Test 3: Descripción inválida (con caracteres que no son letras)
+--Test 3: Descripciï¿½n invï¿½lida (con caracteres que no son letras)
 BEGIN TRY
 	EXEC Area_Comercial.SP_ModificarTipoVisitante
 		@IdTipoVisitante = 1,
@@ -55,18 +55,18 @@ BEGIN CATCH
 END CATCH
 GO
 
---Test 4: Descripción inválida (supera el tamaño declarado)
+--Test 4: Descripciï¿½n invï¿½lida (supera el tamaï¿½o declarado)
 BEGIN TRY
 	EXEC Area_Comercial.SP_ModificarTipoVisitante
 		@IdTipoVisitante = 1,
-		@Descripcion = 'TipoVisitanteModificadoTipoVisitanteModificado'
+		@Descripcion = 'TipoVisitanteModificadoTipoVisitanteModificadoTipoVisitanteModificadoTipoVisitanteModificadoTipoVisitanteModificado'
 END TRY
 BEGIN CATCH
 	PRINT 'Error al modificar el tipo de visitante: ' + ERROR_MESSAGE();
 END CATCH
 GO
 
---Test 5: El tipo de visitante no está cargado en la DB
+--Test 5: El tipo de visitante no estï¿½ cargado en la DB
 BEGIN TRY
 	EXEC Area_Comercial.SP_ModificarTipoVisitante
 		@IdTipoVisitante = 3,

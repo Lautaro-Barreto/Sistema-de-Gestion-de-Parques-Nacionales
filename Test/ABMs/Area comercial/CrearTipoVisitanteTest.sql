@@ -3,14 +3,14 @@
 #Materia: 3641 - Bases de Datos Aplicada 
 #Fecha: 13/06/2026
 #Integrantes: Barreto Lautaro, Losada Agustina, Miranda Guillermo, Villar Facundo
-#Descripción: Este script se encarga de testear la creación de un tipo de visitante,
-verificando que no se pueda crear un tipo de visitante con datos inválidos.
+#Descripciï¿½n: Este script se encarga de testear la creaciï¿½n de un tipo de visitante,
+verificando que no se pueda crear un tipo de visitante con datos invï¿½lidos.
 */
 
 USE SGParquesNacionales
 GO
 
---Test 1: Creación exitosa
+--Test 1: Creaciï¿½n exitosa
 BEGIN TRY
 	EXEC Area_Comercial.SP_CrearTipoVisitante @Descripcion = 'TipoVisitanteTest'
 
@@ -22,7 +22,7 @@ BEGIN CATCH
 END CATCH
 GO
 
---Test 2: Descripción inválida (vacía)
+--Test 2: Descripciï¿½n invï¿½lida (vacï¿½a)
 BEGIN TRY
 	EXEC Area_Comercial.SP_CrearTipoVisitante @Descripcion = ''
 END TRY
@@ -31,7 +31,7 @@ BEGIN CATCH
 END CATCH
 GO
 
---Test 3: Descripción inválida (con caracteres que no sean letras)
+--Test 3: Descripciï¿½n invï¿½lida (con caracteres que no sean letras)
 BEGIN TRY
 	EXEC Area_Comercial.SP_CrearTipoVisitante @Descripcion = 'TipoVisitanteTest&|'
 END TRY
@@ -40,16 +40,16 @@ BEGIN CATCH
 END CATCH
 GO
 
---Test 4: Descripción inválida (supera el tamaño declarado)
+--Test 4: Descripciï¿½n invï¿½lida (supera el tamaï¿½o declarado)
 BEGIN TRY
-	EXEC Area_Comercial.SP_CrearTipoVisitante @Descripcion = 'TipoVisitanteTestTipoVisitanteTestTipoVisitanteTest'
+	EXEC Area_Comercial.SP_CrearTipoVisitante @Descripcion = 'TipoVisitanteTestTipoVisitanteTestTipoVisitanteTestTipoVisitanteTestTipoVisitanteTestTipoVisitanteTest'
 END TRY
 BEGIN CATCH
 	PRINT 'Error al crear el tipo de visitante: ' + ERROR_MESSAGE();
 END CATCH
 GO
 
---Test 5: La descripción ya existe
+--Test 5: La descripciï¿½n ya existe
 BEGIN TRY
 	EXEC Area_Comercial.SP_CrearTipoVisitante @Descripcion = 'TipoVisitanteTest'
 END TRY

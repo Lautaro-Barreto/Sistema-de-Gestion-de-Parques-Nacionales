@@ -3,14 +3,14 @@
 #Materia: 3641 - Bases de Datos Aplicada 
 #Fecha: 13/06/2026
 #Integrantes: Barreto Lautaro, Losada Agustina, Miranda Guillermo, Villar Facundo
-#Descripción: Este script se encarga de testear la modificación de una forma de pago,
-verificando que no se pueda modificar una forma de pago que no existe o con datos inválidos.
+#Descripciï¿½n: Este script se encarga de testear la modificaciï¿½n de una forma de pago,
+verificando que no se pueda modificar una forma de pago que no existe o con datos invï¿½lidos.
 */
 
 USE SGParquesNacionales
 GO
 
---Se crea una forma de pago de prueba para realizar los tests. El ID de este caso será 1
+--Se crea una forma de pago de prueba para realizar los tests. El ID de este caso serï¿½ 1
 BEGIN TRY
 	EXEC Area_Comercial.SP_CrearFormaDePago @Descripcion = 'FormaDePagoTest'
 END TRY
@@ -30,7 +30,7 @@ BEGIN CATCH
 END CATCH
 GO
 
---Test 2: Descripción inválida (vacía)
+--Test 2: Descripciï¿½n invï¿½lida (vacï¿½a)
 BEGIN TRY
 	EXEC Area_Comercial.SP_ModificarFormaDePago
 		@IdFormaDePago = 1,
@@ -41,7 +41,7 @@ BEGIN CATCH
 END CATCH
 GO
 
---Test 3: Descripción inválida (con caracteres que no son letras)
+--Test 3: Descripciï¿½n invï¿½lida (con caracteres que no son letras)
 BEGIN TRY
 	EXEC Area_Comercial.SP_ModificarFormaDePago
 		@IdFormaDePago = 1,
@@ -52,18 +52,18 @@ BEGIN CATCH
 END CATCH
 GO
 
---Test 4: Descripción inválida (supera el tamaño declarado)
+--Test 4: Descripciï¿½n invï¿½lida (supera el tamaï¿½o declarado)
 BEGIN TRY
 	EXEC Area_Comercial.SP_ModificarFormaDePago
 		@IdFormaDePago = 1,
-		@Descripcion = 'FormaDePagoModificadaFormaDePagoModificada'
+		@Descripcion = 'FormaDePagoModificadaFormaDePagoModificadaFormaDePagoModificadaFormaDePagoModificadaFormaDePagoModificadaFormaDePagoModificada'
 END TRY
 BEGIN CATCH
 	PRINT 'Error al modificar la forma de pago: ' + ERROR_MESSAGE();
 END CATCH
 GO
 
---Test 5: La forma de pago no está cargada en la DB
+--Test 5: La forma de pago no estï¿½ cargada en la DB
 BEGIN TRY
 	EXEC Area_Comercial.SP_ModificarFormaDePago
 		@IdFormaDePago = 3,

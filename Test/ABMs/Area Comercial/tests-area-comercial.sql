@@ -3,19 +3,19 @@
 #Materia: 3641 - Bases de Datos Aplicada 
 #Fecha: 19/06/2026
 #Integrantes: Barreto Lautaro, Losada Agustina, Miranda Guillermo, Villar Facundo
-#Descripción: Este script se encarga de testear los Stored Procedures de creación, eliminación y
-modificación de las tablas del esquema Area_Comercial.
+#Descripciï¿½n: Este script se encarga de testear los Stored Procedures de creaciï¿½n, eliminaciï¿½n y
+modificaciï¿½n de las tablas del esquema Area_Comercial.
 */
 
 USE SGParquesNacionales
 GO
 
 -- ===========================================================================================
---                                 Pruebas de creación
+--                                 Pruebas de creaciï¿½n
 -- ===========================================================================================
 
 -- 1. DESCUENTO_PARQUE
--- Se crea un parque de prueba para realizar los tests. El ID de este parque será 1
+-- Se crea un parque de prueba para realizar los tests. El ID de este parque serï¿½ 1
 BEGIN TRY
     EXEC Area_Infraestructura.Sp_CrearRegion
         @Nombre = 'RegionTest'
@@ -69,7 +69,7 @@ BEGIN CATCH
 END CATCH
 GO
 
--- Test 3: Descripción inválida (vacía)
+-- Test 3: Descripciï¿½n invï¿½lida (vacï¿½a)
 BEGIN TRY
     EXEC Area_Comercial.Sp_CrearDescuentoParque
         @IdParque = 1,
@@ -81,7 +81,7 @@ BEGIN CATCH
 END CATCH
 GO
 
--- Test 4: Descripción inválida (con caracteres que no son letras)
+-- Test 4: Descripciï¿½n invï¿½lida (con caracteres que no son letras)
 BEGIN TRY
     EXEC Area_Comercial.Sp_CrearDescuentoParque
         @IdParque = 1,
@@ -93,7 +93,7 @@ BEGIN CATCH
 END CATCH
 GO
 
--- Test 5: Descripción inválida (supera el tamaño declarado)
+-- Test 5: Descripciï¿½n invï¿½lida (supera el tamaï¿½o declarado)
 BEGIN TRY
     EXEC Area_Comercial.Sp_CrearDescuentoParque
         @IdParque = 1,
@@ -119,7 +119,7 @@ GO
 
 
 -- 2. FORMA_DE_PAGO
--- Test 1: Creación exitosa
+-- Test 1: Creaciï¿½n exitosa
 BEGIN TRY
 	EXEC Area_Comercial.SP_CrearFormaDePago @Descripcion = 'FormaDePagoTest'
 
@@ -131,7 +131,7 @@ BEGIN CATCH
 END CATCH
 GO
 
--- Test 2: Descripción inválida (vacía)
+-- Test 2: Descripciï¿½n invï¿½lida (vacï¿½a)
 BEGIN TRY
 	EXEC Area_Comercial.SP_CrearFormaDePago @Descripcion = ''
 END TRY
@@ -140,7 +140,7 @@ BEGIN CATCH
 END CATCH
 GO
 
--- Test 3: Descripción inválida (con caracteres que no sean letras)
+-- Test 3: Descripciï¿½n invï¿½lida (con caracteres que no sean letras)
 BEGIN TRY
 	EXEC Area_Comercial.SP_CrearFormaDePago @Descripcion = '$#F0rm4D3Pag0#"'
 END TRY
@@ -149,16 +149,16 @@ BEGIN CATCH
 END CATCH
 GO
 
--- Test 4: Descripción inválida (supera el tamaño declarado)
+-- Test 4: Descripciï¿½n invï¿½lida (supera el tamaï¿½o declarado)
 BEGIN TRY
-	EXEC Area_Comercial.SP_CrearFormaDePago @Descripcion = 'FormaDePagoTestFormaDePagoTestFormaDePagoTest'
+	EXEC Area_Comercial.SP_CrearFormaDePago @Descripcion = 'FormaDePagoTestFormaDePagoTestFormaDePagoTestFormaDePagoTestFormaDePagoTestFormaDePagoTestFormaDePagoTest'
 END TRY
 BEGIN CATCH
 	PRINT 'Error al crear la forma de pago: ' + ERROR_MESSAGE();
 END CATCH
 GO
 
--- Test 5: La descripción ya existe
+-- Test 5: La descripciï¿½n ya existe
 BEGIN TRY
 	EXEC Area_Comercial.SP_CrearFormaDePago @Descripcion = 'FormaDePagoTest'
 END TRY
@@ -169,7 +169,7 @@ GO
 
 
 -- 3. PUNTO_DE_VENTA
--- Test 1: Creación exitosa
+-- Test 1: Creaciï¿½n exitosa
 BEGIN TRY
 	EXEC Area_Comercial.SP_CrearPuntoDeVenta @Descripcion = 'PuntoDeVentaTest'
 
@@ -181,7 +181,7 @@ BEGIN CATCH
 END CATCH
 GO
 
--- Test 2: Descripción inválida (vacía)
+-- Test 2: Descripciï¿½n invï¿½lida (vacï¿½a)
 BEGIN TRY
 	EXEC Area_Comercial.SP_CrearPuntoDeVenta @Descripcion = ''
 END TRY
@@ -190,7 +190,7 @@ BEGIN CATCH
 END CATCH
 GO
 
--- Test 3: Descripción inválida (con caracteres que no sean letras)
+-- Test 3: Descripciï¿½n invï¿½lida (con caracteres que no sean letras)
 BEGIN TRY
 	EXEC Area_Comercial.SP_CrearPuntoDeVenta @Descripcion = '+PuntoD3V3ntaT3st.'
 END TRY
@@ -199,16 +199,16 @@ BEGIN CATCH
 END CATCH
 GO
 
--- Test 4: Descripción inválida (supera el tamaño declarado)
+-- Test 4: Descripciï¿½n invï¿½lida (supera el tamaï¿½o declarado)
 BEGIN TRY
-	EXEC Area_Comercial.SP_CrearPuntoDeVenta @Descripcion = 'PuntoDeVentaTestPuntoDeVentaTestPuntoDeVentaTest'
+	EXEC Area_Comercial.SP_CrearPuntoDeVenta @Descripcion = 'PuntoDeVentaTestPuntoDeVentaTestPuntoDeVentaTestPuntoDeVentaTestPuntoDeVentaTestPuntoDeVentaTestPuntoDeVentaTest'
 END TRY
 BEGIN CATCH
 	PRINT 'Error al crear el punto de venta: ' + ERROR_MESSAGE();
 END CATCH
 GO
 
--- Test 5: La descripción ya existe
+-- Test 5: La descripciï¿½n ya existe
 BEGIN TRY
 	EXEC Area_Comercial.SP_CrearPuntoDeVenta @Descripcion = 'PuntoDeVentaTest'
 END TRY
@@ -219,7 +219,7 @@ GO
 
 
 -- 4. TIPO_VISITANTE
--- Test 1: Creación exitosa
+-- Test 1: Creaciï¿½n exitosa
 BEGIN TRY
 	EXEC Area_Comercial.SP_CrearTipoVisitante @Descripcion = 'TipoVisitanteTest'
 
@@ -231,7 +231,7 @@ BEGIN CATCH
 END CATCH
 GO
 
--- Test 2: Descripción inválida (vacía)
+-- Test 2: Descripciï¿½n invï¿½lida (vacï¿½a)
 BEGIN TRY
 	EXEC Area_Comercial.SP_CrearTipoVisitante @Descripcion = ''
 END TRY
@@ -240,7 +240,7 @@ BEGIN CATCH
 END CATCH
 GO
 
--- Test 3: Descripción inválida (con caracteres que no sean letras)
+-- Test 3: Descripciï¿½n invï¿½lida (con caracteres que no sean letras)
 BEGIN TRY
 	EXEC Area_Comercial.SP_CrearTipoVisitante @Descripcion = 'TipoVisitanteTest&|'
 END TRY
@@ -249,16 +249,16 @@ BEGIN CATCH
 END CATCH
 GO
 
--- Test 4: Descripción inválida (supera el tamaño declarado)
+-- Test 4: Descripciï¿½n invï¿½lida (supera el tamaï¿½o declarado)
 BEGIN TRY
-	EXEC Area_Comercial.SP_CrearTipoVisitante @Descripcion = 'TipoVisitanteTestTipoVisitanteTestTipoVisitanteTest'
+	EXEC Area_Comercial.SP_CrearTipoVisitante @Descripcion = 'TipoVisitanteTestTipoVisitanteTestTipoVisitanteTestTipoVisitanteTestTipoVisitanteTestTipoVisitanteTest'
 END TRY
 BEGIN CATCH
 	PRINT 'Error al crear el tipo de visitante: ' + ERROR_MESSAGE();
 END CATCH
 GO
 
--- Test 5: La descripción ya existe
+-- Test 5: La descripciï¿½n ya existe
 BEGIN TRY
 	EXEC Area_Comercial.SP_CrearTipoVisitante @Descripcion = 'TipoVisitanteTest'
 END TRY
@@ -269,11 +269,11 @@ GO
 
 
 -- ===========================================================================================
---                               Pruebas de modificación
+--                               Pruebas de modificaciï¿½n
 -- ===========================================================================================
 
 -- 1. DESCUENTO_PARQUE
--- Se crea un parque y un descuento de prueba para realizar los tests. El ID de ambos será 1
+-- Se crea un parque y un descuento de prueba para realizar los tests. El ID de ambos serï¿½ 1
 -- Parque
 BEGIN TRY
     EXEC Area_Infraestructura.Sp_CrearRegion
@@ -331,7 +331,7 @@ BEGIN CATCH
 END CATCH
 GO
 
--- Test 2: El descuento no está cargado en la DB
+-- Test 2: El descuento no estï¿½ cargado en la DB
 BEGIN TRY
     EXEC Area_Comercial.Sp_ModificarDescuentoParque
         @IdDescuento = 3,
@@ -343,7 +343,7 @@ BEGIN CATCH
 END CATCH
 GO
 
--- Test 3: Descripción inválida (vacío)
+-- Test 3: Descripciï¿½n invï¿½lida (vacï¿½o)
 BEGIN TRY
     EXEC Area_Comercial.Sp_ModificarDescuentoParque
         @IdDescuento = 1,
@@ -355,7 +355,7 @@ BEGIN CATCH
 END CATCH
 GO
 
--- Test 4: Descripción inválida (con caracteres que no son letras)
+-- Test 4: Descripciï¿½n invï¿½lida (con caracteres que no son letras)
 BEGIN TRY
     EXEC Area_Comercial.Sp_ModificarDescuentoParque
         @IdDescuento = 1,
@@ -367,7 +367,7 @@ BEGIN CATCH
 END CATCH
 GO
 
--- Test 5: Descripción inválida (supera el tamaño declarado)
+-- Test 5: Descripciï¿½n invï¿½lida (supera el tamaï¿½o declarado)
 BEGIN TRY
     EXEC Area_Comercial.Sp_ModificarDescuentoParque
         @IdDescuento = 1,
@@ -393,7 +393,7 @@ GO
 
 
 -- 2. FORMA_DE_PAGO
---Se crea una forma de pago de prueba para realizar los tests. El ID de este caso será 1
+--Se crea una forma de pago de prueba para realizar los tests. El ID de este caso serï¿½ 1
 BEGIN TRY
 	EXEC Area_Comercial.SP_CrearFormaDePago @Descripcion = 'FormaDePagoTest'
 END TRY
@@ -413,7 +413,7 @@ BEGIN CATCH
 END CATCH
 GO
 
---Test 2: Descripción inválida (vacía)
+--Test 2: Descripciï¿½n invï¿½lida (vacï¿½a)
 BEGIN TRY
 	EXEC Area_Comercial.SP_ModificarFormaDePago
 		@IdFormaDePago = 1,
@@ -424,7 +424,7 @@ BEGIN CATCH
 END CATCH
 GO
 
---Test 3: Descripción inválida (con caracteres que no son letras)
+--Test 3: Descripciï¿½n invï¿½lida (con caracteres que no son letras)
 BEGIN TRY
 	EXEC Area_Comercial.SP_ModificarFormaDePago
 		@IdFormaDePago = 1,
@@ -435,18 +435,18 @@ BEGIN CATCH
 END CATCH
 GO
 
---Test 4: Descripción inválida (supera el tamaño declarado)
+--Test 4: Descripciï¿½n invï¿½lida (supera el tamaï¿½o declarado)
 BEGIN TRY
 	EXEC Area_Comercial.SP_ModificarFormaDePago
 		@IdFormaDePago = 1,
-		@Descripcion = 'FormaDePagoModificadaFormaDePagoModificada'
+		@Descripcion = 'FormaDePagoModificadaFormaDePagoModificadaFormaDePagoModificadaFormaDePagoModificadaFormaDePagoModificadaFormaDePagoModificada'
 END TRY
 BEGIN CATCH
 	PRINT 'Error al modificar la forma de pago: ' + ERROR_MESSAGE();
 END CATCH
 GO
 
---Test 5: La forma de pago no está cargada en la DB
+--Test 5: La forma de pago no estï¿½ cargada en la DB
 BEGIN TRY
 	EXEC Area_Comercial.SP_ModificarFormaDePago
 		@IdFormaDePago = 3,
@@ -459,7 +459,7 @@ GO
 
 
 -- 3. PUNTO_DE_VENTA
---Se crea un punto de venta de prueba para realizar los tests. El ID de este caso será 1
+--Se crea un punto de venta de prueba para realizar los tests. El ID de este caso serï¿½ 1
 BEGIN TRY
 	EXEC Area_Comercial.SP_CrearPuntoDeVenta @Descripcion = 'PuntoDeVentaTest'
 END TRY
@@ -479,7 +479,7 @@ BEGIN CATCH
 END CATCH
 GO
 
---Test 2: Descripción inválida (vacía)
+--Test 2: Descripciï¿½n invï¿½lida (vacï¿½a)
 BEGIN TRY
 	EXEC Area_Comercial.SP_ModificarPuntoDeVenta
 		@IdPuntoDeVenta = 1,
@@ -490,7 +490,7 @@ BEGIN CATCH
 END CATCH
 GO
 
---Test 3: Descripción inválida (con caracteres que no son letras)
+--Test 3: Descripciï¿½n invï¿½lida (con caracteres que no son letras)
 BEGIN TRY
 	EXEC Area_Comercial.SP_ModificarPuntoDeVenta
 		@IdPuntoDeVenta = 1,
@@ -501,18 +501,18 @@ BEGIN CATCH
 END CATCH
 GO
 
---Test 4: Descripción inválida (supera el tamaño declarado)
+--Test 4: Descripciï¿½n invï¿½lida (supera el tamaï¿½o declarado)
 BEGIN TRY
 	EXEC Area_Comercial.SP_ModificarPuntoDeVenta
 		@IdPuntoDeVenta = 1,
-		@Descripcion = 'PuntoDeVentaModificadoPuntoDeVentaModificado'
+		@Descripcion = 'PuntoDeVentaModificadoPuntoDeVentaModificadoPuntoDeVentaModificadoPuntoDeVentaModificadoPuntoDeVentaModificadoPuntoDeVentaModificado'
 END TRY
 BEGIN CATCH
 	PRINT 'Error al modificar el punto de venta: ' + ERROR_MESSAGE();
 END CATCH
 GO
 
---Test 5: El punto de venta no está cargado en la DB
+--Test 5: El punto de venta no estï¿½ cargado en la DB
 BEGIN TRY
 	EXEC Area_Comercial.SP_ModificarPuntoDeVenta 3, 'PuntoDeVentaModificado'
 		@IdPuntoDeVenta = 3,
@@ -525,7 +525,7 @@ GO
 
 
 -- 4. TIPO_VISITANTE
---Se crea un tipo de visitante de prueba para realizar los tests. El ID de este caso será 1
+--Se crea un tipo de visitante de prueba para realizar los tests. El ID de este caso serï¿½ 1
 BEGIN TRY
 	EXEC Area_Comercial.SP_CrearTipoVisitante @Descripcion = 'TipoVisitanteTest'
 END TRY
@@ -548,7 +548,7 @@ BEGIN CATCH
 END CATCH
 GO
 
---Test 2: Descripción inválida (vacía)
+--Test 2: Descripciï¿½n invï¿½lida (vacï¿½a)
 BEGIN TRY
 	EXEC Area_Comercial.SP_ModificarTipoVisitante
 		@IdTipoVisitante = 1,
@@ -559,7 +559,7 @@ BEGIN CATCH
 END CATCH
 GO
 
---Test 3: Descripción inválida (con caracteres que no son letras)
+--Test 3: Descripciï¿½n invï¿½lida (con caracteres que no son letras)
 BEGIN TRY
 	EXEC Area_Comercial.SP_ModificarTipoVisitante
 		@IdTipoVisitante = 1,
@@ -570,18 +570,18 @@ BEGIN CATCH
 END CATCH
 GO
 
---Test 4: Descripción inválida (supera el tamaño declarado)
+--Test 4: Descripciï¿½n invï¿½lida (supera el tamaï¿½o declarado)
 BEGIN TRY
 	EXEC Area_Comercial.SP_ModificarTipoVisitante
 		@IdTipoVisitante = 1,
-		@Descripcion = 'TipoVisitanteModificadoTipoVisitanteModificado'
+		@Descripcion = 'TipoVisitanteModificadoTipoVisitanteModificadoTipoVisitanteModificadoTipoVisitanteModificadoTipoVisitanteModificado'
 END TRY
 BEGIN CATCH
 	PRINT 'Error al modificar el tipo de visitante: ' + ERROR_MESSAGE();
 END CATCH
 GO
 
---Test 5: El tipo de visitante no está cargado en la DB
+--Test 5: El tipo de visitante no estï¿½ cargado en la DB
 BEGIN TRY
 	EXEC Area_Comercial.SP_ModificarTipoVisitante
 		@IdTipoVisitante = 3,
@@ -594,11 +594,11 @@ GO
 
 
 -- ===========================================================================================
---                                Pruebas de eliminación
+--                                Pruebas de eliminaciï¿½n
 -- ===========================================================================================
 
 -- 1. DESCUENTO_PARQUE
--- Se crea un parque y un descuento de prueba para realizar los tests. El ID de ambos será 1
+-- Se crea un parque y un descuento de prueba para realizar los tests. El ID de ambos serï¿½ 1
 -- Parque
 BEGIN TRY
     EXEC Area_Infraestructura.Sp_CrearRegion
@@ -650,7 +650,7 @@ BEGIN CATCH
 END CATCH
 GO
 
--- Test 2: El descuento no está cargado en la DB
+-- Test 2: El descuento no estï¿½ cargado en la DB
 BEGIN TRY
     EXEC Area_Comercial.Sp_EliminarDescuentoParque @IdDescuento = 3
 END TRY
@@ -661,7 +661,7 @@ GO
 
 
 -- 2. FORMA_DE_PAGO
--- Se crea una forma de pago de prueba para realizar los tests. El ID de este caso será 1
+-- Se crea una forma de pago de prueba para realizar los tests. El ID de este caso serï¿½ 1
 BEGIN TRY
 	EXEC Area_Comercial.SP_CrearFormaDePago @Descripcion = 'FormaDePagoTest'
 END TRY
@@ -679,7 +679,7 @@ BEGIN CATCH
 END CATCH
 GO
 
--- Test 2: La forma de pago no está cargado en la DB
+-- Test 2: La forma de pago no estï¿½ cargado en la DB
 BEGIN TRY
 	EXEC Area_Comercial.SP_EliminarFormaDePago @IdFormaDePago = 3
 END TRY
@@ -690,7 +690,7 @@ GO
 
 
 -- 3. PUNTO_DE_VENTA
--- Se crea un punto de venta de prueba para realizar los tests. El ID de este caso será 1
+-- Se crea un punto de venta de prueba para realizar los tests. El ID de este caso serï¿½ 1
 BEGIN TRY
 	EXEC Area_Comercial.SP_CrearPuntoDeVenta @Descripcion = 'PuntoDeVentaTest'
 END TRY
@@ -708,7 +708,7 @@ BEGIN CATCH
 END CATCH
 GO
 
--- Test 2: El punto de venta no está cargado en la DB
+-- Test 2: El punto de venta no estï¿½ cargado en la DB
 BEGIN TRY
 	EXEC Area_Comercial.SP_EliminarPuntoDeVenta @IdPuntoDeVenta = 3
 END TRY
@@ -719,7 +719,7 @@ GO
 
 
 -- 4. TIPO_VISITANTE
--- Se crea un tipo de visitante de prueba para realizar los tests. El ID de este caso será 1
+-- Se crea un tipo de visitante de prueba para realizar los tests. El ID de este caso serï¿½ 1
 BEGIN TRY
 	EXEC Area_Comercial.SP_CrearTipoVisitante @Descripcion = 'TipoVisitanteTest'
 END TRY
@@ -737,7 +737,7 @@ BEGIN CATCH
 END CATCH
 GO
 
--- Test 2: El tipo de visitante no está cargado en la DB
+-- Test 2: El tipo de visitante no estï¿½ cargado en la DB
 BEGIN TRY
 	EXEC Area_Comercial.SP_EliminarTipoVisitante @IdTipoVisitante = 3
 END TRY
