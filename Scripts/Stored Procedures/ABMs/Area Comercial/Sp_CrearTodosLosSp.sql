@@ -178,7 +178,7 @@ GO
 -- //////////////////////////////////////////////////////////////
 --                  CREACIÓN DE LAS FORMAS DE PAGO
 -- //////////////////////////////////////////////////////////////
-REATE OR ALTER PROCEDURE Area_Comercial.SP_CrearFormaDePago
+CREATE OR ALTER PROCEDURE Area_Comercial.SP_CrearFormaDePago
 	@Descripcion VARCHAR(30)
 AS
 BEGIN

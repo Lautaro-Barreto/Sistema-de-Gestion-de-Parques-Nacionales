@@ -53,9 +53,15 @@ BEGIN
 				PRINT('El apellido no es v lido');
 				RAISERROR('.', 16, 1);
 			END
-
+			IF NOT EXISTS (SELECT 1 FROM Area_Infraestructura.Provincia WHERE Nombre = @Provincia)
+			BEGIN
+				PRINT('La provincia no es valida');
+				RAISERROR('.',18,1);
+			END
+			DECLARE @IdDeProvinciaNueva INT;
+			SELECT @IdDeProvinciaNueva = IdProvincia FROM Area_Infraestructura.Provincia WHERE Nombre = @Provincia
 			UPDATE Area_Infraestructura.Parque
-			SET Provincia = @Provincia
+			SET IdProvincia = @IdDeProvinciaNueva
 			WHERE IdParque = @IdParque;
 		END
 
@@ -68,9 +74,15 @@ BEGIN
 				PRINT('El tipo de parque no es valido');
 				RAISERROR('.', 16, 1);
 			END
-
+			IF NOT EXISTS (SELECT 1 FROM Area_Infraestructura.Tipo_Parque WHERE Descripcion = @TipoParque)
+			BEGIN
+				PRINT('El tipo de parque no es valido');
+				RAISERROR('.',16,1);
+			END
+			DECLARE @IdDeTipoParqueNuevo INT;
+			SELECT  @IdDeTipoParqueNuevo = IdProvincia FROM Area_Infraestructura.Provincia WHERE Nombre = @Provincia
 			UPDATE Area_Infraestructura.Parque
-			SET TipoParque = @TipoParque
+			SET IdTipoParque = @IdDeTipoParqueNuevo
 			WHERE IdParque = @IdParque;
 		END
 
