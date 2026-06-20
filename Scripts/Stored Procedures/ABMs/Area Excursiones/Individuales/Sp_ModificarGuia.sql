@@ -18,7 +18,7 @@ CREATE OR ALTER PROCEDURE Area_Excursiones.Sp_ModificarGuia
     @Titulo VARCHAR(30)
 AS
 BEGIN
-
+    SET NOCOUNT ON
     BEGIN TRY 
         -- Validar que el guia exista
         IF NOT EXISTS (SELECT 1 FROM Area_Excursiones.Guia WHERE IdGuia = @IdGuia)
@@ -44,10 +44,11 @@ BEGIN
             RAISERROR('DNI inválido: debe contener solo números y tener entre 7 y 8 dígitos.', 16, 1);
         END
 
-        
-        IF EXISTS(SELECT 1 FROM Area_Excursiones.Guia WHERE DNI = @Dni AND IdGuia != @IdGuia)
+        DECLARE @IdGuiaRepetido INT
+        SELECT @IdGuiaRepetido = IdGuia FROM Area_Excursiones.Guia WHERE DNI = @Dni AND IdGuia != @IdGuia
+        IF @IdGuiaRepetido IS NOT NULL
         BEGIN
-            RAISERROR('El DNI proporcionado ya está registrado para otro guía.', 16, 1)
+            RAISERROR('El DNI proporcionado ya está registrado para otro guía. Guia Numero: %d', 16, 1, @IdGuiaRepetido)
         END
 
         --validar que el nombre, apellido y título sean válidos
