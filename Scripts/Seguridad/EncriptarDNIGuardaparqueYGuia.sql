@@ -5,7 +5,7 @@
 #Integrantes: Barreto Lautaro, Losada Agustina, Miranda Guillermo, Villar Facundo
 #Descripción: Este script se encarga de la encriptación de datos Sensibles, creando una jerarquía
 Critográfica(la master key, el certificado y la simétrica) y 
-una migración segura de datos sensibles a una tabla temporal para luego restaurarlos.
+una migración segura de datos sensibles a una columna temporal para luego restaurarlos.
 
 */
 
@@ -19,15 +19,22 @@ FROM sys.symmetric_keys
 WHERE name = '##MS_DatabaseMasterKey##';
 */
 --Lógica de UPSERT para la master key 
-IF NOT EXISTS (SELECT * FROM  sys.symmetric_keys WHERE symmetric_key_id = 101)
-BEGIN
-    CREATE MASTER KEY ENCRYPTION BY PASSWORD = '#Unlam_PasswordFuerte2026-1989!'
-END
+BEGIN TRY
+    IF NOT EXISTS (SELECT * FROM  sys.symmetric_keys WHERE symmetric_key_id = 101)
+    BEGIN
+        CREATE MASTER KEY ENCRYPTION BY PASSWORD = '#Unlam_PasswordFuerte2026-1989!'
+    END
 ELSE
 BEGIN
-    PRINT 'Ya se encuentra creado'
+    PRINT 'La llave maestra ya se encuentra creada'
+    RAISERROR('Llave Maestra ya creada.', 16, 1);
 END
+END TRY
+BEGIN CATCH
+    RAISERROR('No es posible generar: Llave Maestra ya creada.', 16, 1)
+END CATCH
 GO
+
 --Poder se puede comprobar que existe:
 SELECT 
     *
@@ -37,14 +44,21 @@ GO
 --Un certificado de seguridad es el API o intermediario entre la master key
 --y la simetrica
 -- Funciona como un intermediario para proteger la llave simétrica.
-IF NOT EXISTS (SELECT * FROM sys.certificates WHERE name = 'Cert_DNI_SGPN')
-BEGIN
-    CREATE CERTIFICATE Certificado_DNI_SGPN WITH SUBJECT = 'Certificado para proteger los DNIs del sistema SGPN';
-END
-ELSE
-BEGIN
-    PRINT 'Ya se encuentra creado'
-END
+BEGIN TRY
+    IF NOT EXISTS (SELECT * FROM sys.certificates WHERE name = 'Certificado_DNI_SGPN')
+    BEGIN
+        CREATE CERTIFICATE Certificado_DNI_SGPN WITH SUBJECT = 
+        'Certificado para proteger los DNIs del sistema SGPN';
+    END
+    ELSE
+    BEGIN
+        PRINT 'El certificado Ya se encuentra creado'
+        RAISERROR('Certificado ya creado.', 16, 1)
+    END
+END TRY
+BEGIN CATCH
+    RAISERROR('No es posible realizar la operación: Certificado ya creado.', 16, 1)
+END CATCH
 GO
 --Aca comprobamos que ahora existe
 SELECT 
@@ -56,17 +70,24 @@ SELECT
     subject
 FROM sys.certificates;
 GO
+
 --Ahora si puedo crear la llave simétrica 
-IF NOT EXISTS (SELECT * FROM sys.symmetric_keys WHERE name = 'SymKey_DNI')
-BEGIN
-    CREATE SYMMETRIC KEY SymKey_DNI_SGPN
-    WITH ALGORITHM = AES_256
-    ENCRYPTION BY CERTIFICATE Certificado_DNI_SGPN;
-END
-ELSE
-BEGIN
-    PRINT 'Ya se encuentra creado'
-END
+BEGIN TRY
+    IF NOT EXISTS (SELECT * FROM sys.symmetric_keys WHERE name = 'SymKey_DNI_SGPN')
+    BEGIN
+        CREATE SYMMETRIC KEY SymKey_DNI_SGPN
+        WITH ALGORITHM = AES_256
+        ENCRYPTION BY CERTIFICATE Certificado_DNI_SGPN;
+    END
+    ELSE
+    BEGIN
+        PRINT 'La llave Ya se encuentra creada'
+        RAISERROR('Llave Simétrica ya creada.', 16, 1)
+    END
+END TRY
+BEGIN CATCH
+    RAISERROR('No es posible realizar la operación: Llave Simétrica ya creada.', 16, 1)
+END CATCH
 GO
 /* ¿Porque AES_256? Bueno: es el estándar criptográfico actual más robusto para proteger datos sensibles
 y funciona bien para este caso, en lugar de usar otro más antiguo y pesado*/
@@ -84,22 +105,29 @@ GO
 
 --COL_LEGTH pregunta si dentro de esa tabla, esa columna es nula. En este caso lo es
 --Aún no existe.
-IF COL_LENGTH('Area_Infraestructura.Guardaparque', 'Dni_Encriptado') IS NULL
-BEGIN
-        -- ESTRATEGIA:  Agregamos una columna temporal
-    ALTER TABLE Area_Infraestructura.Guardaparque ADD Dni_Encriptado VARBINARY(256);
-    --Aunque parezca que el varbinary es enorme. Es porque al encriptar se agregan 
-    --Datos se sql Server para para la seguridad. Cosas como GUID  de la llave simétrica, padding HMAC que son sellos de seguridad etc.
-END
-ELSE
-BEGIN
-    PRINT 'Ya se encuentra creado'
-END
+--Aunque parezca que el varbinary es enorme. Es porque al encriptar se agregan 
+--Datos se sql Server para para la seguridad. Cosas como GUID  de la llave simétrica, padding HMAC que son sellos de seguridad etc.
+   
+BEGIN TRY
+    IF COL_LENGTH('Area_Infraestructura.Guardaparque', 'Dni_Encriptado') IS NULL
+    BEGIN
+        ALTER TABLE Area_Infraestructura.Guardaparque ADD Dni_Encriptado VARBINARY(256);
+    END
+    ELSE
+    BEGIN
+        PRINT 'Ya se encuentra creado'
+        RAISERROR('Ya existe una columna con ese nombre.',16,1);
+    END
+END TRY
+BEGIN CATCH
+    RAISERROR('No es posible completar la operación: Ya existe una columna con ese nombre.',16,1);
+END CATCH
 GO
-
 
 -- Abrimos la llave simétrica y encriptamos los DNIs existentes
 OPEN SYMMETRIC KEY SymKey_DNI_SGPN DECRYPTION BY CERTIFICATE Certificado_DNI_SGPN;
+
+
 --EncryptByKey se encarga de todo, agrega la encriptación
 UPDATE Area_Infraestructura.Guardaparque
 SET Dni_Encriptado = EncryptByKey(Key_GUID('SymKey_DNI_SGPN'), Dni)
