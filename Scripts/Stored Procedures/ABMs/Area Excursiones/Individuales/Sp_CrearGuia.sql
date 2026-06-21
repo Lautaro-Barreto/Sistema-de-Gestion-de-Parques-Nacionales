@@ -45,8 +45,7 @@ BEGIN
         SELECT @IdGuiaRepetido = IdGuia FROM Area_Excursiones.Guia WHERE DNI = @Dni
         IF @IdGuiaRepetido IS NOT NULL
         BEGIN
-            RAISERROR('El DNI proporcionado ya está registrado para otro guía.', 16, 1)
-            RETURN @IdGuiaRepetido 
+            RAISERROR('El DNI proporcionado ya está registrado para otro guía. Guia Numero: %d', 16, 1,@IdGuiaRepetido)
         END
 
         IF( @Nombre IS NULL OR LEN(@Nombre) = 0)

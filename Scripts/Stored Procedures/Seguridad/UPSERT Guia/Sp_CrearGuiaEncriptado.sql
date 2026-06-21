@@ -91,7 +91,7 @@ BEGIN
         
         --Ahora cerramos 
         CLOSE SYMMETRIC KEY SymKey_DNI_SGPN;
-        PRINT 'Guia Creado exitosamente'
+        PRINT 'Guia Creado exitósamente'
         RETURN @Id_NuevoGuia
 
     END TRY

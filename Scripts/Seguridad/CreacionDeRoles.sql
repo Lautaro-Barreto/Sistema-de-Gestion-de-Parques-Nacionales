@@ -134,31 +134,30 @@ GO
 -- ---------------------------------------------------------
 --  ASIGNACIÓN DE PERMISOS 
 -- ---------------------------------------------------------
-USE master
 -- ////////////////////////////////////////////////////////////
 --                      A. Rol Boletería
 -- ////////////////////////////////////////////////////////////
 --  No puede hacer nada manual, para eso están los SPs.
-GRANT EXECUTE ON OBJECT::Area_Negocios.SP_CrearVenta TO Rol_Boleteria;
-GRANT EXECUTE ON OBJECT::Area_Negocios.SP_CrearFormaDePago TO Rol_Boleteria;
-GRANT EXECUTE ON OBJECT::Area_Negocios.SP_CrearDetalleVentaEntrada TO Rol_Boleteria;
+GRANT EXECUTE ON OBJECT::Area_Comercial.SP_CrearVenta TO Rol_Boleteria;
+GRANT EXECUTE ON OBJECT::Area_Comercial.SP_CrearFormaDePago TO Rol_Boleteria;
+GRANT EXECUTE ON OBJECT::Area_Comercial.SP_CrearDetalleVentaEntrada TO Rol_Boleteria;
 GRANT EXECUTE ON OBJECT::Area_Comercial.SP_CrearEntrada TO Rol_Boleteria;
-GRANT EXECUTE ON OBJECT::Area_Excursiones.SP_CrearContratacionActividad TO Rol_Boleteria;
+GRANT EXECUTE ON OBJECT::Area_Excursiones.Sp_CrearContratacion_Actividad TO Rol_Boleteria;
 
 
-GRANT EXECUTE ON OBJECT::Area_Negocios.SP_EliminarDetalleVentaEntrada TO Rol_Boleteria;
-GRANT EXECUTE ON OBJECT::Area_Negocios.SP_EliminarFormaDePago TO Rol_Boleteria;
-GRANT EXECUTE ON OBJECT::Area_Negocios.SP_EliminarDetalleVentaEntrada TO Rol_Boleteria;
-GRANT EXECUTE ON OBJECT::Area_Negocios.SP_EliminarEntrada TO Rol_Boleteria;
-GRANT EXECUTE ON OBJECT::Area_Excursiones.SP_EliminarContratacionActividad TO Rol_Boleteria;
+GRANT EXECUTE ON OBJECT::Area_Comercial.SP_EliminarDetalleVentaEntrada TO Rol_Boleteria;
+GRANT EXECUTE ON OBJECT::Area_Comercial.SP_EliminarFormaDePago TO Rol_Boleteria;
+GRANT EXECUTE ON OBJECT::Area_Comercial.SP_EliminarDetalleVentaEntrada TO Rol_Boleteria;
+GRANT EXECUTE ON OBJECT::Area_Comercial.SP_EliminarEntrada TO Rol_Boleteria;
+GRANT EXECUTE ON OBJECT::Area_Excursiones.Sp_EliminarContratacionActividad TO Rol_Boleteria;
 
-GRANT EXECUTE ON OBJECT::Area_Negocios.SP_ModificarDetalleVentaEntrada TO Rol_Boleteria;
-GRANT EXECUTE ON OBJECT::Area_Negocios.SP_ModificarFormaDePago TO Rol_Boleteria;
-GRANT EXECUTE ON OBJECT::Area_Negocios.SP_ModificarFormaDePago TO Rol_Boleteria;
+GRANT EXECUTE ON OBJECT::Area_Comercial.SP_ModificarDetalleVentaEntrada TO Rol_Boleteria;
+GRANT EXECUTE ON OBJECT::Area_Comercial.SP_ModificarFormaDePago TO Rol_Boleteria;
+GRANT EXECUTE ON OBJECT::Area_Comercial.SP_ModificarFormaDePago TO Rol_Boleteria;
 GRANT EXECUTE ON OBJECT::Area_Excursiones.SP_ModificarContratacionActividad TO Rol_Boleteria;
 --GRANT EXECUTE ON OBJECT::Area_Negocios.SP_ModificarVenta TO Rol_Boleteria;
 
-DENY SELECT, INSERT, UPDATE, DELETE ON OBJECT::Area_Negocios.Venta TO Rol_Boleteria;
+DENY SELECT, INSERT, UPDATE, DELETE ON OBJECT::Area_Comercial.Venta TO Rol_Boleteria;
 GO
 
 -- ////////////////////////////////////////////////////////////
@@ -334,7 +333,6 @@ GO
 -- ////////////////////////////////////////////////////////////
 --Solo deberían poder ver a los suyos y sus modificaciones
 
-GRANT SELECT ON OBJECT::Area_Excursiones.Guia TO Rol_Guia_Base;
 GRANT SELECT ON OBJECT::Area_Excursiones.Habilitacion TO Rol_Guia_Base;
 GRANT SELECT ON OBJECT::Area_Excursiones.Habilitacion_Guia TO Rol_Guia_Base;
 
@@ -345,6 +343,12 @@ GRANT SELECT ON OBJECT::Area_Excursiones.Actividad TO Rol_Guia_Base;
 GRANT SELECT ON OBJECT::Area_Excursiones.Tipo_Actividad TO Rol_Guia_Base;
 
 GRANT EXECUTE ON OBJECT::Area_Excursiones.SP_ConsultarMisDatos_Guia TO Rol_Guia_Base;
+--Solo le activo el control de la llave para sus datos
+GRANT VIEW DEFINITION ON SYMMETRIC KEY::SymKey_DNI_SGPN TO Rol_Guia_Base;
+GRANT CONTROL ON CERTIFICATE::Certificado_DNI_SGPN TO Rol_Guia_Base; 
+
+GRANT SELECT ON OBJECT::Area_Excursiones.Vista_Guias_Seguros TO Rol_Guia_Base;
+
 
 GO
 -- ////////////////////////////////////////////////////////////

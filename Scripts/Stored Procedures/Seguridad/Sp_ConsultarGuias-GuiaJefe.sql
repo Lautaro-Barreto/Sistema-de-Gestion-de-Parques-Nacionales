@@ -18,7 +18,6 @@ BEGIN
     BEGIN TRY
         -- Abrimos la llave simétrica en la sesión actual
         OPEN SYMMETRIC KEY SymKey_DNI_SGPN DECRYPTION BY CERTIFICATE Certificado_DNI_SGPN;
-
         -- Retornamos el listado completo desencriptando al vuelo
         SELECT 
             IdGuia,
@@ -28,6 +27,7 @@ BEGIN
             Titulo
         FROM Area_Excursiones.Guia;
 
+        PRINT '#Viendo: Guias'
         -- Cerramos la llave inmediatamente
         CLOSE SYMMETRIC KEY SymKey_DNI_SGPN;
 

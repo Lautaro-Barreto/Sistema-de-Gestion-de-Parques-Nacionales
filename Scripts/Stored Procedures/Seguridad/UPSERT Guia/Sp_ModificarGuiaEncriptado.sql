@@ -1,9 +1,10 @@
 /*
 #Universidad Nacional de la Matanza
 #Materia: 3641 - Bases de Datos Aplicada 
-#Fecha: 09/06/2026
+#Fecha: 21/06/2026
 #Integrantes: Barreto Lautaro, Losada Agustina, Miranda Guillermo, Villar Facundo
-#Descripción: Este script se encarga de la creación del Stored Procedure utilizado para modificar un guia.
+#Descripción: Este script se encarga de la modificación del Stored Procedure utilizado para modificar un guia.
+Ahora el SP tiene en cuenta el cifrado de datos protegidos.
 */
 
 USE SGParquesNacionales
@@ -44,43 +45,62 @@ BEGIN
             RAISERROR('DNI inválido: debe contener solo números y tener entre 7 y 8 dígitos.', 16, 1);
         END
 
+        --Para validar los repetidos toca abrir la llave
+        OPEN SYMMETRIC KEY SymKey_DNI_SGPN DECRYPTION BY CERTIFICATE Certificado_DNI_SGPN;
+
+        --Ahora desencripta el dni para la comparación
         DECLARE @IdGuiaRepetido INT
-        SELECT @IdGuiaRepetido = IdGuia FROM Area_Excursiones.Guia WHERE DNI = @Dni AND IdGuia != @IdGuia
+        SELECT @IdGuiaRepetido = IdGuia FROM Area_Excursiones.Guia WHERE DecryptByKey(DNI) = @Dni AND IdGuia != @IdGuia
         IF @IdGuiaRepetido IS NOT NULL
         BEGIN
+            --cierra la llave  y manda el error
+            CLOSE SYMMETRIC KEY SymKey_DNI_SGPN;
+            PRINT 'Error: El DNI proporcionado ya está registrado para otro guía.'
             RAISERROR('El DNI proporcionado ya está registrado para otro guía. Guia Numero: %d', 16, 1, @IdGuiaRepetido)
         END
 
         --validar que el nombre, apellido y título sean válidos
         IF @Nombre IS NULL OR LEN(@Nombre) = 0
         BEGIN
+            CLOSE SYMMETRIC KEY SymKey_DNI_SGPN;
             RAISERROR('El nombre debe tener entre 1 y 30 caracteres.', 16, 1) 
         END
 
         IF @Apellido IS NULL OR LEN(@Apellido) = 0
         BEGIN
+            CLOSE SYMMETRIC KEY SymKey_DNI_SGPN;
             RAISERROR('El apellido debe tener entre 1 y 30 caracteres.', 16, 1)   
         END
 
         IF @Titulo IS NULL OR LEN(@Titulo) = 0
         BEGIN
+            CLOSE SYMMETRIC KEY SymKey_DNI_SGPN;    
             RAISERROR('El título debe tener entre 1 y 30 caracteres.', 16, 1)
             
         END
 
         -- Modificar el guia
         UPDATE Area_Excursiones.Guia
-        SET DNI = @Dni,
+        SET DNI = EncryptByKey(Key_GUID('SymKey_DNI_SGPN'),@Dni),
             IdParque = @IdParque,
             IdEspecialidad = @IdEspecialidad,
             Nombre = @Nombre,
             Apellido = @Apellido,
             Titulo = @Titulo
         WHERE IdGuia = @IdGuia
-
+        
+        CLOSE SYMMETRIC KEY SymKey_DNI_SGPN;
+        PRINT 'Operación exitosa: Guía modificado.'
     END TRY
 
     BEGIN CATCH
+
+        --IMPORTANTISIMO: Si la llave no cerró, cerrarla
+        IF EXISTS (SELECT 1 FROM sys.openkeys WHERE key_name = 'SymKey_DNI_SGPN')
+        BEGIN
+            CLOSE SYMMETRIC KEY SymKey_DNI_SGPN;
+        END
+        --Nunca está demás
         -- 1. Capturamos los datos del error original
         DECLARE @ErrorMessage NVARCHAR(4000) = ERROR_MESSAGE();
         DECLARE @ErrorSeverity INT = ERROR_SEVERITY();

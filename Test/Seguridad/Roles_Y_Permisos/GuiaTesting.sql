@@ -17,13 +17,52 @@ GO
 -- Creamos un usuario "fantasma" solo para testear
 IF NOT EXISTS (SELECT * FROM sys.database_principals WHERE name = 'UsuarioGuiaTest')
 BEGIN
+    PRINT 'Creado Usuario UsuarioGuiaTest';
     CREATE USER UsuarioGuiaTest WITHOUT LOGIN;
 END
 GO
 
--- Metemos al usuario de prueba en la bolsa del rol que creaste
+-- Le asigno el rol que le  corresponde
 ALTER ROLE Rol_Guia_Base ADD MEMBER UsuarioGuiaTest;
 GO
+
+--///////////////////////////////////////////////////////////////
+--Lo creo en la tabla de guías asi simulamos que si existe
+--Para eso preparamos rapidamente el entorno de el:
+PRINT '///////////////////////////////////////////////////////////'
+PRINT 'Creando entorno de pruebas para Inserción de Guia:'
+PRINT 'Creando Region...'
+INSERT INTO Area_Infraestructura.Region (Nombre) VALUES ('Region P');
+DECLARE @IdReg INT = SCOPE_IDENTITY();
+PRINT 'Creando Provincia...'
+INSERT INTO Area_Infraestructura.Provincia (Nombre, IdRegion) VALUES ('Provincia P', @IdReg);
+PRINT 'Creando Tipo Parque...'
+INSERT INTO Area_Infraestructura.Tipo_Parque (Descripcion) VALUES ('Tipo P');
+-- Ejecutamos
+PRINT 'Creando Parque...'
+EXEC Area_Infraestructura.SP_CrearParque 
+    @Nombre = 'Parque P', 
+    @TipoParqueDesc = 'Tipo P', 
+    @Provincia = 'Provincia P', 
+    @Superficie = 1000.5;
+GO
+--Ahora inserto la especialidad:
+PRINT 'Creando Especialidad...'
+EXEC Area_Excursiones.Sp_CrearEspecialidad 
+        @Descripcion = 'Sedentarismo'
+GO
+PRINT 'Creando Guia...'
+EXEC Area_Excursiones.Sp_CrearGuia @DNI = '47093989',
+    @idParque = 1,
+    @idEspecialidad = 1,
+    @Nombre ='UsuarioGuiaTest',
+    @Apellido= 'ApellidoPrueba',
+    @Titulo ='Tecnicatura en Turismo'
+
+PRINT 'Entorno de pruebas Finalizado Exitosamente'
+PRINT '//////////////////////////////////////////////////////'
+GO
+
 -- /////////////////////////////////////////////////////////////////////////////
 -- FANTASMEADA (Simulo ser ese usuario para testing)
 -- /////////////////////////////////////////////////////////////////////////////
@@ -35,13 +74,16 @@ GO
 SELECT CURRENT_USER AS 'Usuario Actual';
 GO
 
-PRINT '--- PRUEBA 1: Lectura de tablas permitidas (ÉXITO ESPERADO) ---'
+PRINT '--- PRUEBA 1: Lectura de tablas permitidas (PERMISIÓN ESPERADA)---'
 -- Esto debe funcionar porque tiene GRANT explícito (temporalmente).
-SELECT TOP 5 * FROM Area_Excursiones.Guia;
+-- SELECT * FROM Area_Excursiones.Guia
+EXEC  Area_Excursiones.SP_ConsultarMisDatos_Guia 1
 SELECT TOP 5 * FROM Area_Excursiones.Habilitacion;
 GO
---Resultado:
-PRINT '--- PRUEBA 2: Ejecución del SP de Modificación (ÉXITO ESPERADO) ---'
+--Resultado: Es capaz de visualizar sus datos correctamente o las habilitaciones
+
+
+PRINT '--- PRUEBA 2: Ejecución del SP de Modificación (PERMISIÓN ESPERADA) ---'
 -- Esto debe funcionar( no se frena por seguridad, sino por los parámetros. Es decir si le permite la ejecución del sp)
 EXEC Area_Excursiones.SP_ModificarGuia @IdGuia = 1, @Nombre = 'Test', @Apellido = 'Test', @DNI = '11111111';
 GO
@@ -59,6 +101,10 @@ SELECT * FROM Area_Infraestructura.Parque;
 GO
 --Resultado: Se denegó el permiso SELECT en el objeto 'Parque', base de datos 'SGParquesNacionales', esquema 'Area_Infraestructura'.
 
+PRINT '--- PRUEBA 5: Intento de ver a los demás guias (PERMISIÓN CON RESTRICCIÓN ESPERADA) ---'
+SELECT * FROM Area_Excursiones.Vista_Guias_Seguros
+GO
+--Resultado: Puede ver a sus compañeros exceptuando sus datos de DNI, ya que se encuentran encriptados.
 -- ///////////////////////////////////////////////////////////////
 -- 4. LOGOUT para volver al modo DB
 

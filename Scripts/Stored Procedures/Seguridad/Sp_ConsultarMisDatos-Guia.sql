@@ -31,7 +31,6 @@ BEGIN
         -- Si pasó la validación, abrimos llave y mostramos SOLO su fila
         
         OPEN SYMMETRIC KEY SymKey_DNI_SGPN DECRYPTION BY CERTIFICATE Certificado_DNI_SGPN;
-
         SELECT 
             IdGuia,
             Nombre,
@@ -40,7 +39,7 @@ BEGIN
             Titulo
         FROM Area_Excursiones.Guia
         WHERE IdGuia = @IdGuia;
-
+        PRINT '#Viendo: Tus datos'
         CLOSE SYMMETRIC KEY SymKey_DNI_SGPN;
         
     END TRY
@@ -50,7 +49,7 @@ BEGIN
             CLOSE SYMMETRIC KEY SymKey_DNI_SGPN;
         END
 
-        RAISERROR('Acceso denegado: No tiene permisos para consultar datos de otros empleados.', 16, 1);
+        RAISERROR('La operación no se pudo completar: Ocurrió un error.', 16, 1);
     END CATCH
 END
 GO

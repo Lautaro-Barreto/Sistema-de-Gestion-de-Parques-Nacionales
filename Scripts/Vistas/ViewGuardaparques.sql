@@ -7,9 +7,10 @@
 en este caso el dni de los guardaparques
 
 */
-USE SGParquesNacionales
-GO
+USE SGParquesNacionales;
+GO;
 --Esta vista busca permitir ver guardaparques pero sin que puedan visualizar sus dnis como debe ser
+
 CREATE OR ALTER VIEW Area_Infraestructura.Vista_Guardaparques_Seguros
 AS
 SELECT 
@@ -25,5 +26,6 @@ SELECT
     Activo
 FROM 
     Area_Infraestructura.Guardaparque;
-GO
+
+
 

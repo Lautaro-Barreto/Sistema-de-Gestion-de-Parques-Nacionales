@@ -46,15 +46,18 @@ BEGIN
         IF @Cupo_maximo <= 0 
         BEGIN
             RAISERROR('El cupo máximo debe ser positivo.', 16, 1)
-            
-
         END
         IF( @Nombre IS NULL OR LEN(@Nombre) = 0)
         BEGIN
             RAISERROR('El nombre debe tener entre 1 y 30 caracteres.', 16, 1)
-            
         END
 
+        DECLARE @IdExistente INT
+        SELECT @IdExistente = IdActividad FROM Area_Excursiones.Actividad WHERE @Nombre = Nombre
+        IF @IdExistente IS NOT NULL
+        BEGIN 
+            RAISERROR('El nombre de la actividad ya existe en la base de datos. ID existente: %d', 16, 1, @IdExistente)
+        END
 
     INSERT INTO Area_Excursiones.Actividad (IdTipoActividad, IdParque, Nombre, Costo, Duracion, Cupo_maximo)
     VALUES (@tipoActividad, @idParque, @Nombre, @Costo, @Duracion, @Cupo_maximo)
