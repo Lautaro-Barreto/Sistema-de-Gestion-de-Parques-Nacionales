@@ -45,9 +45,9 @@ IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'Are
 BEGIN
     CREATE TABLE Area_Comercial.Venta(
         IdVenta INT IDENTITY(1,1) PRIMARY KEY,
-        IdPuntoDeVenta INT,
+        IdPuntoDeVenta SMALLINT,
         IdParque INT,
-        IdFormaDePago INT,
+        IdFormaDePago TINYINT,
         Fecha DATE,
         Total DECIMAL(10,2),
 
@@ -74,7 +74,7 @@ BEGIN
     CREATE TABLE Area_Comercial.Entrada(
         IdEntrada INT IDENTITY(1,1) PRIMARY KEY,
         IdParque INT,
-        IdTipoVisitante INT,
+        IdTipoVisitante TINYINT,
         Precio DECIMAL(10,2),
         Fecha_Acceso DATE,
 
@@ -88,12 +88,12 @@ GO
 IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'Area_Comercial' AND TABLE_NAME = 'Detalle_Venta_Entrada')
 BEGIN
     CREATE TABLE Area_Comercial.Detalle_Venta_Entrada(
+        IdDetalle INT Identity(1,1) PRIMARY KEY,
         IdVenta INT,
         IdEntrada INT,
         Cantidad INT,
         Subtotal DECIMAL(10,2),
 
-        PRIMARY KEY (IdVenta, IdEntrada),
         FOREIGN KEY (IdVenta) REFERENCES Area_Comercial.Venta(IdVenta),
         FOREIGN KEY (IdEntrada) REFERENCES Area_Comercial.Entrada(IdEntrada)
     )
@@ -106,7 +106,7 @@ BEGIN
     CREATE TABLE Area_Comercial.Precio_Parque_Tipo_Visitante(
         IdPrecioParqueTipoVis SMALLINT IDENTITY(1,1) PRIMARY KEY,
         IdParque INT, 
-        IdTipoVisitante INT, 
+        IdTipoVisitante TINYINT, 
         Precio DECIMAL(10,2), 
 
         FOREIGN KEY (IdParque) REFERENCES Area_Infraestructura.Parque(IdParque),
