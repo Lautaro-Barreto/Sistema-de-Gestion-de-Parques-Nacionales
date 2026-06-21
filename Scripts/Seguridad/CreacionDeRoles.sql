@@ -25,29 +25,110 @@ el administrador particular de esa concesión. Además se creo un rol para el pu
 Operativos: Incluyendo un rol para generar la boletería o la venta de entradas y el Sistema ETL que automatiza la carga
 masiva de entradas. Se agrega el rol del comprador con pocos permisos, pero es un usuario*/
 
--- Alta Dirección
-CREATE ROLE Rol_Agente_Gobierno;
-CREATE ROLE Rol_Administrador;
-CREATE ROLE Rol_Administrador_Parque;
+PRINT 'Iniciando creación de Roles de Seguridad...';
+PRINT '//////////////////////////////////////////////////////'
 
--- Guardaparques
-CREATE ROLE Rol_Jefe_Guardaparques;
-CREATE ROLE Rol_Guardaparque_Base;
 
--- Guías y Excursiones
-CREATE ROLE Rol_Coord_Actividades;
-CREATE ROLE Rol_Jefe_Guias;
-CREATE ROLE Rol_Guia_Base;
+-- ---------------------------------------------------------
+-- 1. ALTA DIRECCIÓN
+-- ---------------------------------------------------------
+IF NOT EXISTS (SELECT 1 FROM sys.database_principals WHERE name = 'Rol_Agente_Gobierno' AND type = 'R')
+BEGIN
+    CREATE ROLE Rol_Agente_Gobierno;
+    PRINT '>> Rol creado: Rol_Agente_Gobierno';
+END
 
--- Concesiones
-CREATE ROLE Rol_Jefe_Concesiones;
-CREATE ROLE Rol_Admin_Concesion;
-CREATE ROLE Rol_Concesionante;
+IF NOT EXISTS (SELECT 1 FROM sys.database_principals WHERE name = 'Rol_Administrador_Parque' AND type = 'R')
+BEGIN
+    CREATE ROLE Rol_Administrador_Parque;
+    PRINT '>> Rol creado: Rol_Administrador_Parque';
+END
 
--- Operativa
-CREATE ROLE Rol_Boleteria;
-CREATE ROLE Rol_Sistema_ETL;
-CREATE ROLE Rol_Comprador;
+IF NOT EXISTS (SELECT 1 FROM sys.database_principals WHERE name = 'Rol_Administrador' AND type = 'R')
+BEGIN
+    CREATE ROLE Rol_Administrador;
+    PRINT '>> Rol creado: Rol_Administrador';
+END
+-- ---------------------------------------------------------
+-- 2. GUARDAPARQUES
+-- ---------------------------------------------------------
+IF NOT EXISTS (SELECT 1 FROM sys.database_principals WHERE name = 'Rol_Jefe_Guardaparques' AND type = 'R')
+BEGIN
+    CREATE ROLE Rol_Jefe_Guardaparques;
+    PRINT '>> Rol creado: Rol_Jefe_Guardaparques';
+END
+
+IF NOT EXISTS (SELECT 1 FROM sys.database_principals WHERE name = 'Rol_Guardaparque_Base' AND type = 'R')
+BEGIN
+    CREATE ROLE Rol_Guardaparque_Base;
+    PRINT '>> Rol creado: Rol_Guardaparque_Base';
+END
+
+-- ---------------------------------------------------------
+-- 3. GUÍAS Y EXCURSIONES
+-- ---------------------------------------------------------
+IF NOT EXISTS (SELECT 1 FROM sys.database_principals WHERE name = 'Rol_Coord_Actividades' AND type = 'R')
+BEGIN
+    CREATE ROLE Rol_Coord_Actividades;
+    PRINT '>> Rol creado: Rol_Coord_Actividades';
+END
+
+IF NOT EXISTS (SELECT 1 FROM sys.database_principals WHERE name = 'Rol_Jefe_Guias' AND type = 'R')
+BEGIN
+    CREATE ROLE Rol_Jefe_Guias;
+    PRINT '>> Rol creado: Rol_Jefe_Guias';
+END
+
+IF NOT EXISTS (SELECT 1 FROM sys.database_principals WHERE name = 'Rol_Guia_Base' AND type = 'R')
+BEGIN
+    CREATE ROLE Rol_Guia_Base;
+    PRINT '>> Rol creado: Rol_Guia_Base';
+END
+
+-- ---------------------------------------------------------
+-- 4. CONCESIONES
+-- ---------------------------------------------------------
+IF NOT EXISTS (SELECT 1 FROM sys.database_principals WHERE name = 'Rol_Jefe_Concesiones' AND type = 'R')
+BEGIN
+    CREATE ROLE Rol_Jefe_Concesiones;
+    PRINT '>> Rol creado: Rol_Jefe_Concesiones';
+END
+
+IF NOT EXISTS (SELECT 1 FROM sys.database_principals WHERE name = 'Rol_Admin_Concesion' AND type = 'R')
+BEGIN
+    CREATE ROLE Rol_Admin_Concesion;
+    PRINT '>> Rol creado: Rol_Admin_Concesion';
+END
+
+IF NOT EXISTS (SELECT 1 FROM sys.database_principals WHERE name = 'Rol_Concesionante' AND type = 'R')
+BEGIN
+    CREATE ROLE Rol_Concesionante;
+    PRINT '>> Rol creado: Rol_Concesionante';
+END
+
+-- ---------------------------------------------------------
+-- 5. OPERATIVA Y SISTEMAS
+-- ---------------------------------------------------------
+IF NOT EXISTS (SELECT 1 FROM sys.database_principals WHERE name = 'Rol_Boleteria' AND type = 'R')
+BEGIN
+    CREATE ROLE Rol_Boleteria;
+    PRINT '>> Rol creado: Rol_Boleteria';
+END
+
+IF NOT EXISTS (SELECT 1 FROM sys.database_principals WHERE name = 'Rol_Sistema_ETL' AND type = 'R')
+BEGIN
+    CREATE ROLE Rol_Sistema_ETL;
+    PRINT '>> Rol creado: Rol_Sistema_ETL';
+END
+
+IF NOT EXISTS (SELECT 1 FROM sys.database_principals WHERE name = 'Rol_Comprador' AND type = 'R')
+BEGIN
+    CREATE ROLE Rol_Comprador;
+    PRINT '>> Rol creado: Rol_Comprador';
+END
+PRINT '//////////////////////////////////////////////////////////';
+PRINT 'Creación de roles finalizada con éxito.';
+PRINT '//////////////////////////////////////////////////////////';
 GO
 
 -- ---------------------------------------------------------
@@ -94,6 +175,13 @@ GRANT EXECUTE ON OBJECT::Area_Infraestructura.SP_CrearGuardaparque TO Rol_Jefe_G
 GRANT EXECUTE ON OBJECT::Area_Infraestructura.SP_ModificarGuardaparque TO Rol_Jefe_Guardaparques;
 GRANT EXECUTE ON OBJECT::Area_Infraestructura.SP_EliminarGuardaparque TO Rol_Jefe_Guardaparques;
 
+
+/* cambiar para despues:*/
+GRANT SELECT ON OBJECT::Area_Negocios.Concesion TO Rol_Jefe_Guardaparques;
+GRANT SELECT ON OBJECT::Area_Excursiones.Actividad TO Rol_Jefe_Guardaparques;
+GRANT SELECT ON OBJECT::Area_Excursiones.Tipo_Actividad TO Rol_Jefe_Guardaparques;
+
+
 --No podria crear ni eliminar, pero si modificar el parque
 GRANT EXECUTE ON OBJECT::Area_Infraestructura.Sp_ModificarParque TO Rol_Jefe_Guardaparques;
 GO
@@ -109,7 +197,7 @@ GRANT EXECUTE ON OBJECT::Area_Negocios.Sp_ImportarDatosEmpresas TO Rol_Sistema_E
 DENY INSERT, UPDATE, DELETE ON SCHEMA::Area_Infraestructura TO Rol_Sistema_ETL;
 DENY INSERT, UPDATE, DELETE ON SCHEMA::Area_Excursiones TO Rol_Sistema_ETL;
 --Nunca está de más.
-
+GO
 
 -- ////////////////////////////////////////////////////////////
 --              D. Rol Agente de gobierno
@@ -205,6 +293,9 @@ GRANT EXECUTE ON OBJECT::Area_Excursiones.SP_ModificarTipoActividad TO Rol_Coord
 
 GRANT EXECUTE ON OBJECT::Area_Excursiones.Sp_EliminarActividad TO Rol_Coord_Actividades;
 GRANT EXECUTE ON OBJECT::Area_Excursiones.SP_EliminarTipoActividad TO Rol_Coord_Actividades;
+
+GRANT SELECT ON OBJECT::Area_Excursiones.Guia TO Rol_Coord_Actividades;
+
 GO
 -- ////////////////////////////////////////////////////////////
 --              I. Rol Jefe de Guias
@@ -225,6 +316,14 @@ GRANT EXECUTE ON OBJECT::Area_Excursiones.SP_EliminarHabilitacion TO Rol_Jefe_Gu
 GRANT EXECUTE ON OBJECT::Area_Excursiones.SP_EliminarGuia TO Rol_Jefe_Guias;
 GRANT EXECUTE ON OBJECT::Area_Excursiones.SP_EliminarContratacionActividad TO Rol_Jefe_Guias;
 grant execute on object::Area_Excursiones.SP_EliminarHabilitacion_Guia TO Rol_Jefe_Guias;
+
+
+GRANT VIEW DEFINITION ON SYMMETRIC KEY::SymKey_DNI_SGPN TO Rol_Jefe_Guias;
+GRANT CONTROL ON CERTIFICATE::Certificado_DNI_SGPN TO Rol_Jefe_Guias; 
+
+GRANT EXECUTE ON OBJECT::Area_Excursiones.SP_ConsultarGuias_GuiaJefe TO Rol_Jefe_Guias;
+
+
 GO
 --Faltaría un :
 --GRANT SELECT,UPDATE ON OBJECT::Area_Excursiones.Guia
@@ -241,6 +340,12 @@ GRANT SELECT ON OBJECT::Area_Excursiones.Habilitacion_Guia TO Rol_Guia_Base;
 
 --Modificarse a si mismo.
 GRANT EXECUTE ON OBJECT::Area_Excursiones.SP_ModificarGuia TO Rol_Guia_Base;
+
+GRANT SELECT ON OBJECT::Area_Excursiones.Actividad TO Rol_Guia_Base;
+GRANT SELECT ON OBJECT::Area_Excursiones.Tipo_Actividad TO Rol_Guia_Base;
+
+GRANT EXECUTE ON OBJECT::Area_Excursiones.SP_ConsultarMisDatos_Guia TO Rol_Guia_Base;
+
 GO
 -- ////////////////////////////////////////////////////////////
 --              K. Rol de Jefe de concesiones
@@ -281,6 +386,9 @@ GRANT EXECUTE ON OBJECT::Area_Negocios.SP_ModificarConcesion TO Rol_Admin_Conces
 GRANT EXECUTE ON OBJECT::Area_Negocios.SP_EliminarEmpresaConcesionaria TO Rol_Admin_Concesion;
 GRANT EXECUTE ON OBJECT::Area_Negocios.SP_EliminarConcesion TO Rol_Admin_Concesion;
 GRANT EXECUTE ON OBJECT::Area_Negocios.SP_EliminarTipoActividadConcesion TO Rol_Admin_Concesion;
+
+GRANT SELECT ON OBJECT::Area_Negocios.Canon TO Rol_Admin_Concesion;
+
 go
 -- ////////////////////////////////////////////////////////////
 --              M. Rol de Concesionante

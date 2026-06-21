@@ -116,7 +116,6 @@ GO
 --                  CREACIÓN DE LAS ENTRADAS
 -- //////////////////////////////////////////////////////////////
 CREATE OR ALTER PROCEDURE Area_Comercial.SP_CrearEntrada
-	@IdVenta INT,
 	@IdParque INT,
 	@IdTipoVisitante INT,
 	@Precio DECIMAL(13,3),
@@ -124,12 +123,6 @@ CREATE OR ALTER PROCEDURE Area_Comercial.SP_CrearEntrada
 AS
 BEGIN
 	BEGIN TRY
-		--La venta debe estar cargada en la DB
-		IF NOT EXISTS (SELECT 1 FROM Area_Comercial.Venta WHERE IdVenta = @IdVenta)
-        BEGIN
-            PRINT('Venta inexistente')
-            RAISERROR('.', 16, 1)
-        END
 
 		--El parque debe estar cargado en la DB
 		IF NOT EXISTS (SELECT 1 FROM Area_Infraestructura.Parque WHERE IdParque = @IdParque)
@@ -168,8 +161,8 @@ BEGIN
 		END
 	END CATCH
 
-	INSERT INTO Area_Comercial.Entrada(IdVenta, IdParque, IdTipoVisitante, Precio, Fecha_Acceso) VALUES
-	(@IdVenta, @IdParque, @IdTipoVisitante, @Precio, @Fecha_Acceso);
+	INSERT INTO Area_Comercial.Entrada( IdParque, IdTipoVisitante, Precio, Fecha_Acceso) VALUES
+	( @IdParque, @IdTipoVisitante, @Precio, @Fecha_Acceso);
 	DECLARE @IdNuevaEntrada INT
 	SET @IdNuevaEntrada = SCOPE_IDENTITY()
 	RETURN @IdNuevaEntrada
@@ -412,7 +405,7 @@ GO
 -- //////////////////////////////////////////////////////////////
 CREATE OR ALTER PROCEDURE Area_Comercial.SP_ModificarFormaDePago
 	@IdFormaDePago INT,
-	@Descripcion INT
+	@Descripcion VARCHAR(30)
 AS
 BEGIN
 	BEGIN TRY
@@ -455,7 +448,7 @@ GO
 -- //////////////////////////////////////////////////////////////
 CREATE OR ALTER PROCEDURE Area_Comercial.SP_ModificarPuntoDeVenta
 	@IdPuntoDeVenta INT,
-	@Descripcion INT
+	@Descripcion VARCHAR(30)
 AS
 BEGIN
 	BEGIN TRY
@@ -499,7 +492,7 @@ GO
 
 CREATE OR ALTER PROCEDURE Area_Comercial.SP_ModificarTipoVisitante
 	@IdTipoVisitante INT,
-	@Descripcion INT
+	@Descripcion VARCHAR(30)
 AS
 BEGIN
 	BEGIN TRY
@@ -537,7 +530,6 @@ BEGIN
 	END CATCH
 END
 GO
-
 -- //////////////////////////////////////////////////////////////
 --                  Apartado 3: Sps de Eliminación
 -- //////////////////////////////////////////////////////////////

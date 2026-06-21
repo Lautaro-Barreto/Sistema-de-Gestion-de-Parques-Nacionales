@@ -95,7 +95,7 @@ BEGIN
         VALUES ( 
             @Nombre, 
             @Apellido, 
-            EncryptByKey(Key_GUID('SymKey_DNI_SGPN'), @Dni), -- <  Cifrado en tiempo de ejecución
+            EncryptByKey(Key_GUID('SymKey_DNI_SGPN'), @Dni), 
             @Fecha_Ingreso,
             @Fecha_Egreso,
             @Activo
@@ -103,7 +103,7 @@ BEGIN
 
         -- CLAVE DE SEGURIDAD: Cerramos la llave inmediatamente después de usarla
         CLOSE SYMMETRIC KEY SymKey_DNI_SGPN;
-
+        PRINT 'Guardaparque Creado Exitósamente'
     END TRY
     BEGIN CATCH
         -- SEGURO DE DBA: 

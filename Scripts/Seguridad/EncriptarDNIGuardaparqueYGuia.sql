@@ -23,6 +23,7 @@ BEGIN TRY
     IF NOT EXISTS (SELECT * FROM  sys.symmetric_keys WHERE symmetric_key_id = 101)
     BEGIN
         CREATE MASTER KEY ENCRYPTION BY PASSWORD = '#Unlam_PasswordFuerte2026-1989!'
+        PRINT '¡Se creó la llave maestra correctamente!'
     END
 ELSE
 BEGIN
@@ -44,11 +45,13 @@ GO
 --Un certificado de seguridad es el API o intermediario entre la master key
 --y la simetrica
 -- Funciona como un intermediario para proteger la llave simétrica.
+
 BEGIN TRY
     IF NOT EXISTS (SELECT * FROM sys.certificates WHERE name = 'Certificado_DNI_SGPN')
     BEGIN
         CREATE CERTIFICATE Certificado_DNI_SGPN WITH SUBJECT = 
         'Certificado para proteger los DNIs del sistema SGPN';
+        PRINT '¡Se creó el certificado correctamente!'
     END
     ELSE
     BEGIN
@@ -78,6 +81,7 @@ BEGIN TRY
         CREATE SYMMETRIC KEY SymKey_DNI_SGPN
         WITH ALGORITHM = AES_256
         ENCRYPTION BY CERTIFICATE Certificado_DNI_SGPN;
+        PRINT '¡Se creó la llave simetrica correctamente!'
     END
     ELSE
     BEGIN
@@ -107,11 +111,12 @@ GO
 --Aún no existe.
 --Aunque parezca que el varbinary es enorme. Es porque al encriptar se agregan 
 --Datos se sql Server para para la seguridad. Cosas como GUID  de la llave simétrica, padding HMAC que son sellos de seguridad etc.
-   
+   PRINT 'Comienzo de encriptación de dnis para: [GUARDAPARQUES]'
 BEGIN TRY
     IF COL_LENGTH('Area_Infraestructura.Guardaparque', 'Dni_Encriptado') IS NULL
     BEGIN
         ALTER TABLE Area_Infraestructura.Guardaparque ADD Dni_Encriptado VARBINARY(256);
+        PRINT 'Se Agregó columna Dni_Encriptado'
     END
     ELSE
     BEGIN
@@ -126,41 +131,49 @@ GO
 
 -- Abrimos la llave simétrica y encriptamos los DNIs existentes
 OPEN SYMMETRIC KEY SymKey_DNI_SGPN DECRYPTION BY CERTIFICATE Certificado_DNI_SGPN;
-
+PRINT '[APERTURA] LLave Simétrica: SymKey_DNI_SGPN'
 
 --EncryptByKey se encarga de todo, agrega la encriptación
 UPDATE Area_Infraestructura.Guardaparque
 SET Dni_Encriptado = EncryptByKey(Key_GUID('SymKey_DNI_SGPN'), Dni)
 WHERE Dni IS NOT NULL;
-
+PRINT 'Se transfirieron los datos de la columna "Dni" a la columna "Dni_Encriptado"'
 CLOSE SYMMETRIC KEY SymKey_DNI_SGPN;
+PRINT '[CIERRE] Llave Simétrica: SymKey_DNI_SGPN'
 GO
 
 -- Ahora la columna vieja la saco y me quedo con la nueva 
 ALTER TABLE Area_Infraestructura.Guardaparque DROP COLUMN Dni;
 EXEC sp_rename 'Area_Infraestructura.Guardaparque.Dni_Encriptado', 'Dni', 'COLUMN';
+PRINT 'Se eliminó correctamente la columna Dni'
+PRINT 'Se cambió el nombre del objeto Columna Dni_Encriptado a Dni'
 GO
-
+PRINT 'Fin operación'
 --///////////////////////////////////////////////////////////////////////////////////////
 --Lo siguiente es lo mismo pero para los guías de los cualees también se guardan DNIs
+PRINT 'Comienzo de encriptación de dnis para: [GUIAS]'
 IF COL_LENGTH('Area_Excursiones.Guia', 'Dni_Encriptado') IS NULL
 BEGIN
     ALTER TABLE Area_Excursiones.Guia ADD Dni_Encriptado VARBINARY(256);
+    PRINT 'Se Agregó columna Dni_Encriptado'
 END
 GO
 
 --Open a la llave simetrica y le agrego el mismo cert
 OPEN SYMMETRIC KEY SymKey_DNI_SGPN DECRYPTION BY CERTIFICATE Certificado_DNI_SGPN;
-
+PRINT '[APERTURA] LLave Simétrica: SymKey_DNI_SGPN'
 UPDATE Area_Excursiones.Guia
 SET Dni_Encriptado = EncryptByKey(Key_GUID('SymKey_DNI_SGPN'), DNI) -- Respeto mayúsculas de tu script original
 WHERE DNI IS NOT NULL;
-
+PRINT 'Se transfirieron los datos de la columna "Dni" a la columna "Dni_Encriptado"'
 CLOSE SYMMETRIC KEY SymKey_DNI_SGPN;
+PRINT '[CIERRE] Llave Simétrica: SymKey_DNI_SGPN'
 GO
 
 -- Sale lo viejo, entra lo fresco
 ALTER TABLE Area_Excursiones.Guia DROP COLUMN DNI;
 EXEC sp_rename 'Area_Excursiones.Guia.Dni_Encriptado', 'DNI', 'COLUMN';
+PRINT 'Se cambió el nombre del objeto Columna Dni_Encriptado a Dni'
 GO
 
+PRINT 'Fin operación'
