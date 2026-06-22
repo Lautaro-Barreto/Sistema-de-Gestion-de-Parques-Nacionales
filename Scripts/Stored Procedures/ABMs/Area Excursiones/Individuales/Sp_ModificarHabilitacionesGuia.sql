@@ -28,6 +28,11 @@ BEGIN
             RAISERROR('La habilitación no existe.', 16, 1)
         END
 
+        IF NOT EXISTS( SELECT 1 FROM Area_Excursiones.Habilitacion_Guia WHERE IdGuia = @IdGuia AND IdHabilitacion = @IdHabilitacion )
+        BEGIN 
+            RAISERROR('El guia no tiene asignada la habilitacion que se desea modificar.',16,1)
+        END 
+        
         IF @FechaFin < @FechaInicio
         BEGIN
             RAISERROR('La fecha de fin de la validez de la habilitacion no puede ser anterior a la fecha de inicio de la misma.', 16, 1)
