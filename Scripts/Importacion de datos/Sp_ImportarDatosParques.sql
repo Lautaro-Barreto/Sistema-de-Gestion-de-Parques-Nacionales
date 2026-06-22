@@ -19,7 +19,7 @@ BEGIN
 
     IF OBJECT_ID('tempdb..##Staging_Parques') IS NULL
     BEGIN 
-        CREATE TABLE Area_Infraestructura.##Staging_Parques (
+        CREATE TABLE ##Staging_Parques (
             IdStaging INT IDENTITY(1,1) PRIMARY KEY,
             Provincia VARCHAR(80) COLLATE Latin1_General_CI_AS,
             Parque VARCHAR(80) COLLATE Latin1_General_CI_AS,
@@ -68,66 +68,76 @@ BEGIN
 
             IF NOT EXISTS (SELECT 1 FROM Area_Infraestructura.Tipo_Parque WHERE Descripcion = 'Otro / No Especificado')
                 INSERT INTO Area_Infraestructura.Tipo_Parque (Descripcion) VALUES ('Otro / No Especificado');
-
-            -- Paso 1: Insertar Regiones faltantes            
-            INSERT INTO Area_Infraestructura.Region (Nombre)
-            SELECT DISTINCT s.Region
-            FROM Area_Infraestructura.##Staging_Parques s
-            WHERE s.Region IS NOT NULL 
-            AND s.Region <> ''
-            AND NOT EXISTS (
-                SELECT 1 FROM Area_Infraestructura.Region r WHERE r.Nombre = s.Region
-            );
+ 
+            -- Paso 1: Insertar o actualizar Regiones            
+            MERGE Area_Infraestructura.Region AS Target
+            USING (
+                SELECT DISTINCT s.Region
+                FROM ##Staging_Parques s
+                WHERE s.Region IS NOT NULL AND s.Region <> ''
+            ) AS Source
+            ON Target.Nombre = Source.Region
+            WHEN MATCHED THEN
+                UPDATE SET Nombre = Source.Region
+            WHEN NOT MATCHED THEN
+                INSERT (Nombre) VALUES (Source.Region);
 
             -- Paso 2: Insertar Provincias faltantes (Asignándoles la FK de Región correspondiente)
-            INSERT INTO Area_Infraestructura.Provincia (IdRegion, Nombre)
-            SELECT DISTINCT r.IdRegion, s.Provincia
-            FROM Area_Infraestructura.##Staging_Parques s
-            INNER JOIN Area_Infraestructura.Region r ON s.Region = r.Nombre
-            WHERE s.Provincia IS NOT NULL 
-            AND s.Provincia <> ''
-            AND NOT EXISTS (
-                SELECT 1 FROM Area_Infraestructura.Provincia p WHERE p.Nombre = s.Provincia
-            );
+            MERGE Area_Infraestructura.Provincia AS Target
+            USING (
+                SELECT DISTINCT r.IdRegion, s.Provincia
+                FROM ##Staging_Parques s
+                INNER JOIN Area_Infraestructura.Region r ON s.Region = r.Nombre
+                WHERE s.Provincia IS NOT NULL AND s.Provincia <> ''
+            ) AS Source
+            ON Target.Nombre = Source.Provincia
+            WHEN MATCHED THEN
+                UPDATE SET IdRegion = Source.IdRegion
+            WHEN NOT MATCHED THEN
+                INSERT (IdRegion, Nombre) VALUES (Source.IdRegion, Source.Provincia);
 
-            -- Paso 3: Insertar Parques (Asignándoles la FK de Provincia correspondiente, y el tipo de parque evaluando su nombre)
-            INSERT INTO Area_Infraestructura.Parque (IdProvincia, IdTipoParque, Nombre, Superficie)
-            SELECT DISTINCT 
-                p.IdProvincia,
-                tp.IdTipoParque,
-                s.Parque,
-                s.Superficie
-            FROM Area_Infraestructura.##Staging_Parques s
-            INNER JOIN Area_Infraestructura.Provincia p ON s.Provincia = p.Nombre
-            
-            -- Evaluamos el nombre del área en Staging y lo unimos con su descripción real
-            INNER JOIN Area_Infraestructura.Tipo_Parque tp ON tp.Descripcion = 
-                CASE 
-                    WHEN s.Parque LIKE '%Parque%' THEN 'Parque Nacional'
-                    WHEN s.Parque LIKE '%Reserva%' THEN 'Reserva Natural'
-                    WHEN s.Parque LIKE '%Monumento%' THEN 'Monumento Natural'
-                    ELSE 'Otro / No Especificado'
-                END
+           -- Paso 3: Insertar o actualizar Parques (Asignándoles la FK de Provincia correspondiente, y el tipo de parque evaluando su nombre)
+            MERGE Area_Infraestructura.Parque AS Target
+            USING (
+                SELECT DISTINCT 
+                    p.IdProvincia,
+                    tp.IdTipoParque,
+                    s.Parque,
+                    s.Superficie
+                FROM ##Staging_Parques s
+                INNER JOIN Area_Infraestructura.Provincia p ON s.Provincia = p.Nombre
                 
-            WHERE s.Parque IS NOT NULL 
-            AND s.Parque <> ''
-            AND NOT EXISTS (
-                SELECT 1 
-                FROM Area_Infraestructura.Parque pq 
-                WHERE pq.Nombre = s.Parque AND pq.IdProvincia = p.IdProvincia
-            );
+                -- Evaluamos el nombre del área en Staging y lo unimos con su descripción real
+                INNER JOIN Area_Infraestructura.Tipo_Parque tp ON tp.Descripcion = 
+                    CASE 
+                        WHEN s.Parque LIKE '%Parque%' THEN 'Parque Nacional'
+                        WHEN s.Parque LIKE '%Reserva%' THEN 'Reserva Natural'
+                        WHEN s.Parque LIKE '%Monumento%' THEN 'Monumento Natural'
+                        ELSE 'Otro / No Especificado'
+                    END
+                    
+                WHERE s.Parque IS NOT NULL AND s.Parque <> ''
+            ) AS Source
+            ON Target.Nombre = Source.Parque AND Target.IdProvincia = Source.IdProvincia
+            WHEN MATCHED THEN
+                UPDATE SET 
+                    IdTipoParque = Source.IdTipoParque,
+                    Superficie = Source.Superficie
+            WHEN NOT MATCHED THEN
+                INSERT (IdProvincia, IdTipoParque, Nombre, Superficie)
+                VALUES (Source.IdProvincia, Source.IdTipoParque, Source.Parque, Source.Superficie);                
 
         COMMIT TRANSACTION;
         PRINT 'Migración de datos completada con éxito.';
 
-    DROP TABLE Area_Infraestructura.##Staging_Parques;
+    DROP TABLE ##Staging_Parques;
     END TRY
     BEGIN CATCH
         DECLARE @ErrorMessage NVARCHAR(4000) = ERROR_MESSAGE();
         DECLARE @ErrorSeverity INT = ERROR_SEVERITY();
         DECLARE @ErrorState INT = ERROR_STATE();
         RAISERROR (@ErrorMessage, @ErrorSeverity, @ErrorState);
-        DROP TABLE IF EXISTS Area_Infraestructura.##Staging_Parques;
+        DROP TABLE IF EXISTS ##Staging_Parques;
     END CATCH
 END
 GO

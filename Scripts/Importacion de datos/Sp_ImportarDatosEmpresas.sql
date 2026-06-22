@@ -49,11 +49,14 @@ BEGIN
             VALUES ('Vigente'), ('Adeudado'), ('Saldado en Término'), ('Saldado con Atraso'), ('Exento'), ('Extinguido');
         END
 
-        -- 2. Insertar Empresas Concesionarias (Estado 1 = Activa)
-        INSERT INTO Area_Negocios.Empresa_Concesionaria (Nombre)
-        SELECT DISTINCT Organizacion
-        FROM ##Staging_Organizaciones s
-        WHERE NOT EXISTS (SELECT 1 FROM Area_Negocios.Empresa_Concesionaria e WHERE e.Nombre = s.Organizacion);
+        -- 2. Insertar o actualizar Empresas Concesionarias
+        MERGE Area_Negocios.Empresa_Concesionaria AS Target
+        USING (SELECT DISTINCT Organizacion FROM ##Staging_Organizaciones WHERE Organizacion IS NOT NULL AND Organizacion <> '') AS Source
+        ON Target.Nombre = Source.Organizacion
+        WHEN MATCHED THEN
+            UPDATE SET Nombre = Source.Organizacion
+        WHEN NOT MATCHED THEN
+            INSERT (Nombre) VALUES (Source.Organizacion);
 
         -- 3. Insertar Tipos de Actividad
         INSERT INTO Area_Negocios.Tipo_Actividad_Concesion (Descripcion)

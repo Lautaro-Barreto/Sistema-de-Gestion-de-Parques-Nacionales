@@ -20,7 +20,8 @@ SELECT par.Nombre AS Parque, p.Nombre AS Provincia, r.Nombre AS Region, par.Supe
 FROM Area_Infraestructura.Parque par
 LEFT JOIN Area_Infraestructura.Provincia p ON par.IdProvincia = p.IdProvincia
 LEFT JOIN Area_Infraestructura.Region r ON p.IdRegion = r.IdRegion
-LEFT JOIN Area_Infraestructura.Tipo_Parque tp ON par.IdTipoParque = tp.IdTipoParque;
+LEFT JOIN Area_Infraestructura.Tipo_Parque tp ON par.IdTipoParque = tp.IdTipoParque
+ORDER BY par.Nombre;
 go
 
 DELETE FROM Area_Infraestructura.Parque;
@@ -41,5 +42,6 @@ SELECT par.Nombre AS Parque, p.Nombre AS Provincia, r.Nombre AS Region, par.Supe
 FROM Area_Infraestructura.Parque par
 LEFT JOIN Area_Infraestructura.Provincia p ON par.IdProvincia = p.IdProvincia
 LEFT JOIN Area_Infraestructura.Region r ON p.IdRegion = r.IdRegion
-LEFT JOIN Area_Infraestructura.Tipo_Parque tp ON par.IdTipoParque = tp.IdTipoParque;
+LEFT JOIN Area_Infraestructura.Tipo_Parque tp ON par.IdTipoParque = tp.IdTipoParque
+ORDER BY par.Nombre;
 go
