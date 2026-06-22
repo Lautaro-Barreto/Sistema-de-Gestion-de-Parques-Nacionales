@@ -70,18 +70,65 @@ EXEC Area_Comercial.Sp_RegistrarVentaEntradas
 	@IdPuntoDeVenta = 1,
 	@FormaDePago = 'Efectivo'
 
--- 6. Registrar una venta de entradas con datos correctos
+-- 6. Registrar una venta de entradas con datos correctos, sin actividad
 DECLARE @IdVentaEntrada INT;
 EXEC @IdVentaEntrada = Area_Comercial.Sp_RegistrarVentaEntradas
 	@Parque = 'Parque Nacional Iguazú',
 	@CantidadEntradas = 2,
 	@TipoVisitante = 'Residente',
-	@Actividad = 'Tour Guiado Cabalgata 16', --Esta actividad sí existe para el Parque Nacional Iguazú, así que debería registrar la venta correctamente.
+	@Actividad = NULL, --Esta actividad sí existe para el Parque Nacional Iguazú, así que debería registrar la venta correctamente.
 	@Fecha = '2026-07-15',
 	@IdPuntoDeVenta = 1,
 	@FormaDePago = 'Efectivo'
 
---vemos los datos de la venta registrada
+-- Vemos los datos de la venta registrada
+SELECT distinct v.IdVenta, pdv.Descripcion as [Punto de venta], p.Nombre, tv.Descripcion AS [Tipo visitante], fp.Descripcion AS [Forma de pago], e.IdEntrada, e.Precio as [Precio unitario], dve.Cantidad, dve.Subtotal,
+v.Total as [Total venta], v.Fecha as [Fecha venta]
+FROM Area_Comercial.Venta v
+JOIN Area_Comercial.Detalle_Venta_Entrada dve ON v.IdVenta = dve.IdVenta
+JOIN Area_Comercial.Entrada e ON dve.IdEntrada = e.IdEntrada
+join Area_Comercial.Tipo_Visitante tv on e.IdTipoVisitante = tv.IdTipoVisitante
+join Area_Comercial.Forma_De_Pago fp on v.IdFormaDePago = fp.IdFormaDePago
+join Area_Infraestructura.Parque p on v.IdParque = p.IdParque
+join Area_Comercial.Punto_De_Venta pdv on v.IdPuntoDeVenta = pdv.IdPuntoDeVenta
+where v.IdVenta = @IdVentaEntrada
+
+IF @IdVentaEntrada IS NOT NULL
+BEGIN
+    PRINT 'Venta de entradas registrada exitosamente. IdVentaEntrada: ' + CAST(@IdVentaEntrada AS VARCHAR);
+END
+ELSE
+BEGIN
+    PRINT 'Error al registrar la venta de entradas.';
+END
+
+-- 7. Registrar una venta de entradas con datos correctos, ahora con una actividad que sí existe para el parque
+DECLARE @IdActividadIngresada INT;
+DECLARE @IdParqueRandom INT = (SELECT IdParque FROM Area_Infraestructura.Parque WHERE Nombre = 'Parque Nacional Iguazú');
+DECLARE @IdTipoAct INT;
+
+EXEC @IdTipoAct = Area_Excursiones.Sp_CrearTipoActividad
+	@Descripcion = 'Aventura';
+
+EXEC @IdActividadIngresada = Area_Excursiones.Sp_CrearActividad
+    @tipoActividad = @IdTipoAct,
+    @idParque = @IdParqueRandom,
+    @Nombre = 'Excursión en bote',
+    @Costo = 100.50,
+    @Duracion = 2,
+    @Cupo_maximo = 50
+
+DECLARE @IdVentaEntrada2 INT;
+EXEC @IdVentaEntrada2 = Area_Comercial.Sp_RegistrarVentaEntradas
+	@Parque = 'Parque Nacional Iguazú',
+	@CantidadEntradas = 2,
+	@TipoVisitante = 'Residente',
+	@Actividad = 'Excursión en bote', --Esta actividad sí existe para el Parque Nacional Iguazú, así que debería registrar la venta correctamente.
+	@Fecha = '2026-07-15',
+	@IdPuntoDeVenta = 1,
+	@FormaDePago = 'Efectivo'
+
+-- Vemos los datos de la venta registrada
 SELECT distinct v.IdVenta, pdv.Descripcion as [Punto de venta], p.Nombre, tv.Descripcion AS [Tipo visitante], fp.Descripcion AS [Forma de pago], e.IdEntrada, e.Precio as [Precio unitario], dve.Cantidad, dve.Subtotal,
  a.Nombre AS [Actividad contratada], a.Costo as [Costo actividad], v.Total as [Total venta], ca.Fecha_Contratacion, a.Duracion as [Duración actividad (horas)], v.Fecha as [Fecha venta]
 FROM Area_Comercial.Venta v
@@ -93,11 +140,11 @@ join Area_Infraestructura.Parque p on v.IdParque = p.IdParque
 join Area_Comercial.Punto_De_Venta pdv on v.IdPuntoDeVenta = pdv.IdPuntoDeVenta
 join Area_Excursiones.Contratacion_Actividad ca on v.IdVenta = ca.IdVenta
 join Area_Excursiones.Actividad a on ca.IdActividad = a.IdActividad
-where v.IdVenta = @IdVentaEntrada
+where v.IdVenta = @IdVentaEntrada2
 
-IF @IdVentaEntrada IS NOT NULL
+IF @IdVentaEntrada2 IS NOT NULL
 BEGIN
-    PRINT 'Venta de entradas registrada exitosamente. IdVentaEntrada: ' + CAST(@IdVentaEntrada AS VARCHAR);
+    PRINT 'Venta de entradas registrada exitosamente. IdVentaEntrada: ' + CAST(@IdVentaEntrada2 AS VARCHAR);
 END
 ELSE
 BEGIN
