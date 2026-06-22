@@ -13,7 +13,7 @@ GO
 
 -- Ejecutamos el SP de importación general para un archivo XML
 EXEC Area_Infraestructura.Sp_ImportarDatosParques
-    @RutaArchivoParques = 'C:\ArchivosTPBDA\sheet1.xml',
+    @RutaArchivoParques = 'C:\ArchivosTPBDA\sheet1.xml'
 go
 
 SELECT par.Nombre AS Parque, p.Nombre AS Provincia, r.Nombre AS Region, par.Superficie AS Superficie, tp.Descripcion AS Tipo_Parque
@@ -34,8 +34,7 @@ go
 
 -- Ejecutamos el SP de importación general para un archivo CSV
 EXEC Area_Infraestructura.Sp_ImportarDatosParques
-    @RutaArchivoParques = 'C:\ArchivosTPBDA\Áreas protegidas de Argentina - Sistema de Información de Biodiversidad.csv',
-    @RutaArchivoVisitas = 'C:\ArchivosTPBDA\Visitas a parques nacionales - Sistema de Información de Biodiversidad.csv';
+    @RutaArchivoParques = 'C:\ArchivosTPBDA\Áreas protegidas de Argentina - Sistema de Información de Biodiversidad.csv';
 go
 
 SELECT par.Nombre AS Parque, p.Nombre AS Provincia, r.Nombre AS Region, par.Superficie AS Superficie, tp.Descripcion AS Tipo_Parque
