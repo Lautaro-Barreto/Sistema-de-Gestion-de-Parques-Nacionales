@@ -76,15 +76,18 @@ GO
 
 PRINT '--- PRUEBA 1: Lectura de tablas permitidas (PERMISIÓN ESPERADA)---'
 -- Esto debe funcionar porque tiene GRANT explícito (temporalmente).
--- SELECT * FROM Area_Excursiones.Guia
-EXEC  Area_Excursiones.SP_ConsultarMisDatos_Guia 1
+PRINT '--- Ver  sus propios datos:----'
+
+EXEC  Area_Excursiones.SP_ConsultarMisDatos_Guia @Nombre='UsuarioGuiaTest',@Apellido='ApellidoPrueba'
+
+
 SELECT TOP 5 * FROM Area_Excursiones.Habilitacion;
 GO
 --Resultado: Es capaz de visualizar sus datos correctamente o las habilitaciones
 
 
-PRINT '--- PRUEBA 2: Ejecución del SP de Modificación (PERMISIÓN ESPERADA) ---'
--- Esto debe funcionar( no se frena por seguridad, sino por los parámetros. Es decir si le permite la ejecución del sp)
+PRINT '--- PRUEBA 2: Ejecución del SP de Modificación (DENEGADO ESPERADO) ---'
+-- Esto no debe funcionar
 EXEC Area_Excursiones.SP_ModificarGuia @IdGuia = 1, @Nombre = 'Test', @Apellido = 'Test', @DNI = '11111111';
 GO
 --Resultado:
@@ -105,8 +108,18 @@ PRINT '--- PRUEBA 5: Intento de ver a los demás guias (PERMISIÓN CON RESTRICCI
 SELECT * FROM Area_Excursiones.Vista_Guias_Seguros
 GO
 --Resultado: Puede ver a sus compañeros exceptuando sus datos de DNI, ya que se encuentran encriptados.
+
+PRINT '--- PRUEBA 6: Intento de agregar un nuevo guía(DENEGADO ESPERADO) ---'
+EXEC Area_Excursiones.Sp_CrearGuia @DNI = '51770000',
+    @idParque = 1,
+    @idEspecialidad = 1,
+    @Nombre ='GuiaLeandro',
+    @Apellido= 'ApellidoGuiaLeandro',
+    @Titulo ='Curso de Turismo'
+GO
+--resultado: Se denegó el permiso EXECUTE en el objeto 'Sp_CrearGuia'
 -- ///////////////////////////////////////////////////////////////
--- 4. LOGOUT para volver al modo DB
+
 
 REVERT;
 GO

@@ -29,18 +29,21 @@ BEGIN
         --El parque debe estar en la db
         IF NOT EXISTS(SELECT 1 FROM Area_Infraestructura.Parque WHERE IdParque = @idParque)
         BEGIN
+            PRINT 'El parque ingresado no existe.';
             RAISERROR('El Parque no existe.', 16, 1)
         END
 
         --La especialidad debe estar en la db
         IF NOT EXISTS(SELECT 1 FROM Area_Excursiones.Especialidad WHERE IdEspecialidad = @idEspecialidad)
         BEGIN
+            PRINT 'La especialidad del guía no se encuentra registrada.';
             RAISERROR('La especialidad no existe.', 16, 1)
             
         END
         --validar que el dni sea válido
         IF (@DNI LIKE '%[^0-9]%' OR LEN(@DNI) NOT BETWEEN 7 AND 8)
         BEGIN
+            PRINT('DNI inválido: debe contener solo números y tener entre 7 y 8 dígitos.');
             RAISERROR('DNI inválido: debe contener solo números y tener entre 7 y 8 dígitos.', 16, 1);
         END
         --El dni no debe existir en la db 

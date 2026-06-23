@@ -91,10 +91,11 @@ BEGIN
         END
 
         -- Insertamos aplicando EncryptByKey en la columna Dni
-        INSERT INTO Area_Infraestructura.Guardaparque (Nombre, Apellido, Dni, Fecha_Ingreso, Fecha_Egreso,Activo)
+        INSERT INTO Area_Infraestructura.Guardaparque (Nombre, Apellido, IdParque,Dni, Fecha_Ingreso, Fecha_Egreso,Activo)
         VALUES ( 
             @Nombre, 
             @Apellido, 
+            @IdParque,
             EncryptByKey(Key_GUID('SymKey_DNI_SGPN'), @Dni), 
             @Fecha_Ingreso,
             @Fecha_Egreso,

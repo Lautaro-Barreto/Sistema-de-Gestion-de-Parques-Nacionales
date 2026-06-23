@@ -148,14 +148,14 @@ GRANT EXECUTE ON OBJECT::Area_Excursiones.Sp_CrearContratacion_Actividad TO Rol_
 GRANT EXECUTE ON OBJECT::Area_Comercial.SP_EliminarDetalleVentaEntrada TO Rol_Boleteria;
 GRANT EXECUTE ON OBJECT::Area_Comercial.SP_EliminarFormaDePago TO Rol_Boleteria;
 GRANT EXECUTE ON OBJECT::Area_Comercial.SP_EliminarDetalleVentaEntrada TO Rol_Boleteria;
-GRANT EXECUTE ON OBJECT::Area_Comercial.SP_EliminarEntrada TO Rol_Boleteria;
+
 GRANT EXECUTE ON OBJECT::Area_Excursiones.Sp_EliminarContratacionActividad TO Rol_Boleteria;
 
-GRANT EXECUTE ON OBJECT::Area_Comercial.SP_ModificarDetalleVentaEntrada TO Rol_Boleteria;
+
 GRANT EXECUTE ON OBJECT::Area_Comercial.SP_ModificarFormaDePago TO Rol_Boleteria;
 GRANT EXECUTE ON OBJECT::Area_Comercial.SP_ModificarFormaDePago TO Rol_Boleteria;
 GRANT EXECUTE ON OBJECT::Area_Excursiones.SP_ModificarContratacionActividad TO Rol_Boleteria;
---GRANT EXECUTE ON OBJECT::Area_Negocios.SP_ModificarVenta TO Rol_Boleteria;
+
 
 DENY SELECT, INSERT, UPDATE, DELETE ON OBJECT::Area_Comercial.Venta TO Rol_Boleteria;
 GO
@@ -184,7 +184,8 @@ GRANT SELECT ON OBJECT::Area_Excursiones.Tipo_Actividad TO Rol_Jefe_Guardaparque
 --No podria crear ni eliminar, pero si modificar el parque
 GRANT EXECUTE ON OBJECT::Area_Infraestructura.Sp_ModificarParque TO Rol_Jefe_Guardaparques;
 GO
-
+GRANT EXECUTE ON OBJECT::Area_Infraestructura.SP_ConsultarDatosParque_Guardaparque TO Rol_Jefe_Guardaparques;
+GO
 -- ////////////////////////////////////////////////////////////
 -- C. Rol Sistema de Cargas Masivas
 -- ////////////////////////////////////////////////////////////
@@ -253,7 +254,7 @@ GRANT EXECUTE ON OBJECT::Area_Negocios.SP_ModificarTipoActividadConcesion TO Rol
 GRANT EXECUTE ON OBJECT::Area_Negocios.SP_ModificarEstadoCanon TO Rol_Administrador_Parque;
 GRANT EXECUTE ON OBJECT::Area_Negocios.SP_ModificarPagoCanon TO Rol_Administrador_Parque;
 GRANT EXECUTE ON OBJECT::Area_Excursiones.SP_ModificarGuia TO Rol_Administrador_Parque;
-GRANT EXECUTE ON OBJECT::Area_Excursiones.SP_ModificarGuardaparque TO Rol_Administrador_Parque;
+GRANT EXECUTE ON OBJECT::Area_Infraestructura.SP_ModificarGuardaparque TO Rol_Administrador_Parque;
 
 
 GRANT EXECUTE ON OBJECT::Area_Negocios.SP_EliminarEmpresaConcesionaria TO Rol_Administrador_Parque;
@@ -263,7 +264,7 @@ GRANT EXECUTE ON OBJECT::Area_Negocios.SP_EliminarTipoActividadConcesion TO Rol_
 GRANT EXECUTE ON OBJECT::Area_Negocios.SP_EliminarEstadoCanon TO Rol_Administrador_Parque;
 GRANT EXECUTE ON OBJECT::Area_Negocios.SP_EliminarPagoCanon TO Rol_Administrador_Parque;
 GRANT EXECUTE ON OBJECT::Area_Excursiones.SP_EliminarGuia TO Rol_Administrador_Parque;
-GRANT EXECUTE ON OBJECT::Area_Excursiones.SP_EliminarGuardaparque TO Rol_Administrador_Parque;
+GRANT EXECUTE ON OBJECT::Area_Infraestructura.SP_EliminarGuardaparque TO Rol_Administrador_Parque;
 
 GO
 
@@ -278,6 +279,8 @@ GRANT EXECUTE ON OBJECT::Area_Infraestructura.SP_ModificarGuardaparque TO Rol_Gu
 GRANT SELECT ON OBJECT::Area_Negocios.Concesion TO Rol_Guardaparque_Base;
 GRANT SELECT ON OBJECT::Area_Excursiones.Actividad TO Rol_Guardaparque_Base;
 GRANT SELECT ON OBJECT::Area_Excursiones.Tipo_Actividad TO Rol_Guardaparque_Base;
+
+GRANT EXECUTE ON OBJECT::Area_Infraestructura.SP_ConsultarDatosParque_Guardaparque TO Rol_Guardaparque_Base;
 GO
 -- ////////////////////////////////////////////////////////////
 --              H. Rol Coordinador de Actividades
@@ -300,28 +303,30 @@ GO
 --              I. Rol Jefe de Guias
 -- ////////////////////////////////////////////////////////////
 --El si puede agregar y modificar nuevos guías.
-GRANT EXECUTE ON OBJECT::Area_Excursiones.SP_CrearContratacionActividad TO Rol_Jefe_Guias;
-GRANT EXECUTE ON OBJECT::Area_Excursiones.SP_CrearGuia TO Rol_Jefe_Guias;
+GRANT EXECUTE ON OBJECT::Area_Excursiones.SP_CrearContratacion_Actividad TO Rol_Jefe_Guias;
+GRANT EXECUTE ON OBJECT::Area_Excursiones.Sp_CrearGuia TO Rol_Jefe_Guias;
 GRANT EXECUTE ON OBJECT::Area_Excursiones.SP_CrearHabilitacion TO Rol_Jefe_Guias;
-GRANT EXECUTE ON OBJECT::Area_Excursiones.SP_CrearHabilitacion_Guia TO Rol_Jefe_Guias;
+GRANT EXECUTE ON OBJECT::Area_Excursiones.SP_CrearHabilitacionGuia TO Rol_Jefe_Guias;
 
 GRANT EXECUTE ON OBJECT::Area_Excursiones.SP_ModificarGuia TO Rol_Jefe_Guias;
 GRANT EXECUTE ON OBJECT::Area_Excursiones.SP_ModificarContratacionActividad TO Rol_Jefe_Guias;
 GRANT EXECUTE ON OBJECT::Area_Excursiones.SP_ModificarHabilitacion TO Rol_Jefe_Guias;
-GRANT EXECUTE ON OBJECT::Area_Excursiones.SP_ModificarHabilitacion_Guia TO Rol_Jefe_Guias;
+GRANT EXECUTE ON OBJECT::Area_Excursiones.Sp_ModificarHabilitacionesGuia TO Rol_Jefe_Guias;
 
 
 GRANT EXECUTE ON OBJECT::Area_Excursiones.SP_EliminarHabilitacion TO Rol_Jefe_Guias;
 GRANT EXECUTE ON OBJECT::Area_Excursiones.SP_EliminarGuia TO Rol_Jefe_Guias;
 GRANT EXECUTE ON OBJECT::Area_Excursiones.SP_EliminarContratacionActividad TO Rol_Jefe_Guias;
-grant execute on object::Area_Excursiones.SP_EliminarHabilitacion_Guia TO Rol_Jefe_Guias;
+grant execute on object::Area_Excursiones.SP_EliminarHabilitacionGuia TO Rol_Jefe_Guias;
+grant execute on object::Area_Excursiones.Sp_ElimnarGuiasPorActividad TO Rol_Jefe_Guias;
+grant execute on object::Area_Excursiones.Sp_EliminarHabilitacionesPorActividad TO Rol_Jefe_Guias;
 
 
 GRANT VIEW DEFINITION ON SYMMETRIC KEY::SymKey_DNI_SGPN TO Rol_Jefe_Guias;
 GRANT CONTROL ON CERTIFICATE::Certificado_DNI_SGPN TO Rol_Jefe_Guias; 
 
 GRANT EXECUTE ON OBJECT::Area_Excursiones.SP_ConsultarGuias_GuiaJefe TO Rol_Jefe_Guias;
-
+GRANT EXECUTE ON OBJECT::Area_Excursiones.SP_ConsultarMisDatos_Guia TO Rol_Jefe_Guias;
 
 GO
 --Faltaría un :
@@ -336,8 +341,6 @@ GO
 GRANT SELECT ON OBJECT::Area_Excursiones.Habilitacion TO Rol_Guia_Base;
 GRANT SELECT ON OBJECT::Area_Excursiones.Habilitacion_Guia TO Rol_Guia_Base;
 
---Modificarse a si mismo.
-GRANT EXECUTE ON OBJECT::Area_Excursiones.SP_ModificarGuia TO Rol_Guia_Base;
 
 GRANT SELECT ON OBJECT::Area_Excursiones.Actividad TO Rol_Guia_Base;
 GRANT SELECT ON OBJECT::Area_Excursiones.Tipo_Actividad TO Rol_Guia_Base;
