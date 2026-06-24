@@ -1,13 +1,17 @@
 /*
-====================================================================================================================
+====================================================================================================================================
                         PREPARACIÓN DE DATOS PARA PRUEBAS DE PAGO DE CANONES
                         
                         Requisitos:
                         - Haber ejecutado previamente el script de creación de la base de datos y sus objetos.
                         - Haber ejecutado previamente el script de creación de los SPs de ABM y Lógica de Negocios.
 
-====================================================================================================================
+                        Ir ejecutando cada parte de a una, yendo por cada "bloque" separado por la declaración de variables
+====================================================================================================================================
 */
+
+USE SGParquesNacionales
+GO
 
 -- Insertar Estados de Canon (si no existen)
 IF NOT EXISTS (SELECT 1 FROM Area_Negocios.Estado_Canon)

@@ -48,12 +48,24 @@ BEGIN
             RAISERROR('Parque inexistente', 16, 1)
         END
 
+		--La cantidad de entradas debe ser mayor a cero
+		IF @CantidadEntradas <= 0
+		BEGIN
+			RAISERROR('La cantidad de entradas debe ser mayor a cero', 16, 1)
+		END
+
 		--El tipo de visitante debe estar cargado en la DB
 		SELECT @IdTipoVisitante = IdTipoVisitante FROM Area_Comercial.Tipo_Visitante WHERE Descripcion = @TipoVisitante;
 		IF @IdTipoVisitante IS NULL
         BEGIN
             RAISERROR('Tipo de visitante inexistente', 16, 1)
         END
+
+		-- El parque debe tener tarifas cargadas para el tipo de visitante seleccionado
+		IF NOT EXISTS (SELECT 1 FROM Area_Comercial.Precio_Parque_Tipo_Visitante WHERE IdParque = @IdParque AND IdTipoVisitante = (SELECT IdTipoVisitante FROM Area_Comercial.Tipo_Visitante WHERE Descripcion = @TipoVisitante))
+		BEGIN
+			RAISERROR('No hay tarifas cargadas para el tipo de visitante seleccionado en el parque especificado', 16, 1)
+		END
 
 		--El punto de venta debe estar cargado en la DB
 		IF NOT EXISTS (SELECT 1 FROM Area_Comercial.Punto_De_Venta WHERE IdPuntoDeVenta = @IdPuntoDeVenta)
@@ -106,12 +118,6 @@ BEGIN
 			BEGIN
 				RAISERROR('No hay cupos disponibles para la actividad seleccionada en la fecha indicada', 16, 1)
 			END
-		END
-
-		--La cantidad de entradas debe ser mayor a cero
-		IF @CantidadEntradas <= 0
-		BEGIN
-			RAISERROR('La cantidad de entradas debe ser mayor a cero', 16, 1)
 		END
 
 		-- ================================================================================================================
@@ -188,9 +194,9 @@ BEGIN
 	END TRY
 	BEGIN CATCH
 		IF ERROR_SEVERITY() > 10
-		BEGIN	
-			PRINT 'Error al registrar la venta de entradas: ' + ERROR_MESSAGE();
-			RAISERROR('', 16, 1);
+		BEGIN
+			DECLARE @ErrorMessage VARCHAR(255) = ERROR_MESSAGE();	
+			RAISERROR(@ErrorMessage, 16, 1);
 			ROLLBACK TRANSACTION;
 			RETURN;
 		END

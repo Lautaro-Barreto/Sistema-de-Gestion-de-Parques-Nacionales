@@ -349,6 +349,60 @@ BEGIN
 END
 GO
 -- //////////////////////////////////////////////////////////////
+--    CREACIÓN DE LAS TARIFAS DE PARQUE POR TIPO DE VISITANTE
+-- //////////////////////////////////////////////////////////////
+CREATE OR ALTER PROCEDURE Area_Comercial.Sp_CrearPrecioParqueTipoVisitante
+    @Parque VARCHAR(80),
+    @TipoVisitante VARCHAR(30),
+    @Precio DECIMAL(14,4)
+AS
+BEGIN
+BEGIN TRY
+    
+    SET NOCOUNT ON;
+
+    DECLARE @IdParque INT;
+    DECLARE @IdTipoVisitante INT;
+
+    -- Validar que el parque exista
+    SELECT @IdParque = IdParque FROM Area_Infraestructura.Parque WHERE Nombre = @Parque;
+    IF @IdParque IS NULL
+    BEGIN
+        RAISERROR('El parque especificado no existe.', 16, 1);
+        RETURN;
+    END
+
+    -- Validar que el tipo de visitante exista
+    SELECT @IdTipoVisitante = IdTipoVisitante FROM Area_Comercial.Tipo_Visitante WHERE Descripcion = @TipoVisitante;
+    IF @IdTipoVisitante IS NULL
+    BEGIN
+        RAISERROR('El tipo de visitante especificado no existe.', 16, 1);
+        RETURN;
+    END
+
+    -- Validar que el precio sea positivo
+    IF @Precio <= 0
+    BEGIN
+        RAISERROR('El precio debe ser un valor positivo.', 16, 1);
+        RETURN;
+    END
+
+    -- Insertar el precio en la tabla Precio_Parque_Tipo_Visitante
+	INSERT INTO Area_Comercial.Precio_Parque_Tipo_Visitante (IdParque, IdTipoVisitante, Precio)
+    VALUES (@IdParque, @IdTipoVisitante, @Precio);
+
+END TRY
+BEGIN CATCH
+    IF ERROR_SEVERITY() > 10
+    BEGIN
+        DECLARE @ErrorMessage VARCHAR(255) = ERROR_MESSAGE();	
+        RAISERROR(@ErrorMessage, 16, 1);
+    END
+END CATCH
+END
+GO
+
+-- //////////////////////////////////////////////////////////////
 --                  Apartado 2: Sps de Modificación
 -- //////////////////////////////////////////////////////////////
 -- //////////////////////////////////////////////////////////////
@@ -531,6 +585,61 @@ BEGIN
 END
 GO
 -- //////////////////////////////////////////////////////////////
+--  MODIFICACIÓN DE LAS TARIFAS DE PARQUE POR TIPO DE VISITANTE
+-- //////////////////////////////////////////////////////////////
+CREATE OR ALTER PROCEDURE Area_Comercial.Sp_ModificarPrecioParqueTipoVisitante
+    @Parque VARCHAR(80),
+    @TipoVisitante VARCHAR(30),
+    @Precio DECIMAL(14,4)
+AS
+BEGIN
+BEGIN TRY
+    
+    SET NOCOUNT ON;
+
+    DECLARE @IdParque INT;
+    DECLARE @IdTipoVisitante INT;
+
+    -- Validar que el parque exista
+    SELECT @IdParque = IdParque FROM Area_Infraestructura.Parque WHERE Nombre = @Parque;
+    IF @IdParque IS NULL
+    BEGIN
+        RAISERROR('El parque especificado no existe.', 16, 1);
+        RETURN;
+    END
+
+    -- Validar que el tipo de visitante exista
+    SELECT @IdTipoVisitante = IdTipoVisitante FROM Area_Comercial.Tipo_Visitante WHERE Descripcion = @TipoVisitante;
+    IF @IdTipoVisitante IS NULL
+    BEGIN
+        RAISERROR('El tipo de visitante especificado no existe.', 16, 1);
+        RETURN;
+    END
+
+    -- Validar que el precio sea positivo
+    IF @Precio <= 0
+    BEGIN
+        RAISERROR('El precio debe ser un valor positivo.', 16, 1);
+        RETURN;
+    END
+
+    -- Actualizar el precio en la tabla Precio_Parque_Tipo_Visitante
+    UPDATE Area_Comercial.Precio_Parque_Tipo_Visitante
+    SET Precio = @Precio
+    WHERE IdParque = @IdParque AND IdTipoVisitante = @IdTipoVisitante;
+
+END TRY
+BEGIN CATCH
+    IF ERROR_SEVERITY() > 10
+    BEGIN
+        DECLARE @ErrorMessage VARCHAR(255) = ERROR_MESSAGE();	
+        RAISERROR(@ErrorMessage, 16, 1);
+    END
+END CATCH
+END
+GO
+
+-- //////////////////////////////////////////////////////////////
 --                  Apartado 3: Sps de Eliminación
 -- //////////////////////////////////////////////////////////////
 -- //////////////////////////////////////////////////////////////
@@ -681,5 +790,51 @@ BEGIN
 
 	DELETE FROM Area_Comercial.Entrada WHERE IdTipoVisitante = @IdTipoVisitante
 	DELETE FROM Area_Comercial.Tipo_Visitante WHERE IdTipoVisitante = @IdTipoVisitante
+END
+GO
+
+-- //////////////////////////////////////////////////////////////
+--     ELIMINACION DE TARIFAS DE PARQUE POR TIPO DE VISITANTE
+-- //////////////////////////////////////////////////////////////
+CREATE OR ALTER PROCEDURE Area_Comercial.Sp_EliminarPrecioParqueTipoVisitante
+    @Parque VARCHAR(80),
+    @TipoVisitante VARCHAR(30)
+AS
+BEGIN
+BEGIN TRY
+    
+    SET NOCOUNT ON;
+
+    DECLARE @IdParque INT;
+    DECLARE @IdTipoVisitante INT;
+
+    -- Validar que el parque exista
+    SELECT @IdParque = IdParque FROM Area_Infraestructura.Parque WHERE Nombre = @Parque;
+    IF @IdParque IS NULL
+    BEGIN
+        RAISERROR('El parque especificado no existe.', 16, 1);
+        RETURN;
+    END
+
+    -- Validar que el tipo de visitante exista
+    SELECT @IdTipoVisitante = IdTipoVisitante FROM Area_Comercial.Tipo_Visitante WHERE Descripcion = @TipoVisitante;
+    IF @IdTipoVisitante IS NULL
+    BEGIN
+        RAISERROR('El tipo de visitante especificado no existe.', 16, 1);
+        RETURN;
+    END
+
+    -- Eliminar la tarifa en la tabla Precio_Parque_Tipo_Visitante
+    DELETE FROM Area_Comercial.Precio_Parque_Tipo_Visitante
+    WHERE IdParque = @IdParque AND IdTipoVisitante = @IdTipoVisitante;
+
+END TRY
+BEGIN CATCH
+    IF ERROR_SEVERITY() > 10
+    BEGIN
+        DECLARE @ErrorMessage VARCHAR(255) = ERROR_MESSAGE();	
+        RAISERROR(@ErrorMessage, 16, 1);
+    END
+END CATCH
 END
 GO
