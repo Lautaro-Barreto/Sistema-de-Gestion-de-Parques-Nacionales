@@ -33,8 +33,8 @@ BEGIN
 		DECLARE @IdParque INT;
 		DECLARE @IdActividadIngresada INT;
 		DECLARE @IdFormaDePago INT;
-		DECLARE @SubTotal DECIMAL(14,4);
-		DECLARE @Total DECIMAL(14,4);
+		DECLARE @SubTotal DECIMAL(14,4) = 0.0;
+		DECLARE @Total DECIMAL(14,4) = 0.0;
 		DECLARE @IdTipoVisitante INT;
 
 		-- ================================================================================================================
@@ -74,41 +74,44 @@ BEGIN
             RAISERROR('La fecha no puede ser nula', 16, 1)
         END
 
-		--La actividad debe estar cargada en la DB
-		SELECT @IdActividadIngresada = IdActividad FROM Area_Excursiones.Actividad WHERE Nombre = @Actividad
-		IF @IdActividadIngresada IS NULL
+		--La actividad (si se ingresó, porque puede ser null) debe estar cargada en la DB
+		IF @Actividad IS NOT NULL
 		BEGIN
-			RAISERROR('Actividad inexistente', 16, 1)
-		END
+			SELECT @IdActividadIngresada = IdActividad FROM Area_Excursiones.Actividad WHERE Nombre = @Actividad
+			IF @IdActividadIngresada IS NULL
+			BEGIN
+				RAISERROR('Actividad inexistente', 16, 1)
+			END
+			
+			-- La actividad debe estar vinculada al parque seleccionado
+			IF NOT EXISTS (SELECT 1 FROM Area_Excursiones.Actividad WHERE IdActividad = @IdActividadIngresada AND IdParque = @IdParque)
+			BEGIN
+				RAISERROR('La actividad seleccionada no está disponible para el parque seleccionado', 16, 1)
+			END
 
-		-- La actividad debe estar vinculada al parque seleccionado
-		IF NOT EXISTS (SELECT 1 FROM Area_Excursiones.Actividad WHERE IdActividad = @IdActividadIngresada AND IdParque = @IdParque)
-		BEGIN
-			RAISERROR('La actividad seleccionada no está disponible para el parque seleccionado', 16, 1)
+			--La actividad debe tener cupos disponibles para la fecha de la venta
+			DECLARE @CuposDisponibles INT
+			DECLARE @CupoMaximoActividad INT
+			DECLARE @CantidadContratacionesActividad INT
+
+			SET @CupoMaximoActividad = (SELECT Cupo_maximo FROM Area_Excursiones.Actividad WHERE IdActividad = @IdActividadIngresada)
+
+			SELECT @CantidadContratacionesActividad = COUNT(*) FROM Area_Excursiones.Contratacion_Actividad CA
+			INNER JOIN Area_Excursiones.Actividad A ON CA.IdActividad = A.IdActividad
+			WHERE CA.IdActividad = @IdActividadIngresada AND CA.Fecha_Contratacion = @Fecha
+
+			SET @CuposDisponibles = @CupoMaximoActividad - @CantidadContratacionesActividad
+
+			IF @CuposDisponibles <= 0
+			BEGIN
+				RAISERROR('No hay cupos disponibles para la actividad seleccionada en la fecha indicada', 16, 1)
+			END
 		END
 
 		--La cantidad de entradas debe ser mayor a cero
 		IF @CantidadEntradas <= 0
 		BEGIN
 			RAISERROR('La cantidad de entradas debe ser mayor a cero', 16, 1)
-		END
-
-		--La actividad debe tener cupos disponibles para la fecha de la venta
-		DECLARE @CuposDisponibles INT
-		DECLARE @CupoMaximoActividad INT
-		DECLARE @CantidadContratacionesActividad INT
-
-		SET @CupoMaximoActividad = (SELECT Cupo_maximo FROM Area_Excursiones.Actividad WHERE IdActividad = @IdActividadIngresada)
-
-		SELECT @CantidadContratacionesActividad = COUNT(*) FROM Area_Excursiones.Contratacion_Actividad CA
-		INNER JOIN Area_Excursiones.Actividad A ON CA.IdActividad = A.IdActividad
-		WHERE CA.IdActividad = @IdActividadIngresada AND CA.Fecha_Contratacion = @Fecha
-
-		SET @CuposDisponibles = @CupoMaximoActividad - @CantidadContratacionesActividad
-
-		IF @CuposDisponibles <= 0
-		BEGIN
-			RAISERROR('No hay cupos disponibles para la actividad seleccionada en la fecha indicada', 16, 1)
 		END
 
 		-- ================================================================================================================
@@ -131,15 +134,20 @@ BEGIN
 			PRINT('La fecha corresponde con un feriado, se aplicó un descuento del ' + CAST(@PorcentajeDescuento AS VARCHAR(10)) + '%')
 		END
 
-		--Obtencion del precio de la actividad
-		DECLARE @PrecioActividad DECIMAL(14,4)
-		SELECT @PrecioActividad = Costo FROM Area_Excursiones.Actividad WHERE Nombre = @Actividad
-		IF @PrecioActividad IS NULL
-		BEGIN
-			RAISERROR('Actividad inexistente', 16, 1)
-		END
-		SET @Total = @Subtotal + (@PrecioActividad * @CantidadEntradas);
+		SET @Total = @Subtotal;
 
+		--Obtencion del precio de la actividad
+		IF @Actividad IS NOT NULL
+			BEGIN
+			DECLARE @PrecioActividad DECIMAL(14,4)
+			SELECT @PrecioActividad = Costo FROM Area_Excursiones.Actividad WHERE Nombre = @Actividad
+			IF @PrecioActividad IS NULL
+			BEGIN
+				RAISERROR('Error al obtener el precio de la actividad', 16, 1)
+			END
+			SET @Total = @Total + (@PrecioActividad * @CantidadEntradas);
+		END
+		
 		-- ================================================================================================================
 		--				REGISTRO DE LA VENTA, DETALLE DE VENTA, ENTRADAS Y CONTRATACIÓN DE ACTIVIDAD
 		-- ================================================================================================================
@@ -166,12 +174,15 @@ BEGIN
 			SET @CantidadEntradasContador = @CantidadEntradasContador - 1
 		END
 
-		--Creamos la contratación de la actividad y la asociamos con la venta
-		SET @CantidadEntradasContador = @CantidadEntradas;
-		WHILE @CantidadEntradasContador > 0
+		--Si la actividad fue ingresada, creamos la contratación y la asociamos con la venta
+		IF @Actividad IS NOT NULL
 		BEGIN
-			EXEC Area_Excursiones.Sp_CrearContratacion_Actividad @IdVenta = @IdNuevaVenta, @IdActividad = @IdActividadIngresada,  @Monto = @PrecioActividad, @FechaContratacion = @Fecha  
-			SET @CantidadEntradasContador = @CantidadEntradasContador - 1
+			SET @CantidadEntradasContador = @CantidadEntradas;
+			WHILE @CantidadEntradasContador > 0
+			BEGIN
+				EXEC Area_Excursiones.Sp_CrearContratacion_Actividad @IdVenta = @IdNuevaVenta, @IdActividad = @IdActividadIngresada,  @Monto = @PrecioActividad, @FechaContratacion = @Fecha  
+				SET @CantidadEntradasContador = @CantidadEntradasContador - 1
+			END
 		END
 	COMMIT TRANSACTION;
 	END TRY
