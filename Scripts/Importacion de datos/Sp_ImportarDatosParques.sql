@@ -130,6 +130,26 @@ BEGIN
         COMMIT TRANSACTION;
         PRINT 'Migración de datos completada con éxito.';
 
+        -- Precios y Descuentos para cada Parque
+        -- Precios aleatorios entre $2000 y $5000 para Residentes, y $10000 y $25000 para No Residentes
+        INSERT INTO Area_Comercial.Precio_Parque_Tipo_Visitante (IdParque, IdTipoVisitante, Precio)
+        SELECT p.IdParque, tv.IdTipoVisitante,
+            CASE WHEN tv.Descripcion = 'Residente' 
+                THEN 2000 + (ABS(CHECKSUM(NEWID())) % 3000)
+                ELSE 10000 + (ABS(CHECKSUM(NEWID())) % 15000) END
+        FROM Area_Infraestructura.Parque p
+        CROSS JOIN Area_Comercial.Tipo_Visitante tv
+            WHERE NOT EXISTS (
+                SELECT 1 FROM Area_Comercial.Precio_Parque_Tipo_Visitante px 
+                WHERE px.IdParque = p.IdParque AND px.IdTipoVisitante = tv.IdTipoVisitante
+    );
+
+    -- Descuento del 10% por feriado para TODOS los parques
+    INSERT INTO Area_Comercial.Descuento_Parque (IdParque, Descripcion, Porcentaje)
+    SELECT IdParque, 'Descuento por Feriado Nacional', 0.10
+    FROM Area_Infraestructura.Parque p
+    WHERE NOT EXISTS (SELECT 1 FROM Area_Comercial.Descuento_Parque d WHERE d.IdParque = p.IdParque);
+
     DROP TABLE ##Staging_Parques;
     END TRY
     BEGIN CATCH

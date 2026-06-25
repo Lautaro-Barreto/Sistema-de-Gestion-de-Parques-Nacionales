@@ -11,6 +11,18 @@ la tabla Empresa_Concesionaria.
 USE SGParquesNacionales
 GO
 
+-- Se recomienda tener parques cargados
+EXEC Area_Infraestructura.Sp_ImportarDatosParques
+    @RutaArchivoParques = 'C:\ArchivosTPBDA\sheet1.xml'
+go
+
+-- Ver parques
+SELECT p.IdParque, p.Nombre, tp.Descripcion as [Tipo de parque], pr.Nombre as [Provincia], r.Nombre as [Region] FROM Area_Infraestructura.Parque p
+join area_Infraestructura.Tipo_Parque tp on tp.IdTipoParque = p.IdTipoParque
+join area_infraestructura.Provincia pr on pr.IdProvincia = p.IdProvincia
+join area_Infraestructura.Region r on r.IdRegion = pr.IdRegion
+order by r.Nombre;
+
 -- Ejecutamos el SP de importación
 EXEC Area_Comercial.Sp_ImportarDatosVisitasPorRegionYTipoVisitante
     @RutaArchivoVisitas = 'C:\ArchivosTPBDA\visitas-residentes-y-no-residentes-por-region.csv',
@@ -35,11 +47,3 @@ join Area_Infraestructura.Region r ON pr.IdRegion = r.IdRegion
 left join Area_Excursiones.Contratacion_Actividad ca ON v.IdVenta = ca.IdVenta
 left join Area_Excursiones.Actividad a ON ca.IdActividad = a.IdActividad
 ORDER BY v.Fecha;
-
--- Chequear que no quede ninguna transaccion abierta después de ejecutar el SP
-SELECT 
-    st.session_id,
-    at.name AS transaction_name,
-    DATEDIFF(SECOND, at.transaction_begin_time, GETDATE()) AS elapsed_seconds
-FROM sys.dm_tran_active_transactions at
-JOIN sys.dm_tran_session_transactions st ON st.transaction_id = at.transaction_id;
