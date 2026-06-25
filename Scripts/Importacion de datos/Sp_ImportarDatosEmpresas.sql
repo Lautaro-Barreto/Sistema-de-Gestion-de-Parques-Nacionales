@@ -80,7 +80,7 @@ BEGIN
         WHERE organizacion IS NOT NULL AND organizacion <> '';
 
         -- 1. Insertar Estados de Canon (si no existen)
-        IF NOT EXISTS (SELECT 1 FROM Area_Negocios.Estado_Canon)
+        IF NOT EXISTS (SELECT 1 FROM Area_Negocios.Estado_Canon where Descripcion IN ('Vigente', 'Adeudado', 'Saldado en Término', 'Saldado con Atraso', 'Exento', 'Extinguido'))
         BEGIN
             INSERT INTO Area_Negocios.Estado_Canon (Descripcion) 
             VALUES ('Vigente'), ('Adeudado'), ('Saldado en Término'), ('Saldado con Atraso'), ('Exento'), ('Extinguido');
@@ -108,46 +108,41 @@ BEGIN
         WHEN NOT MATCHED THEN
             INSERT (Descripcion) VALUES (Source.Rubro);
 
-        -- 4. Generar las Concesiones solo si se indica
+        -- Generar las Concesiones solo si se indica
         IF @CrearConcesiones = 1
         BEGIN
+            -- 4. Crear Concesiones para cada Empresa Concesionaria existente, asignando un tipo de actividad aleatorio y un parque aleatorio de la provincia
+            -- de la empresa en el csv
             DECLARE @MinId INT = (select MIN(IdEmpresa) FROM Area_Negocios.Empresa_Concesionaria);
             DECLARE @MaxId INT = (select MAX(IdEmpresa) FROM Area_Negocios.Empresa_Concesionaria);
+            DECLARE @EmpresaNombre VARCHAR(255) = (select TOP 1 Nombre FROM Area_Negocios.Empresa_Concesionaria WHERE IdEmpresa = @MinId);
             WHILE @MinId <= @MaxId
             BEGIN
-                DECLARE @Random
-                EXECUTE Area_Negocios.Sp_CrearConcesion 
-                SET @MInId = @MinId + 1;
-            END
+                DECLARE @RandomTipoAct INT = (SELECT TOP 1 IdTipoActividadConcesion FROM Area_Negocios.Tipo_Actividad_Concesion ORDER BY NEWID());
+                DECLARE @RandomParque INT = 
+                (SELECT TOP 1 IdParque FROM Area_Infraestructura.Parque 
+                where IdProvincia = 
+                    (SELECT TOP 1 IdProvincia FROM Area_Infraestructura.Provincia 
+                    WHERE Nombre =
+                     (SELECT TOP 1 Provincia FROM #Staging_Organizaciones 
+                        WHERE Organizacion = 
+                            (SELECT TOP 1 Nombre FROM Area_Negocios.Empresa_Concesionaria WHERE Nombre = @EmpresaNombre)
+                        )
+                    )
+                    ORDER BY NEWID());
 
-@IdTipoActividadConcesion int,@IdEmpresa int,@IdParque int,@Fecha_Inicio date,@Fecha_Fin date
-            -- 4. Generar las Concesiones
-            -- Usamos OUTER APPLY para buscar 1 parque aleatorio (NEWID) de la provincia que viene en el CSV. 
-            -- Si esa provincia no tiene parque en tu BD, asigna un parque aleatorio de cualquier lugar.
-            INSERT INTO Area_Negocios.Concesion (IdTipoActividadConcesion, IdEmpresa, IdParque, Fecha_Inicio, Fecha_Fin)
-            SELECT 
-                tac.IdTipoActividadConcesion,
-                ec.IdEmpresa,
-                ISNULL(ParqueAleatorioProvincia.IdParque, ParqueAleatorioNacional.IdParque),
-                ISNULL(s.Fecha_Distincion, GETDATE()), -- Fallback por si la fecha viene vacía
-                -- Fecha de fin aleatoria entre 365 y 730 días (1 o 2 años) a partir de hoy
-                DATEADD(DAY, ABS(CHECKSUM(NEWID())) % 365 + 365, GETDATE())
-            FROM #Staging_Organizaciones s
-            INNER JOIN Area_Negocios.Empresa_Concesionaria ec ON ec.Nombre = s.Organizacion
-            INNER JOIN Area_Negocios.Tipo_Actividad_Concesion tac ON tac.Descripcion = s.Rubro
-            OUTER APPLY (
-                SELECT TOP 1 pq.IdParque 
-                FROM Area_Infraestructura.Parque pq
-                INNER JOIN Area_Infraestructura.Provincia pr ON pq.IdProvincia = pr.IdProvincia
-                WHERE pr.Nombre LIKE '%' + s.Provincia + '%'
-                ORDER BY NEWID()
-            ) ParqueAleatorioProvincia
-            CROSS APPLY (
-                SELECT TOP 1 IdParque FROM Area_Infraestructura.Parque ORDER BY NEWID()
-            ) ParqueAleatorioNacional
-            WHERE NOT EXISTS (
-                SELECT 1 FROM Area_Negocios.Concesion c WHERE c.IdEmpresa = ec.IdEmpresa AND c.IdTipoActividadConcesion = tac.IdTipoActividadConcesion
-            );
+                DECLARE @FechaIni DATE = DATEADD(DAY, -ABS(CHECKSUM(NEWID())) % 365, GETDATE());
+                DECLARE @FechaFin DATE = DATEADD(DAY, ABS(CHECKSUM(NEWID())) % 365 + 365, GETDATE());
+                
+                EXECUTE Area_Negocios.Sp_CrearConcesion 
+                @IdTipoActividadConcesion = @RandomTipoAct, 
+                @IdEmpresa = @MinId, 
+                @IdParque = @RandomParque, 
+                @Fecha_Inicio = @FechaIni, 
+                @Fecha_Fin = @FechaFin;
+
+                SET @MinId = @MinId + 1;
+            END
 
             -- 5. Generar el Primer Canon de cada Concesión recién creada
             DECLARE @IdVigente INT = (SELECT IdEstadoCanon FROM Area_Negocios.Estado_Canon WHERE Descripcion = 'Vigente');

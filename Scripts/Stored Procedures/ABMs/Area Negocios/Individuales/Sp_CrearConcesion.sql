@@ -21,37 +21,32 @@ BEGIN
         -- Busca el Id del TipoActividad en la tabla de Tipo_Actividad_Concesion.
        IF NOT EXISTS ( SELECT 1 FROM Area_Negocios.Tipo_Actividad_Concesion WHERE IdTipoActividadConcesion = @IdTipoActividadConcesion)
         BEGIN
-            PRINT('No Existe el Tipo de actividad de concesion ingresada')
-            RAISERROR('TipoActividad Invalida',16,1)
+            RAISERROR('No Existe el Tipo de actividad de concesion ingresada',16,1)
         END
         --Busca la empresa en la tabla de Empresa_Concesionaria.
         --No solo verificar si existe si no si está activa también
         IF NOT EXISTS (SELECT 1 FROM Area_Negocios.Empresa_Concesionaria WHERE IdEmpresa = @IdEmpresa AND Estado = 1)
         BEGIN
-            PRINT('No Existe la Empresa concesionaria o no esta activa actualmente')
-            RAISERROR('EmpresaConcesionaria Invalida',16,1)
+            RAISERROR('No Existe la Empresa concesionaria o no esta activa actualmente',16,1)
         END
         --Busca el parque en la tabla de Parques
         IF NOT EXISTS ( SELECT 1 FROM Area_Infraestructura.Parque WHERE IdParque = @IdParque)
         BEGIN
-            PRINT('No Existe el parque Ingresado')
-            RAISERROR('Parque Invalido',16,1)
+            RAISERROR('No Existe el parque Ingresado',16,1)
         END
 
         -- Valida la fecha de inicio ingresada, comprobando que no sea nula.
 		IF @Fecha_Inicio IS NULL
 		BEGIN
-            PRINT('La fecha de Inicio no puede ser nula')
-            RAISERROR('Fecha Inicio Inválida', 16, 1)
+            RAISERROR('La fecha de Inicio no puede ser nula', 16, 1)
         END
         -- Valida la fecha de fin ingresada, comprobando que no sea nula.
 		IF @Fecha_Fin IS NULL
 		BEGIN
-            PRINT('La fecha de Fin no puede ser nula')
-            RAISERROR('Fecha Fin Inválida', 16, 1)
+            RAISERROR('La fecha de Fin no puede ser nula', 16, 1)
         END
 
-        --Obviamente la fecha de Fin debe ser menor que la de inicio
+        --Obviamente la fecha de Fin debe ser mayor que la de inicio y no puede finalizar el mismo día que inicia la concesión, ya que no tendría sentido.
         IF @Fecha_Fin <= @Fecha_Inicio
         BEGIN
             RAISERROR('La fecha de finalización debe ser estrictamente posterior a la fecha de inicio.', 16, 1);
@@ -62,8 +57,9 @@ BEGIN
     END TRY
     BEGIN CATCH
         -- Lanzamos return	
-            RAISERROR('Algo salio mal en la creación de la Concesión',16,1);
-            Return;
+        DECLARE @ErrorMessage VARCHAR(255) = ERROR_MESSAGE();
+        RAISERROR('Error al crear la Concesión: %s', 16, 1, @ErrorMessage);
+        Return;
     END CATCH
 END
 GO
