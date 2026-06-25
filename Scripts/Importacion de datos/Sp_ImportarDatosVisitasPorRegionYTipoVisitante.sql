@@ -161,24 +161,33 @@ BEGIN
                 -- print 'Punto de venta seleccionado: ' + CAST(@IdPdv AS VARCHAR);
 
                 -- Seleccionar un parque random de la región de destino
-                DECLARE @ParqueRandom VARCHAR(80) = (SELECT TOP 1 p.Nombre FROM Area_Infraestructura.Parque p
-                               JOIN Area_Infraestructura.Provincia pr ON p.IdProvincia = pr.IdProvincia
-                               JOIN Area_Infraestructura.Region r ON pr.IdRegion = r.IdRegion
-                               WHERE r.Nombre = @RegionCSV
-                               ORDER BY NEWID());
-                -- print 'Parque seleccionado: ' + @ParqueRandom;
+                -- Seleccionar un parque random de la región de destino QUE YA TENGA TARIFA
+                DECLARE @ParqueRandom VARCHAR(80) = (
+                    SELECT TOP 1 p.Nombre 
+                    FROM Area_Infraestructura.Parque p
+                    JOIN Area_Infraestructura.Provincia pr ON p.IdProvincia = pr.IdProvincia
+                    JOIN Area_Infraestructura.Region r ON pr.IdRegion = r.IdRegion
+                    -- Joineamos con tu tabla de tarifas y tipos de visitante
+                    JOIN Area_Comercial.Precio_Parque_Tipo_Visitante t ON p.IdParque = t.IdParque
+                    JOIN Area_Comercial.Tipo_Visitante tv ON t.IdTipoVisitante = tv.IdTipoVisitante
+                    WHERE r.Nombre = @RegionCSV
+                      AND tv.Descripcion = @OrigenCSV -- Filtramos por Residente/No residente
+                    ORDER BY NEWID()
+                );
 
-                -- print 'Registrando venta: ' + @ParqueRandom + ' - ' + CAST(@VisitasSemana AS VARCHAR) + ' entradas - ' + @OrigenCSV + ' - ' + CAST(@FechaVenta AS VARCHAR) + ' - ' + @DescFormaDePago;
-
-                -- Insertar una venta de entradas para esta semana
-                EXEC Area_Comercial.Sp_RegistrarVentaEntradas
-                    @Parque = @ParqueRandom, -- Elegir un parque random de la región
-                    @CantidadEntradas = @VisitasSemana,
-                    @TipoVisitante = @OrigenCSV,
-                    @Actividad = NULL, -- No se asigna actividad porque no tenemos esa info en el CSV
-                    @Fecha = @FechaVenta,
-                    @IdPuntoDeVenta = @IdPdv,
-                    @FormaDePago = @DescFormaDePago;
+                -- Solo ejecutamos la venta si encontró un parque válido
+                IF @ParqueRandom IS NOT NULL
+                BEGIN
+                    EXEC Area_Comercial.Sp_RegistrarVentaEntradas
+                        @Parque = @ParqueRandom, 
+                        @CantidadEntradas = @VisitasSemana,
+                        @TipoVisitante = @OrigenCSV,
+                        @Actividad = NULL, 
+                        @Fecha = @FechaVenta,
+                        @IdPuntoDeVenta = @IdPdv,
+                        @FormaDePago = @DescFormaDePago;
+                END
+                -- Si @ParqueRandom es NULL, termina la vuelta del bucle sin hacer nada (lo saltea).
 
                 SET @Semana = @Semana + 1;
             END

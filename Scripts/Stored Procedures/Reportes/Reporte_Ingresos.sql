@@ -17,7 +17,6 @@ WITH IngresosEntradas AS(
     FROM Area_Comercial.Detalle_Venta_Entrada d
     JOIN Area_Comercial.Venta v ON v.IdVenta = d.IdVenta
     GROUP BY v.IdParque, YEAR(v.Fecha), MONTH(v.Fecha), DATEPART(WEEK,v.Fecha)
-    --where v.IdParque = @IdParque
 ),
 
 IngresosActividades AS(
@@ -46,12 +45,14 @@ IngresosConceciones AS(
     GROUP BY cs.IdParque, YEAR(p.Fecha_Pago), MONTH(p.Fecha_Pago), DATEPART(WEEK,p.Fecha_Pago)
 )
 
-SELECT p.Nombre AS Parque
-
-
-
-
-
+SELECT p.Nombre AS Parque,
+COALESCE(e.AÑO, a.AÑO,c.AÑO) AS AÑO,
+COALESCE(e.MES, a.MES, c.MES) AS MES,
+COALESCE(e.SEMANA, a.SEMANA, c.SEMANA) AS SEMANA,
+ISNULL(e.[Cantidad Entradas], 0) AS [Total Entradas],
+ISNULL(e.[Ingresos Entradas], 0) AS [Ingesos Entradas],
+ISNULL(a.[Ingresos Actividades], 0) AS[Ingesos Actividades],
+ISNULL(c.[Ingresos Concesiones], 0) AS [Ingesos Concesiones]
 FROM Area_Infraestructura.Parque p
 FULL JOIN IngresosEntradas e ON e.IdParque = p.IdParque
 FULL JOIN IngresosActividades a ON a.IdParque = p.IdParque

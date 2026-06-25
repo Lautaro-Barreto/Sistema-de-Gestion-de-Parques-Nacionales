@@ -23,7 +23,7 @@ LEFT JOIN Area_Infraestructura.Region r ON p.IdRegion = r.IdRegion
 LEFT JOIN Area_Infraestructura.Tipo_Parque tp ON par.IdTipoParque = tp.IdTipoParque
 ORDER BY par.Nombre;
 go
-
+/*
 DELETE FROM Area_Infraestructura.Parque;
 go
 DELETE FROM Area_Infraestructura.Provincia;
@@ -32,7 +32,7 @@ DELETE FROM Area_Infraestructura.Region;
 go
 DELETE FROM Area_Infraestructura.Tipo_Parque;
 go
-
+*/
 -- Ejecutamos el SP de importación general para un archivo CSV
 EXEC Area_Infraestructura.Sp_ImportarDatosParques
     @RutaArchivoParques = 'C:\ArchivosTPBDA\Áreas protegidas de Argentina - Sistema de Información de Biodiversidad.csv';

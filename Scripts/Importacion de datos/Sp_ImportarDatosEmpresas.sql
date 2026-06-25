@@ -115,9 +115,10 @@ BEGIN
             -- de la empresa en el csv
             DECLARE @MinId INT = (select MIN(IdEmpresa) FROM Area_Negocios.Empresa_Concesionaria);
             DECLARE @MaxId INT = (select MAX(IdEmpresa) FROM Area_Negocios.Empresa_Concesionaria);
-            DECLARE @EmpresaNombre VARCHAR(255) = (select TOP 1 Nombre FROM Area_Negocios.Empresa_Concesionaria WHERE IdEmpresa = @MinId);
             WHILE @MinId <= @MaxId
             BEGIN
+
+                DECLARE @EmpresaNombre VARCHAR(255) = (select TOP 1 Nombre FROM Area_Negocios.Empresa_Concesionaria WHERE IdEmpresa = @MinId);
                 DECLARE @RandomTipoAct INT = (SELECT TOP 1 IdTipoActividadConcesion FROM Area_Negocios.Tipo_Actividad_Concesion ORDER BY NEWID());
                 DECLARE @RandomParque INT = 
                 (SELECT TOP 1 IdParque FROM Area_Infraestructura.Parque 
@@ -125,21 +126,30 @@ BEGIN
                     (SELECT TOP 1 IdProvincia FROM Area_Infraestructura.Provincia 
                     WHERE Nombre =
                      (SELECT TOP 1 Provincia FROM #Staging_Organizaciones 
-                        WHERE Organizacion = 
-                            (SELECT TOP 1 Nombre FROM Area_Negocios.Empresa_Concesionaria WHERE Nombre = @EmpresaNombre)
+                        WHERE Organizacion = @EmpresaNombre
+                            --(SELECT TOP 1 Nombre FROM Area_Negocios.Empresa_Concesionaria WHERE Nombre = @EmpresaNombre)
                         )
                     )
                     ORDER BY NEWID());
 
+
+                IF @RandomParque IS NULL
+                BEGIN
+                    SET @RandomParque = (SELECT TOP 1 IdParque FROM Area_Infraestructura.Parque ORDER BY NEWID());
+                END
+
                 DECLARE @FechaIni DATE = DATEADD(DAY, -ABS(CHECKSUM(NEWID())) % 365, GETDATE());
                 DECLARE @FechaFin DATE = DATEADD(DAY, ABS(CHECKSUM(NEWID())) % 365 + 365, GETDATE());
                 
-                EXECUTE Area_Negocios.Sp_CrearConcesion 
-                @IdTipoActividadConcesion = @RandomTipoAct, 
-                @IdEmpresa = @MinId, 
-                @IdParque = @RandomParque, 
-                @Fecha_Inicio = @FechaIni, 
-                @Fecha_Fin = @FechaFin;
+                IF @EmpresaNombre IS NOT NULL
+                BEGIN
+                    EXECUTE Area_Negocios.SP_CrearConcesion 
+                    @IdTipoActividadConcesion = @RandomTipoAct, 
+                    @IdEmpresa = @MinId, 
+                    @IdParque = @RandomParque, 
+                    @Fecha_Inicio = @FechaIni, 
+                    @Fecha_Fin = @FechaFin;
+                END
 
                 SET @MinId = @MinId + 1;
             END
