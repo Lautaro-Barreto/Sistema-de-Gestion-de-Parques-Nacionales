@@ -57,8 +57,7 @@ BEGIN
         BEGIN TRANSACTION;
 
         -- 1. Insertar el recibo en la tabla de Pagos
-        INSERT INTO Area_Negocios.Pago_Canon (IdCanon, IdConcesion, Estado, Monto_Abonado, Fecha_Pago)
-        VALUES (@IdCanon, @IdConcesion, 'Completado', @Monto_Abonado, @Fecha_Pago);
+        -- 1.5 Insertar El estado del CANON
 
         -- 2. Actualizar el Canon pagado para cerrarlo
         UPDATE Area_Negocios.Canon

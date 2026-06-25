@@ -156,8 +156,11 @@ GRANT EXECUTE ON OBJECT::Area_Comercial.SP_ModificarFormaDePago TO Rol_Boleteria
 GRANT EXECUTE ON OBJECT::Area_Comercial.SP_ModificarFormaDePago TO Rol_Boleteria;
 GRANT EXECUTE ON OBJECT::Area_Excursiones.SP_ModificarContratacionActividad TO Rol_Boleteria;
 
-
-DENY SELECT, INSERT, UPDATE, DELETE ON OBJECT::Area_Comercial.Venta TO Rol_Boleteria;
+GRANT SELECT,UPDATE,DELETE ON OBJECT::Area_Comercial.Entrada TO Rol_Boleteria;
+GRANT SELECT,UPDATE,DELETE ON OBJECT::Area_Comercial.Venta TO Rol_Boleteria;
+GRANT SELECT,UPDATE, DELETE on object::Area_Comercial.Detalle_Venta_Entrada TO Rol_Boleteria;
+GRANT SELECT,UPDATE,DELETE ON OBJECT::Area_Comercial.Forma_De_Pago TO Rol_Boleteria;
+GRANT SELECT,UPDATE,DELETE ON OBJECT::Area_Excursiones.Contratacion_Actividad TO Rol_Boleteria;
 GO
 
 -- ////////////////////////////////////////////////////////////
@@ -175,15 +178,14 @@ GRANT EXECUTE ON OBJECT::Area_Infraestructura.SP_ModificarGuardaparque TO Rol_Je
 GRANT EXECUTE ON OBJECT::Area_Infraestructura.SP_EliminarGuardaparque TO Rol_Jefe_Guardaparques;
 
 
-/* cambiar para despues:*/
 GRANT SELECT ON OBJECT::Area_Negocios.Concesion TO Rol_Jefe_Guardaparques;
 GRANT SELECT ON OBJECT::Area_Excursiones.Actividad TO Rol_Jefe_Guardaparques;
 GRANT SELECT ON OBJECT::Area_Excursiones.Tipo_Actividad TO Rol_Jefe_Guardaparques;
-
-
+GRANT SELECT ON OBJECT::Area_Infraestructura.Historial_Trabajo_Guardaparque TO Rol_Jefe_Guardaparques;
+GRANT SELECT, UPDATE,DELETE ON OBJECT::Area_Infraestructura.Guardaparque TO Rol_Jefe_Guardaparques;
 --No podria crear ni eliminar, pero si modificar el parque
 GRANT EXECUTE ON OBJECT::Area_Infraestructura.Sp_ModificarParque TO Rol_Jefe_Guardaparques;
-GO
+
 GRANT EXECUTE ON OBJECT::Area_Infraestructura.SP_ConsultarDatosParque_Guardaparque TO Rol_Jefe_Guardaparques;
 GO
 -- ////////////////////////////////////////////////////////////
@@ -221,6 +223,19 @@ GRANT EXECUTE ON OBJECT::Area_Negocios.SP_EliminarEmpresaConcesionaria TO Rol_Ag
 GRANT EXECUTE ON OBJECT::Area_Infraestructura.SP_EliminarProvincia TO Rol_Agente_Gobierno;
 GRANT EXECUTE ON OBJECT::Area_Infraestructura.SP_EliminarRegion TO Rol_Agente_Gobierno;
 GRANT EXECUTE ON OBJECT::Area_Infraestructura.SP_EliminarTipoParque TO Rol_Agente_Gobierno;
+
+
+GRANT SELECT,UPDATE,DELETE ON OBJECT::Area_Negocios.Empresa_Concesionaria TO Rol_Agente_Gobierno;
+GRANT SELECT ON OBJECT::Area_Infraestructura.Parque TO Rol_Agente_Gobierno;
+GRANT SELECT,UPDATE,DELETE ON OBJECT::Area_Infraestructura.Tipo_Parque TO Rol_Agente_Gobierno;
+GRANT SELECT,UPDATE,DELETE ON OBJECT::Area_Infraestructura.Region TO Rol_Agente_Gobierno;
+GRANT SELECT,UPDATE,DELETE ON OBJECT::Area_Infraestructura.Provincia TO Rol_Agente_Gobierno;
+GRANT SELECT ON OBJECT::Area_Infraestructura.Guardaparque TO Rol_Agente_Gobierno;
+GRANT SELECT ON OBJECT::Area_Infraestructura.Historial_Trabajo_Guardaparque TO Rol_Agente_Gobierno;
+
+
+
+
 GO
 -- ////////////////////////////////////////////////////////////
 --              E. Rol Administrador
@@ -266,6 +281,21 @@ GRANT EXECUTE ON OBJECT::Area_Negocios.SP_EliminarPagoCanon TO Rol_Administrador
 GRANT EXECUTE ON OBJECT::Area_Excursiones.SP_EliminarGuia TO Rol_Administrador_Parque;
 GRANT EXECUTE ON OBJECT::Area_Infraestructura.SP_EliminarGuardaparque TO Rol_Administrador_Parque;
 
+
+GRANT SELECT,UPDATE,DELETE ON OBJECT::Area_Negocios.Empresa_Concesionaria TO Rol_Administrador_Parque;
+GRANT SELECT,UPDATE,DELETE ON OBJECT::Area_Negocios.Concesion TO  Rol_Administrador_Parque;
+GRANT SELECT, UPDATE, DELETE ON OBJECT::Area_Negocios.Canon TO Rol_Administrador_Parque;
+GRANT SELECT,UPDATE,DELETE ON OBJECT::Area_Negocios.Tipo_Actividad_Concesion TO Rol_Administrador_Parque;
+GRANT SELECT,UPDATE,DELETE ON OBJECT::Area_Negocios.Estado_Canon TO Rol_Administrador_Parque;
+GRANT SELECT,UPDATE,DELETE ON OBJECT::Area_Negocios.Pago_Canon TO Rol_Administrador_Parque;
+GRANT SELECT, UPDATE,DELETE ON OBJECT::Area_Infraestructura.Guardaparque TO Rol_Administrador_Parque;
+GRANT SELECT,UPDATE,DELETE ON OBJECT::Area_Excursiones.Guia TO Rol_Administrador_Parque;
+GRANT SELECT,UPDATE,DELETE ON OBJECT::Area_Infraestructura.Historial_Trabajo_Guardaparque TO Rol_Administrador_Parque;
+
+
+
+
+
 GO
 
 -- ////////////////////////////////////////////////////////////
@@ -279,6 +309,8 @@ GRANT EXECUTE ON OBJECT::Area_Infraestructura.SP_ModificarGuardaparque TO Rol_Gu
 GRANT SELECT ON OBJECT::Area_Negocios.Concesion TO Rol_Guardaparque_Base;
 GRANT SELECT ON OBJECT::Area_Excursiones.Actividad TO Rol_Guardaparque_Base;
 GRANT SELECT ON OBJECT::Area_Excursiones.Tipo_Actividad TO Rol_Guardaparque_Base;
+GRANT SELECT ON OBJECT::Area_Infraestructura.Historial_Trabajo_Guardaparque TO Rol_Guardaparque_Base;
+GRANT SELECT ON OBJECT::Area_Infraestructura.Tipo_Parque TO Rol_Guardaparque_Base;
 
 GRANT EXECUTE ON OBJECT::Area_Infraestructura.SP_ConsultarDatosParque_Guardaparque TO Rol_Guardaparque_Base;
 GO
@@ -296,8 +328,10 @@ GRANT EXECUTE ON OBJECT::Area_Excursiones.SP_ModificarTipoActividad TO Rol_Coord
 GRANT EXECUTE ON OBJECT::Area_Excursiones.Sp_EliminarActividad TO Rol_Coord_Actividades;
 GRANT EXECUTE ON OBJECT::Area_Excursiones.SP_EliminarTipoActividad TO Rol_Coord_Actividades;
 
-GRANT SELECT ON OBJECT::Area_Excursiones.Guia TO Rol_Coord_Actividades;
-
+GRANT SELECT, UPDATE, DELETE ON OBJECT::Area_Excursiones.Guia TO Rol_Coord_Actividades;
+GRANT SELECT,UPDATE,DELETE ON OBJECT::Area_Excursiones.Tipo_Actividad TO Rol_Coord_Actividades;
+GRANT SELECT ON OBJECT::Area_Excursiones.Habilitaciones_por_Actividad TO Rol_Coord_Actividades;
+GRANT SELECT ON OBJECT::Area_Excursiones.Contratacion_Actividad TO Rol_Coord_Actividades;
 GO
 -- ////////////////////////////////////////////////////////////
 --              I. Rol Jefe de Guias
@@ -328,10 +362,12 @@ GRANT CONTROL ON CERTIFICATE::Certificado_DNI_SGPN TO Rol_Jefe_Guias;
 GRANT EXECUTE ON OBJECT::Area_Excursiones.SP_ConsultarGuias_GuiaJefe TO Rol_Jefe_Guias;
 GRANT EXECUTE ON OBJECT::Area_Excursiones.SP_ConsultarMisDatos_Guia TO Rol_Jefe_Guias;
 
+GRANT SELECT,UPDATE,DELETE ON OBJECT::Area_Excursiones.Habilitacion TO Rol_Jefe_Guias;
+GRANT SELECT,UPDATE,DELETE ON OBJECT::Area_Excursiones.Habilitacion_Guia TO Rol_Jefe_Guias;
+GRANT SELECT,UPDATE,DELETE ON OBJECT::Area_Excursiones.Actividad TO Rol_Jefe_Guias;
+GRANT SELECT,UPDATE,DELETE ON OBJECT::Area_Excursiones.Habilitaciones_por_Actividad to Rol_Jefe_Guias;
 GO
---Faltaría un :
---GRANT SELECT,UPDATE ON OBJECT::Area_Excursiones.Guia
---GRANT SELECT ON OBJECT::Area_Excursiones.Habilitacion
+
 
 -- ////////////////////////////////////////////////////////////
 --              J. Rol de Guias
@@ -351,8 +387,10 @@ GRANT VIEW DEFINITION ON SYMMETRIC KEY::SymKey_DNI_SGPN TO Rol_Guia_Base;
 GRANT CONTROL ON CERTIFICATE::Certificado_DNI_SGPN TO Rol_Guia_Base; 
 
 GRANT SELECT ON OBJECT::Area_Excursiones.Vista_Guias_Seguros TO Rol_Guia_Base;
-
-
+GRANT SELECT ON OBJECT::Area_Excursiones.Habilitacion_Guia TO Rol_Guia_Base;
+GRANT SELECT ON OBJECT::Area_Excursiones.Actividad TO Rol_Guia_Base;
+GRANT SELECT ON OBJECT::Area_Excursiones.Tipo_Actividad TO Rol_Guia_Base;
+GRANT SELECT ON OBJECT::Area_Excursiones.Habilitaciones_por_Actividad TO Rol_Guia_Base;
 GO
 -- ////////////////////////////////////////////////////////////
 --              K. Rol de Jefe de concesiones
@@ -376,6 +414,13 @@ GRANT EXECUTE ON OBJECT::Area_Negocios.SP_EliminarCanon TO Rol_Jefe_Concesiones;
 GRANT EXECUTE ON OBJECT::Area_Negocios.SP_EliminarEstadoCanon TO Rol_Jefe_Concesiones;
 GRANT EXECUTE ON OBJECT::Area_Negocios.SP_EliminarPagoCanon TO Rol_Jefe_Concesiones;
 
+GRANT SELECT,UPDATE ON OBJECT::Area_Negocios.Concesion TO Rol_Jefe_Concesiones; 
+GRANT SELECT,UPDATE ON OBJECT::Area_Negocios.Canon TO Rol_Jefe_Concesiones; 
+GRANT SELECT,UPDATE, DELETE ON OBJECT::Area_Negocios.Estado_Canon TO Rol_Jefe_Concesiones;
+GRANT SELECT,UPDATE, DELETE ON OBJECT::Area_Negocios.Pago_Canon TO Rol_Jefe_Concesiones;
+GRANT SELECT,UPDATE ON OBJECT::Area_Negocios.Tipo_Actividad_Concesion TO Rol_Jefe_Concesiones;
+
+
 GO
 -- ////////////////////////////////////////////////////////////
 --              L. Rol de Admin de concesiones
@@ -394,7 +439,12 @@ GRANT EXECUTE ON OBJECT::Area_Negocios.SP_EliminarEmpresaConcesionaria TO Rol_Ad
 GRANT EXECUTE ON OBJECT::Area_Negocios.SP_EliminarConcesion TO Rol_Admin_Concesion;
 GRANT EXECUTE ON OBJECT::Area_Negocios.SP_EliminarTipoActividadConcesion TO Rol_Admin_Concesion;
 
-GRANT SELECT ON OBJECT::Area_Negocios.Canon TO Rol_Admin_Concesion;
+
+GRANT SELECT,UPDATE, DELETE ON OBJECT::Area_Negocios.Concesion TO Rol_Jefe_Concesiones; 
+GRANT SELECT,UPDATE, DELETE ON OBJECT::Area_Negocios.Canon TO Rol_Jefe_Concesiones; 
+GRANT SELECT,UPDATE, DELETE ON OBJECT::Area_Negocios.Estado_Canon TO Rol_Jefe_Concesiones;
+GRANT SELECT,UPDATE, DELETE ON OBJECT::Area_Negocios.Pago_Canon TO Rol_Jefe_Concesiones;
+GRANT SELECT,UPDATE, DELETE ON OBJECT::Area_Negocios.Tipo_Actividad_Concesion TO Rol_Jefe_Concesiones;
 
 go
 -- ////////////////////////////////////////////////////////////

@@ -80,7 +80,7 @@ PRINT '--- Ver  sus propios datos:----'
 
 EXEC  Area_Excursiones.SP_ConsultarMisDatos_Guia @Nombre='UsuarioGuiaTest',@Apellido='ApellidoPrueba'
 
-
+PRINT '--- Ver Datos de Habilitación:-----'
 SELECT TOP 5 * FROM Area_Excursiones.Habilitacion;
 GO
 --Resultado: Es capaz de visualizar sus datos correctamente o las habilitaciones
@@ -100,7 +100,7 @@ GO
 
 PRINT '--- PRUEBA 4: Intento de ver otra área del sistema (DENEGADO ESPERADO) ---'
 -- Esto DEBE tirar error, porque el Guía no tiene permisos
-SELECT * FROM Area_Infraestructura.Parque;
+SELECT * FROM Area_Negocios.Concesion;
 GO
 --Resultado: Se denegó el permiso SELECT en el objeto 'Parque', base de datos 'SGParquesNacionales', esquema 'Area_Infraestructura'.
 
@@ -119,7 +119,7 @@ EXEC Area_Excursiones.Sp_CrearGuia @DNI = '51770000',
 GO
 --resultado: Se denegó el permiso EXECUTE en el objeto 'Sp_CrearGuia'
 -- ///////////////////////////////////////////////////////////////
-
+PRINT 'FIN ENTORNO DE PRUEBAS'
 
 REVERT;
 GO

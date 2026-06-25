@@ -99,7 +99,7 @@ PRINT '=== TEST 3: El Guía "JefeGuiaUser" Quiere cambiar los datos de un Guía 
 EXECUTE AS USER = 'JefeGuiaUser';
 -- Buscamos el ID de algún guía distinto al Jefe dinámicamente y lo ejecutamos
 
-EXEC Area_Excursiones.Sp_ModificarGuia @IdGuia=4,@Dni='21760000',@IdParque=1,@IdEspecialidad=1,@Nombre='GuiaJorge',
+EXEC Area_Excursiones.Sp_ModificarGuia @IdGuia=2,@Dni='21760000',@IdParque=1,@IdEspecialidad=1,@Nombre='GuiaJorge',
                                         @Apellido='ApellidoGuiaJorge',@Titulo='Solo Turismo'
 --Resultado: Operación Exitosa: Guía Modificado.
 REVERT;
@@ -117,4 +117,7 @@ EXEC Area_Excursiones.Sp_CrearGuia @DNI = '51770000',
     @Titulo ='Curso de Turismo'
     --Resultado: Operación Exitosa: Guía Creado Exitósamente
 REVERT;
+
+PRINT 'Muestro la tabla sola para observar que se añadío:'
+SELECT IdGuia,Nombre,Apellido,Titulo FROM Area_Excursiones.Guia
 GO
