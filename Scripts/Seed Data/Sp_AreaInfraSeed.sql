@@ -63,14 +63,14 @@ BEGIN
         END
 
         -- Inserción de Tipos de Parque y Tipos de Visitante
-        IF @TiposParque = 1 AND NOT EXISTS (SELECT 1 FROM Area_Infraestructura.Tipo_Parque where Descripcion  in ('Parque Nacional', 'Reserva Natural', 'Monumento Natural')))
+        IF @TiposParque = 1 AND NOT EXISTS (SELECT 1 FROM Area_Infraestructura.Tipo_Parque where Descripcion  in ('Parque Nacional', 'Reserva Natural', 'Monumento Natural'))
         BEGIN
             EXEC Area_Infraestructura.SP_CrearTipoParque 'Parque Nacional';
             EXEC Area_Infraestructura.SP_CrearTipoParque 'Reserva Natural';
             EXEC Area_Infraestructura.SP_CrearTipoParque 'Monumento Natural';
         END
 
-        IF @TiposVisitante = 1 AND NOT EXISTS (SELECT 1 FROM Area_Comercial.Tipo_Visitante where Descripcion in ('Residente', 'No residente')))
+        IF @TiposVisitante = 1 AND NOT EXISTS (SELECT 1 FROM Area_Comercial.Tipo_Visitante where Descripcion in ('Residente', 'No residente'))
         BEGIN
             EXEC Area_Comercial.SP_CrearTipoVisitante 'Residente';
             EXEC Area_Comercial.SP_CrearTipoVisitante 'No residente';

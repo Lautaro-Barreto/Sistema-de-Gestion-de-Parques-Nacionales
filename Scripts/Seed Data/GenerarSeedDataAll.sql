@@ -14,6 +14,27 @@ Historial de 50 ventas simuladas registradas a través de Sp_RegistrarVentaEntra
 USE SGParquesNacionales
 GO
 
+/*select * from Area_Infraestructura.Parque
+
+SELECT * from Area_Infraestructura.Guardaparque
+SELECT * FROM Area_Infraestructura.Tipo_Parque
+SELECT * from Area_Infraestructura.Historial_Trabajo_Guardaparque
+select * from Area_Infraestructura.Provincia
+select * from Area_Infraestructura.Region
+*/
+
+SELECT * from Area_Excursiones.Actividad
+SELECT * from Area_Excursiones.Tipo_Actividad
+SELECT * from Area_Excursiones.Habilitacion
+SELECT * from Area_Excursiones.Habilitacion_Guia
+SELECT * from Area_Excursiones.Guia
+SELECT * from Area_Excursiones.Guias_por_Actividad
+SELECT * from Area_Excursiones.Habilitaciones_por_Actividad
+
+
+GO
+SELECT * FROM Area_Comercial.
+GO
 CREATE OR ALTER PROCEDURE Area_Infraestructura.Sp_GenerarSeedDataAll
 AS
 BEGIN

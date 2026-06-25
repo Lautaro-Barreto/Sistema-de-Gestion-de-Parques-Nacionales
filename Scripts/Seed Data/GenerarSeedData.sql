@@ -14,6 +14,8 @@ Historial de 50 ventas simuladas registradas a través de Sp_RegistrarVentaEntra
 USE SGParquesNacionales
 GO
 
+--EXEC Area_Infraestructura.Sp_GenerarSeedDataAll
+
 BEGIN TRY
     set nocount on;
     BEGIN TRANSACTION;
@@ -238,6 +240,7 @@ BEGIN TRY
     DECLARE @NomGuia VARCHAR(30);
     DECLARE @ApeGuia VARCHAR(30);
     DECLARE @TituloGuia VARCHAR(30);
+
 
     IF @TotalGuias < 20
     BEGIN

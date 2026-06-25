@@ -92,8 +92,8 @@ BEGIN
         
     END TRY
     BEGIN CATCH
+        ROLLBACK TRANSACTION;
         DECLARE @ErrorMessage VARCHAR(255) = ERROR_MESSAGE();
         RAISERROR('Error al generar seed data del área de infraestructura: %s', 16, 1, @ErrorMessage);
-        ROLLBACK TRANSACTION;
     END CATCH
 END

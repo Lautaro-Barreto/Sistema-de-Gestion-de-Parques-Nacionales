@@ -124,6 +124,9 @@ BEGIN
                 DECLARE @ApeGuia VARCHAR(30);
                 DECLARE @TituloGuia VARCHAR(30);
 
+                -- Declaración y asignación dinámica de los límites
+                DECLARE @limInf INT = 1;
+                DECLARE @limSup INT = (SELECT COUNT(*) FROM @NomYApeGuias) + 1;
                 IF @TotalGuias < 20
                 BEGIN
                     DECLARE @GuiaNo INT = 1;

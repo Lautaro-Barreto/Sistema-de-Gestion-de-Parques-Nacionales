@@ -90,6 +90,7 @@ BEGIN
 		IF @Actividad IS NOT NULL
 		BEGIN
 			SELECT @IdActividadIngresada = IdActividad FROM Area_Excursiones.Actividad WHERE Nombre = @Actividad
+			AND IdParque = @IdParque
 			IF @IdActividadIngresada IS NULL
 			BEGIN
 				RAISERROR('Actividad inexistente', 16, 1)

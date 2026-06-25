@@ -654,7 +654,7 @@ BEGIN
 		SET NOCOUNT ON;
 
 		-- Validamos existencia
-		IF NOT EXISTS (SELECT 1 FROM Area_Infraestructura.TipoParque WHERE IdTipoParque = @IdTipoParque)
+		IF NOT EXISTS (SELECT 1 FROM Area_Infraestructura.Tipo_Parque WHERE IdTipoParque = @IdTipoParque)
 		BEGIN
 			PRINT('No existe un tipo de parque con el Id proporcionado.');
 			RETURN;
@@ -670,7 +670,7 @@ BEGIN
 				RAISERROR('.', 16, 1);
 			END
 
-			UPDATE Area_Infraestructura.TipoParque
+			UPDATE Area_Infraestructura.Tipo_Parque
 			SET Descripcion = @Descripcion
 			WHERE IdTipoParque = @IdTipoParque;
 		END

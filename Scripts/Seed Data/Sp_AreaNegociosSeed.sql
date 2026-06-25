@@ -3,13 +3,13 @@
 #Materia: 3641 - Bases de Datos Aplicada 
 #Fecha: 09/06/2026
 #Integrantes: Barreto Lautaro, Losada Agustina, Miranda Guillermo, Villar Facundo
-#Descripción: Este script se encarga de crear el Stored Procedure utilizado para generar seed data del área de infraestructura.
+#Descripción: Este script se encarga de crear el Stored Procedure utilizado para generar seed data del área de negocios.
 */
 
 USE SGParquesNacionales
 GO
 
-CREATE OR ALTER PROCEDURE Area_Infraestructura.Sp_AreaInfraSeed
+CREATE OR ALTER PROCEDURE Area_Negocios.Sp_AreaNegociosSeed
     @Empresas BIT = 1,
     @Concesiones BIT = 1
 AS
@@ -20,13 +20,17 @@ BEGIN
         -- Crear al menos 5 empresas concesionarias
         IF @Empresas = 1 AND NOT EXISTS (SELECT 1 FROM Area_Negocios.Empresa_Concesionaria)
         BEGIN
-            EXEC Area_Negocios.Sp_CrearEmpresaConcesionaria 'Agus Inc.';
+            EXEC Area_Negocios.SP_CrearEmpresaConcesionaria 'Agus Inc.';
             EXEC Area_Negocios.Sp_CrearEmpresaConcesionaria 'Umbrella Corp';
             EXEC Area_Negocios.Sp_CrearEmpresaConcesionaria 'YPF';
-            EXEC Area_Negocios.Sp_CrearEmpresaConcesionaria 'Freddy Fazbear''s Pizza';
-            EXEC Area_Negocios.Sp_CrearEmpresaConcesionaria 'Claure & Co.';
-        END
+            EXEC Area_Negocios.Sp_CrearEmpresaConcesionaria 'Freddy Fazbears Pizza';
+            EXEC Area_Negocios.SP_CrearEmpresaConcesionaria 'Claure y Co.';
 
+            EXEC Area_Negocios.SP_CrearTipoActividadConcesion @Descripcion = 'Regadero';
+            EXEC Area_Negocios.SP_CrearTipoActividadConcesion @Descripcion = 'Restaurante';
+
+        END
+       
         -- Crear al menos 10 Concesiones
         IF @Concesiones = 1
         BEGIN
@@ -51,8 +55,8 @@ BEGIN
         
     END TRY
     BEGIN CATCH
+        ROLLBACK TRANSACTION;
         DECLARE @ErrorMessage VARCHAR(255) = ERROR_MESSAGE();
         RAISERROR('Error al generar seed data del área de infraestructura: %s', 16, 1, @ErrorMessage);
-        ROLLBACK TRANSACTION;
     END CATCH
 END

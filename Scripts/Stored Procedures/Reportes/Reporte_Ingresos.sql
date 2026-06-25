@@ -12,8 +12,8 @@ WITH IngresosEntradas AS(
     YEAR(v.Fecha) AS AÑO,
     MONTH(v.Fecha) AS MES,
     DATEPART(WEEK,v.Fecha) AS SEMANA,
-    SUM(Cantidad) AS [Cantidad Entradas],
-    SUM(Subtotal) AS [Ingresos Entradas]
+    SUM(d.Cantidad) AS [Cantidad Entradas],
+    SUM(d.Subtotal) AS [Ingresos Entradas]
     FROM Area_Comercial.Detalle_Venta_Entrada d
     JOIN Area_Comercial.Venta v ON v.IdVenta = d.IdVenta
     GROUP BY v.IdParque, YEAR(v.Fecha), MONTH(v.Fecha), DATEPART(WEEK,v.Fecha)
@@ -30,6 +30,12 @@ IngresosActividades AS(
     JOIN Area_Comercial.Venta v ON v.IdVenta = c.IdVenta
     GROUP BY v.IdParque, YEAR(v.Fecha), MONTH(v.Fecha), DATEPART(WEEK,v.Fecha)
 ),
+
+--SELECT * FROM Area_Comercial.Venta v INNER JOIN Area_Infraestructura.Parque p ON p.IdParque = v.IdParque
+--SELECT * FROM Area_Infraestructura.Parque
+select * from Area_Negocios.Concesion
+select * from Area_Negocios.Canon
+select * from Area_Negocios.Pago_Canon
 
 IngresosConceciones AS(
     SELECT 
@@ -57,3 +63,4 @@ FROM Area_Infraestructura.Parque p
 FULL JOIN IngresosEntradas e ON e.IdParque = p.IdParque
 FULL JOIN IngresosActividades a ON a.IdParque = p.IdParque
 FULL JOIN IngresosConceciones c ON c.IdParque = p.IdParque
+
