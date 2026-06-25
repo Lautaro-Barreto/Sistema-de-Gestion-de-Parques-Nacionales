@@ -58,7 +58,10 @@ BEGIN
     END TRY
     BEGIN CATCH
         -- Lanzamos return
-            RAISERROR('Algo salio mal en la creación del Canon',16,1);
+            DECLARE @ErrorMessage NVARCHAR(4000) = ERROR_MESSAGE();
+            DECLARE @ErrorSeverity INT = ERROR_SEVERITY();
+            DECLARE @ErrorState INT = ERROR_STATE();
+            RAISERROR (@ErrorMessage, @ErrorSeverity, @ErrorState);
             Return;
     END CATCH
 END
@@ -171,7 +174,12 @@ BEGIN
             PRINT('La descripcion ingresada no es valida')
             RAISERROR('Descripcion Invalida', 16,1)
         END
-
+        -- Validamos que la descripcion no se encuentra ya registrada
+        IF EXISTS (SELECT 1 FROM Area_Negocios.Estado_Canon WHERE Descripcion = @Descripcion)
+        BEGIN
+            PRINT('La descripcion ingresada ya se encuentra registrada')
+            RAISERROR('Descripcion Invalida', 16,1)
+        END
         INSERT INTO Area_Negocios.Estado_Canon(Descripcion) VALUES (@Descripcion)  
     END TRY
     BEGIN CATCH

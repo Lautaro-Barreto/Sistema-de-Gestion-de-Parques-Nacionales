@@ -11,17 +11,39 @@ ejecutándolos y validando que los datos hayan sido importados correctamente a l
 USE SGParquesNacionales
 GO
 
--- Ejecutamos el SP de importación general para un archivo CSV
+-- Ejecutamos el SP de importación 
+-- Probamos crear las empresas solamente, sin las concesiones
 EXEC Area_Negocios.Sp_ImportarDatosEmpresas
-    @RutaArchivoEmpresas = 'C:\ArchivosTPBDA\registro-organizaciones-distinguidas-sact.csv';
+    @RutaArchivoEmpresas = 'C:\ArchivosTPBDA\registro-organizaciones-distinguidas-sact.csv',
+    @CrearConcesiones = 0;
 
-select concesion.IdConcesion, ec.Nombre, concesion.Fecha_Inicio, concesion.Fecha_Fin, tac.Descripcion as Actividad from area_negocios.concesion concesion
+-- Para ver las empresas
+select * from area_negocios.empresa_concesionaria;
+
+-- Ahora ejecutamos el SP de importación con la opción de crear concesiones automáticamente
+-- Ya que implementamos lógica de upsert, no se volverán a crear las empresas que ya existen, pero
+--  sí se crearán las concesiones para las empresas existentes
+EXEC Area_Negocios.Sp_ImportarDatosEmpresas
+    @RutaArchivoEmpresas = 'C:\ArchivosTPBDA\registro-organizaciones-distinguidas-sact.csv',
+    @CrearConcesiones = 1;
+
+-- Para ver las empresas
+select * from area_negocios.empresa_concesionaria;
+
+-- Para ver las concesiones de cada empresa, junto con la actividad y las fechas de inicio y fin
+select concesion.IdConcesion, ec.Nombre as Empresa, p.Nombre as Parque, concesion.Fecha_Inicio, concesion.Fecha_Fin, tac.Descripcion as Actividad from area_negocios.concesion concesion
 INNER JOIN area_negocios.empresa_concesionaria ec ON concesion.IdEmpresa = ec.IdEmpresa
 INNER JOIN area_negocios.tipo_actividad_concesion tac ON concesion.IdTipoActividadConcesion = tac.IdTipoActividadConcesion
+INNER JOIN area_infraestructura.parque p ON concesion.IdParque = p.IdParque
+where ec.Nombre = 'Parque Nacional Iguazú'; -- Cambiar por el nombre de la empresa que se quiera consultar
 
-SELECT ca.IdCanon, ec.Nombre, p.Nombre as Parque, ec2.Descripcion as Estado, ca.Monto_Mensual, ca.Fecha_Vencimiento FROM area_negocios.canon ca
+SELECT ca.IdCanon, c.IdConcesion, ec.Nombre, p.Nombre as Parque, ec2.Descripcion as Estado, ca.Monto_Mensual, ca.Fecha_Vencimiento FROM area_negocios.canon ca
 INNER JOIN area_negocios.concesion c ON ca.IdConcesion = c.IdConcesion
 INNER JOIN area_negocios.empresa_concesionaria ec ON c.IdEmpresa = ec.IdEmpresa
 INNER JOIN area_negocios.tipo_actividad_concesion tac ON c.IdTipoActividadConcesion = tac.IdTipoActividadConcesion
 INNER JOIN area_negocios.estado_canon ec2 ON ca.IdEstado = ec2.IdEstadoCanon
 INNER JOIN area_infraestructura.parque p ON c.IdParque = p.IdParque;
+
+/* DELETE FROM area_negocios.canon;
+DELETE FROM area_negocios.concesion;
+DELETE FROM area_negocios.empresa_concesionaria; */

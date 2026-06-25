@@ -5,6 +5,12 @@
 #Integrantes: Barreto Lautaro, Losada Agustina, Miranda Guillermo, Villar Facundo
 #Descripción: Este script se encarga de la creación del Stored Procedure utilizado para registrar el pago de un 
 canon, actualizar su estado y generar el próximo canon a pagar.   
+
+-- Determinar el estado posterior al pago basado en las fechas
+-- Si el pago se realiza antes o en la fecha de vencimiento, el estado será "Saldado en Término"
+-- Si el pago se realiza después de la fecha de vencimiento, el estado será "Saldado con Atraso"
+-- Validar que el monto abonado sea suficiente para cubrir el canon
+
 */
 
 CREATE OR ALTER PROCEDURE Area_Negocios.SP_Registrar_Pago_Canon
@@ -46,7 +52,12 @@ BEGIN
         RETURN;
     END
 
-    -- Determinar el estado posterior al pago basado en las fechas
+    IF @Monto_Abonado < @Monto_Mensual
+    BEGIN
+        RAISERROR('El monto abonado no es suficiente para cubrir el canon.', 16, 1);
+        RETURN;
+    END
+
     DECLARE @NuevoEstado INT;
     IF @Fecha_Pago <= @Fecha_Vencimiento
         SET @NuevoEstado = @IdSaldadoTermino;
@@ -57,8 +68,8 @@ BEGIN
         BEGIN TRANSACTION;
 
         -- 1. Insertar el recibo en la tabla de Pagos
-        INSERT INTO Area_Negocios.Pago_Canon (IdCanon, IdConcesion, Estado, Monto_Abonado, Fecha_Pago)
-        VALUES (@IdCanon, @IdConcesion, 'Completado', @Monto_Abonado, @Fecha_Pago);
+        INSERT INTO Area_Negocios.Pago_Canon (IdCanon, Monto_Abonado, Fecha_Pago)
+        VALUES (@IdCanon, @Monto_Abonado, @Fecha_Pago);
 
         -- 2. Actualizar el Canon pagado para cerrarlo
         UPDATE Area_Negocios.Canon

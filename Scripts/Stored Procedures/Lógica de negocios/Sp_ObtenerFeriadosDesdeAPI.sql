@@ -35,10 +35,7 @@ CREATE OR ALTER PROCEDURE Area_Comercial.SP_ObtenerFeriadosDesdeAPI
 AS
 BEGIN
     SET NOCOUNT ON;
-    EXEC sp_configure 'show advanced options', 1;	--Este es para poder editar los permisos avanzados.
-    RECONFIGURE;
-    EXEC sp_configure 'Ole Automation Procedures', 1;	--Aqui habilitamos esta opcion avanzada
-    RECONFIGURE;
+
     BEGIN TRY
         BEGIN TRANSACTION
             PRINT 'Obteniendo feriados nacionales desde la API de argentinadatos.com...'        
