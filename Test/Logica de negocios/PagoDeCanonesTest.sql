@@ -201,3 +201,6 @@ INNER JOIN area_negocios.tipo_actividad_concesion tac ON c.IdTipoActividadConces
 INNER JOIN area_negocios.estado_canon ec2 ON ca.IdEstado = ec2.IdEstadoCanon
 INNER JOIN area_infraestructura.parque p ON c.IdParque = p.IdParque
 WHERE ec.Nombre = 'Empresa Increíble' AND tac.Descripcion = 'Turismo Increíble' AND p.Nombre = 'Parque Nacional Increíble';
+
+SELECT * FROM Area_Negocios.Canon
+SELECT * FROM Area_Negocios.Pago_Canon

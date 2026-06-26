@@ -33,8 +33,6 @@ SELECT * from Area_Excursiones.Habilitaciones_por_Actividad
 
 
 GO
-SELECT * FROM Area_Comercial.
-GO
 CREATE OR ALTER PROCEDURE Area_Infraestructura.Sp_GenerarSeedDataAll
 AS
 BEGIN
