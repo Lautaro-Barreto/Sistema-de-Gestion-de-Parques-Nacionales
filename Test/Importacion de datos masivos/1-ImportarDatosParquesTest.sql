@@ -32,6 +32,7 @@ join Area_Comercial.Tipo_Visitante tv on tv.IdTipoVisitante = pptv.IdTipoVisitan
 order by p.Nombre, tv.Descripcion;
 
 -- Vemos los descuentos
+select * from Area_Comercial.Descuento_Parque
 
 -- Ejecutamos el SP de importación general para un archivo CSV
 EXEC Area_Infraestructura.Sp_ImportarDatosParques

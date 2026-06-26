@@ -18,7 +18,6 @@ WITH IngresosEntradas AS(
     JOIN Area_Comercial.Venta v ON v.IdVenta = d.IdVenta
     GROUP BY v.IdParque, YEAR(v.Fecha), MONTH(v.Fecha), DATEPART(WEEK,v.Fecha)
 ),
-
 IngresosActividades AS(
     SELECT  
     v.IdParque,
@@ -30,20 +29,13 @@ IngresosActividades AS(
     JOIN Area_Comercial.Venta v ON v.IdVenta = c.IdVenta
     GROUP BY v.IdParque, YEAR(v.Fecha), MONTH(v.Fecha), DATEPART(WEEK,v.Fecha)
 ),
-
---SELECT * FROM Area_Comercial.Venta v INNER JOIN Area_Infraestructura.Parque p ON p.IdParque = v.IdParque
---SELECT * FROM Area_Infraestructura.Parque
-select * from Area_Negocios.Concesion
-select * from Area_Negocios.Canon
-select * from Area_Negocios.Pago_Canon
-
 IngresosConceciones AS(
     SELECT 
     cs.IdParque,
     YEAR(p.Fecha_Pago) AS AÑO,
     MONTH(p.Fecha_Pago) AS MES,
     DATEPART(WEEK,p.Fecha_Pago) AS SEMANA,
-    SUM(p.IdPagoCanon) AS [Ingresos Concesiones]
+    SUM(p.Monto_Abonado) AS [Ingresos Concesiones]
 
     FROM Area_Negocios.Pago_Canon p
     JOIN Area_Negocios.Canon c ON c.IdCanon = p.IdCanon
@@ -51,6 +43,8 @@ IngresosConceciones AS(
     GROUP BY cs.IdParque, YEAR(p.Fecha_Pago), MONTH(p.Fecha_Pago), DATEPART(WEEK,p.Fecha_Pago)
 )
 
+--SELECT * FROM Area_Comercial.Venta v INNER JOIN Area_Infraestructura.Parque p ON p.IdParque = v.IdParque
+--SELECT * FROM Area_Infraestructura.Parque
 SELECT p.Nombre AS Parque,
 COALESCE(e.AÑO, a.AÑO,c.AÑO) AS AÑO,
 COALESCE(e.MES, a.MES, c.MES) AS MES,
@@ -62,5 +56,9 @@ ISNULL(c.[Ingresos Concesiones], 0) AS [Ingesos Concesiones]
 FROM Area_Infraestructura.Parque p
 FULL JOIN IngresosEntradas e ON e.IdParque = p.IdParque
 FULL JOIN IngresosActividades a ON a.IdParque = p.IdParque
-FULL JOIN IngresosConceciones c ON c.IdParque = p.IdParque
+FULL JOIN IngresosConceciones c ON c.IdParque = p.IdParque;
+
+select * from Area_Negocios.Concesion
+select * from Area_Negocios.Canon
+select * from Area_Negocios.Pago_Canon
 

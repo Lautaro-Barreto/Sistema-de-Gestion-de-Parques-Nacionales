@@ -166,7 +166,7 @@ BEGIN
         IdParque INT,
         IdFormaDePago TINYINT,
         Fecha DATE,
-        Total DECIMAL(10,2),
+        Total DECIMAL(38,3),
 
         FOREIGN KEY (IdPuntoDeVenta) REFERENCES Area_Comercial.Punto_De_Venta(IdPuntoDeVenta),
         FOREIGN KEY (IdParque) REFERENCES Area_Infraestructura.Parque(IdParque),
@@ -771,7 +771,7 @@ CREATE OR ALTER PROCEDURE Area_Comercial.SP_CrearVenta
 	@IdParque INT,
 	@IdFormaDePago INT,
 	@Fecha DATE,
-	@Total DECIMAL(13,3)
+	@Total DECIMAL(38,3)
 AS
 BEGIN
 	BEGIN TRY
@@ -4801,6 +4801,7 @@ BEGIN
             TRY_CAST(fecha_distincion AS DATE)
         FROM #Staging_Raw_CSV
         WHERE organizacion IS NOT NULL AND organizacion <> '';
+        -- select * from #Staging_Organizaciones;
 
         -- 1. Insertar Estados de Canon (si no existen)
         IF NOT EXISTS (SELECT 1 FROM Area_Negocios.Estado_Canon where Descripcion IN ('Vigente', 'Adeudado', 'Saldado en Término', 'Saldado con Atraso', 'Exento', 'Extinguido'))
@@ -5129,7 +5130,17 @@ BEGIN
 
             IF NOT EXISTS (SELECT 1 FROM Area_Infraestructura.Tipo_Parque WHERE Descripcion = 'Otro / No Especificado')
                 INSERT INTO Area_Infraestructura.Tipo_Parque (Descripcion) VALUES ('Otro / No Especificado');
- 
+
+            -- Se crean los tipos de visitantes si no existen
+            IF NOT EXISTS (SELECT 1 FROM Area_Comercial.Tipo_Visitante WHERE Descripcion = 'Residente')
+            BEGIN
+                EXEC Area_Comercial.Sp_CrearTipoVisitante @Descripcion = 'Residente';
+            END
+            IF NOT EXISTS (SELECT 1 FROM Area_Comercial.Tipo_Visitante WHERE Descripcion = 'No residente')
+            BEGIN
+                EXEC Area_Comercial.Sp_CrearTipoVisitante @Descripcion = 'No residente';
+            END
+
             -- Paso 1: Insertar o actualizar Regiones            
             MERGE Area_Infraestructura.Region AS Target
             USING (
@@ -5962,3 +5973,40 @@ BEGIN
     END CATCH
 END
 go
+
+CREATE OR ALTER PROCEDURE Area_Infraestructura.Sp_ReporteVisitasParque
+@IdParque INT 
+AS
+BEGIN
+    BEGIN TRY
+
+        IF NOT EXISTS(SELECT 1 FROM Area_Infraestructura.Parque WHERE IdParque = @IdParque AND Activo = 1)
+        BEGIN 
+            RAISERROR('El parque proporcionado no existe o no está disponible.',16,1)
+        END 
+
+        SELECT p.Nombre AS PARQUE,
+        YEAR(e.Fecha_Acceso) AS AÑO,
+        MONTH(e.Fecha_Acceso) AS MES,
+        DATEPART(WEEK, e.Fecha_Acceso) AS SEMANA,
+        COUNT(e.IdEntrada) AS 'TOTAL VISITAS'
+        FROM Area_Infraestructura.Parque p 
+        JOIN Area_Comercial.Entrada e ON e.IdParque = p.IdParque
+        WHERE p.IdParque = @IdParque
+        GROUP BY p.Nombre, YEAR(e.Fecha_Acceso), MONTH(e.Fecha_Acceso), DATEPART(WEEK, e.Fecha_Acceso)
+        ORDER BY AÑO, MES, SEMANA
+    END TRY
+    BEGIN CATCH 
+        -- 1. Capturamos los datos del error original
+        DECLARE @ErrorMessage NVARCHAR(4000) = ERROR_MESSAGE();
+        DECLARE @ErrorSeverity INT = ERROR_SEVERITY();
+        DECLARE @ErrorState INT = ERROR_STATE();
+
+        -- 2. Aseguramos que el estado sea válido para que no falle el RAISERROR
+        IF @ErrorState = 0 SET @ErrorState = 1;
+
+        -- 3. Volvemos a lanzar el mismo error exacto que saltó en el TRY
+        RAISERROR(@ErrorMessage, @ErrorSeverity, @ErrorState);
+    END CATCH 
+END 
+GO
