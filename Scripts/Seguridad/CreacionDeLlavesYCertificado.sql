@@ -15,6 +15,10 @@ FROM sys.symmetric_keys
 WHERE name = '##MS_DatabaseMasterKey##';
 */
 --Lógica de UPSERT para la master key 
+
+USE SGParquesNacionales
+GO
+
 BEGIN TRY
     IF NOT EXISTS (SELECT * FROM  sys.symmetric_keys WHERE symmetric_key_id = 101)
     BEGIN
