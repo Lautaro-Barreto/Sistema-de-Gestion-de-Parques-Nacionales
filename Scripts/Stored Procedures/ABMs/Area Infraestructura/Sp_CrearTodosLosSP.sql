@@ -876,4 +876,43 @@ BEGIN
 END
 GO
 
+--/////////////////////////////////////////////////////////////
+-- Eliminación de Tipo parque
+-- /////////////////////////////////////////////////////////////
+CREATE OR ALTER PROCEDURE Area_Infraestructura.Sp_EliminarTipoParque
+	@IdTipoParque INT
+AS
+BEGIN
+	BEGIN TRY
+		SET NOCOUNT ON;
+
+		-- Validamos existencia
+		IF NOT EXISTS (SELECT 1 FROM Area_Infraestructura.Tipo_Parque WHERE IdTipoParque = @IdTipoParque)
+		BEGIN
+			PRINT('No existe un tipo de parque con el Id proporcionado.');
+			RETURN;
+		END
+
+        -- Seteamos en null el tipo para los parques que lo tengan asignado
+        UPDATE Area_Infraestructura.Parque
+        SET IdTipoParque = NULL
+        WHERE IdTipoParque = @IdTipoParque;
+
+		-- Eliminar tipo de parque
+		DELETE FROM Area_Infraestructura.Tipo_Parque
+		WHERE IdTipoParque = @IdTipoParque;
+
+	END TRY
+
+	BEGIN CATCH
+		IF ERROR_SEVERITY() > 10
+		BEGIN
+			RAISERROR('Ocurrió  un error al eliminar el tipo de parque.', 16, 1);
+			RETURN;
+		END
+	END CATCH
+END
+GO
+
+
 --///////////////////////////////////////////////////////////////end
