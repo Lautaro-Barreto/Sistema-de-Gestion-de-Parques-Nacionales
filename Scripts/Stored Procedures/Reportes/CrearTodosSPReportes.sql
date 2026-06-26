@@ -26,58 +26,67 @@ END
 GO
 
 --REPORTE INGRESOS
+GO
 CREATE OR ALTER PROCEDURE Area_Comercial.Sp_ReporteIngresos AS
 BEGIN 
-    WITH IngresosEntradas AS(
-        SELECT v.IdParque,
-        YEAR(v.Fecha) AS AÑO,
-        MONTH(v.Fecha) AS MES,
-        DATEPART(WEEK,v.Fecha) AS SEMANA,
-        SUM(d.Cantidad) AS [Cantidad Entradas],
-        SUM(d.Subtotal) AS [Ingresos Entradas]
-        FROM Area_Comercial.Detalle_Venta_Entrada d
-        JOIN Area_Comercial.Venta v ON v.IdVenta = d.IdVenta
-        GROUP BY v.IdParque, YEAR(v.Fecha), MONTH(v.Fecha), DATEPART(WEEK,v.Fecha)
-    ),
-
-    IngresosActividades AS(
-        SELECT  
-        v.IdParque,
-        YEAR(v.Fecha) AS AÑO,
-        MONTH(v.Fecha) AS MES,
-        DATEPART(WEEK,v.Fecha) AS SEMANA,
-        SUM(c.Monto) AS [Ingresos Actividades]
-        FROM Area_Excursiones.Contratacion_Actividad c
-        JOIN Area_Comercial.Venta v ON v.IdVenta = c.IdVenta
-        GROUP BY v.IdParque, YEAR(v.Fecha), MONTH(v.Fecha), DATEPART(WEEK,v.Fecha)
-    ),
-    
-    IngresosConceciones AS(
+    WITH TodosLosIngresos AS (
+        -- 1. Traemos solo lo de Entradas
         SELECT 
-        cs.IdParque,
-        YEAR(p.Fecha_Pago) AS AÑO,
-        MONTH(p.Fecha_Pago) AS MES,
-        DATEPART(WEEK,p.Fecha_Pago) AS SEMANA,
-        SUM(p.IdPagoCanon) AS [Ingresos Concesiones]
+            v.IdParque, 
+            YEAR(v.Fecha) AS AÑO, MONTH(v.Fecha) AS MES, DATEPART(WEEK,v.Fecha) AS SEMANA,
+            d.Cantidad AS CantidadEntradas, 
+            d.Subtotal AS IngresosEntradas, 
+            0 AS IngresosActividades, 
+            0 AS IngresosConcesiones
+        FROM Area_Comercial.Detalle_Venta_Entrada d
+        INNER JOIN Area_Comercial.Venta v ON v.IdVenta = d.IdVenta
 
+        UNION ALL
+
+        -- 2. Traemos solo lo de Actividades
+        SELECT 
+            v.IdParque, 
+            YEAR(v.Fecha), MONTH(v.Fecha), DATEPART(WEEK,v.Fecha),
+            0, 0, 
+            c.Monto, 
+            0
+        FROM Area_Excursiones.Contratacion_Actividad c
+        INNER JOIN Area_Comercial.Venta v ON v.IdVenta = c.IdVenta
+
+        UNION ALL
+
+        -- 3. Traemos solo lo de Concesiones
+        SELECT 
+            cs.IdParque, 
+            YEAR(p.Fecha_Pago), MONTH(p.Fecha_Pago), DATEPART(WEEK,p.Fecha_Pago),
+            0, 0, 0, 
+            p.Monto_Abonado -- ¡OJO ACA! Reemplazá 'Monto_Abonado' por tu columna real de dinero
         FROM Area_Negocios.Pago_Canon p
-        JOIN Area_Negocios.Canon c ON c.IdCanon = p.IdCanon
-        JOIN Area_Negocios.Concesion cs ON cs.IdConcesion = c.IdConcesion
-        GROUP BY cs.IdParque, YEAR(p.Fecha_Pago), MONTH(p.Fecha_Pago), DATEPART(WEEK,p.Fecha_Pago)
+        INNER JOIN Area_Negocios.Canon c ON c.IdCanon = p.IdCanon
+        INNER JOIN Area_Negocios.Concesion cs ON cs.IdConcesion = c.IdConcesion
     )
 
-    SELECT p.Nombre AS Parque,
-    COALESCE(e.AÑO, a.AÑO,c.AÑO) AS AÑO,
-    COALESCE(e.MES, a.MES, c.MES) AS MES,
-    COALESCE(e.SEMANA, a.SEMANA, c.SEMANA) AS SEMANA,
-    ISNULL(e.[Cantidad Entradas], 0) AS [Total Entradas],
-    ISNULL(e.[Ingresos Entradas], 0) AS [Ingesos Entradas],
-    ISNULL(a.[Ingresos Actividades], 0) AS[Ingesos Actividades],
-    ISNULL(c.[Ingresos Concesiones], 0) AS [Ingesos Concesiones]
-    FROM Area_Infraestructura.Parque p
-    FULL JOIN IngresosEntradas e ON e.IdParque = p.IdParque
-    FULL JOIN IngresosActividades a ON a.IdParque = p.IdParque
-    FULL JOIN IngresosConceciones c ON c.IdParque = p.IdParque
+    -- La consulta XML
+    SELECT 
+        pq.Nombre AS [@Nombre], -- El parque como atributo
+        (
+            -- Subconsulta para agrupar los ingresos de ese parque
+            SELECT 
+                t.AÑO AS [@Año],
+                t.MES AS [@Mes],
+                t.SEMANA AS [@Semana],
+                ISNULL(SUM(t.CantidadEntradas), 0) AS [TotalEntradas],
+                ISNULL(SUM(t.IngresosEntradas), 0) AS [IngresosEntradas],
+                ISNULL(SUM(t.IngresosActividades), 0) AS [IngresosActividades],
+                ISNULL(SUM(t.IngresosConcesiones), 0) AS [IngresosConcesiones]
+            FROM TodosLosIngresos t
+            WHERE t.IdParque = pq.IdParque
+            GROUP BY t.AÑO, t.MES, t.SEMANA
+            FOR XML PATH('ReporteSemanal'), TYPE
+        )
+    FROM Area_Infraestructura.Parque pq
+    WHERE pq.Activo = 1 -- Solo parques activos (si aplica)
+    FOR XML PATH('Parque'), ROOT('IngresosParques'), TYPE;
 END
 GO
 
