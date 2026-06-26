@@ -6,7 +6,6 @@
 #Descripción: Este script se encarga de generar el reporte de visitas por semana, mes y año, por parque
 */
 USE SGParquesNacionales
-EXEC Area_Comercial.Sp_ReporteIngresos
 GO
 CREATE OR ALTER PROCEDURE Area_Comercial.Sp_ReporteIngresos AS
 BEGIN 
