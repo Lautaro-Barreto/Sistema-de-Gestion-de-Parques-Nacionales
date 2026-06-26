@@ -5,6 +5,9 @@
 *.mdf
 *.ldf
 
+## Visual Studio files
+.vs/
+
 # Backup and temp files
 *.bak
 *.tmp

@@ -15,6 +15,10 @@
 * Miranda, Guillermo
 * Villar, Facundo Agustín
 
+# Tablero de tareas pendientes
+
+https://trello.com/b/iS7V4yyA/tareas-pendientes-sistema-de-gestion-de-parques-nacionales 
+
 # Flujo de trabajo: Gitflow
 
 * Master: Contiene la versión más estable del sistema

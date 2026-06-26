@@ -1,0 +1,38 @@
+/*
+#Universidad Nacional de la Matanza
+#Materia: 3641 - Bases de Datos Aplicada 
+#Fecha: 13/06/2026
+#Integrantes: Barreto Lautaro, Losada Agustina, Miranda Guillermo, Villar Facundo
+#Descripción: Este script se encarga de testear la eliminación de una forma de pago,
+verificando que no se pueda eliminar una forma de pago inexistente.
+*/
+
+USE SGParquesNacionales
+GO
+
+--Se crea una forma de pago de prueba para realizar los tests. El ID de este caso será 1
+BEGIN TRY
+	EXEC Area_Comercial.SP_CrearFormaDePago @Descripcion = 'FormaDePagoTest'
+END TRY
+BEGIN CATCH
+	PRINT 'Error al crear la forma de pago: ' + ERROR_MESSAGE();
+END CATCH
+GO
+
+--Test 1: Caso exitoso
+BEGIN TRY
+	EXEC Area_Comercial.SP_EliminarFormaDePago @IdFormaDePago = 1
+END TRY
+BEGIN CATCH
+	PRINT 'Error al eliminar la forma de pago: ' + ERROR_MESSAGE();
+END CATCH
+GO
+
+--Test 2: La forma de pago no está cargado en la DB
+BEGIN TRY
+	EXEC Area_Comercial.SP_EliminarFormaDePago @IdFormaDePago = 3
+END TRY
+BEGIN CATCH
+	PRINT 'Error al eliminar la forma de pago: ' + ERROR_MESSAGE();
+END CATCH
+GO
