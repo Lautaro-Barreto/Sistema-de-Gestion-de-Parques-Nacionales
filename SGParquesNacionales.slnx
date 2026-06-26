@@ -6,18 +6,19 @@
   <Folder Name="/1-Solucion/">
     <File Path="Scripts/consultas-utiles.sql" />
     <File Path="Scripts/Creacion de la BBDD/drop-database.sql" />
-    <File Path="Scripts/Solucion/Creacion_BDD.sql" />
-    <File Path="Scripts/Solucion/Creacion_SP_abm.sql" />
     <File Path="Scripts/Stored Procedures/Lógica de negocios/CrearTodosLosSPLogNegocios.sql" />
-    <File Path="Solucion/levantar-solucion.sql" />
+    <File Path="Solucion/1-levantar-solucion.sql" />
   </Folder>
   <Folder Name="/2-Test-Mostrar/">
-    <File Path="Test/Importacion de datos masivos/ImportarDatosEmpresasTest.sql" />
-    <File Path="Test/Importacion de datos masivos/ImportarDatosParquesTest.sql" />
+    <File Path="Test/Importacion de datos masivos/1-ImportarDatosParquesTest.sql" />
+    <File Path="Test/Importacion de datos masivos/2-ImportarDatosEmpresasTest.sql" />
     <File Path="Test/Importacion de datos masivos/ImportarDatosVisitasPorRegionYTipoDeVisitante.sql" />
-    <File Path="Test/Logica de negocios/FeriadosTest.sql" />
-    <File Path="Test/Logica de negocios/PagoDeCanonesTest.sql" />
-    <File Path="Test/Logica de negocios/VentaDeEntradasTest.sql" />
+    <File Path="Test/Logica de negocios/3-PagoDeCanonesTest.sql" />
+    <File Path="Test/Logica de negocios/4-VentaDeEntradasTest.sql" />
+  </Folder>
+  <Folder Name="/3-Reportes/">
+    <File Path="Scripts/Stored Procedures/Reportes/Reporte_Ingresos.sql" />
+    <File Path="Scripts/Stored Procedures/Reportes/Reporte_Visitas.sql" />
   </Folder>
   <Folder Name="/Scripts/">
     <File Path="Scripts/consultas-utiles.sql" />
@@ -42,12 +43,5 @@
     <File Path="Scripts/Stored Procedures/Lógica de negocios/Sp_RegistrarPagoCanon.sql" />
     <File Path="Scripts/Stored Procedures/Lógica de negocios/Sp_RegistrarVentaEntradas.sql" />
     <File Path="Scripts/Stored Procedures/Lógica de negocios/Sp_ValidarFeriado.sql" />
-  </Folder>
-  <Folder Name="/Seed/">
-    <File Path="Scripts/Seed Data/GenerarSeedDataAll.sql" />
-    <File Path="Scripts/Seed Data/Sp_AreaComercialSeed.sql" />
-    <File Path="Scripts/Seed Data/Sp_AreaExcursionesSeed.sql" />
-    <File Path="Scripts/Seed Data/Sp_AreaInfraSeed.sql" />
-    <File Path="Scripts/Seed Data/Sp_AreaNegociosSeed.sql" />
   </Folder>
 </Solution>
