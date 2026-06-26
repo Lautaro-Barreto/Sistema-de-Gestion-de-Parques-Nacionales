@@ -19,6 +19,7 @@ CREATE OR ALTER PROCEDURE Area_Infraestructura.Sp_AreaInfraSeed
 AS
 BEGIN
     BEGIN TRY
+        set nocount on;
         BEGIN TRANSACTION;
 
         -- ==============================================================================
@@ -89,7 +90,7 @@ BEGIN
             EXEC Area_Infraestructura.SP_CrearParque @Nombre = 'Reserva Natural Hnatiuk', @Provincia = 'Santa Cruz', @TipoParqueDesc = 'Reserva Natural', @Superficie = 200000.00;
             EXEC Area_Infraestructura.SP_CrearParque @Nombre = 'Monumento Natural Los Héroes de Malvinas', @Provincia = 'Tierra del Fuego', @TipoParqueDesc = 'Monumento Natural', @Superficie = 150000.00;
             EXEC Area_Infraestructura.SP_CrearParque @Nombre = 'Reserva Natural Península del Libertador', @Provincia = 'Santa Cruz', @TipoParqueDesc = 'Reserva Natural', @Superficie = 150000.00;
-            EXEC Area_Infraestructura.SP_CrearParque @Nombre = 'Monumento Natural Los Héroes de Malvinas', @Provincia = 'Misiones', @TipoParqueDesc = 'Monumento Natural', @Superficie = 150000.00;
+            EXEC Area_Infraestructura.SP_CrearParque @Nombre = 'Monumento Natural Los Héroes de La Patria', @Provincia = 'Misiones', @TipoParqueDesc = 'Monumento Natural', @Superficie = 150000.00;
             EXEC Area_Infraestructura.SP_CrearParque @Nombre = 'Parque Nacional Agustina', @Provincia = 'Chubut', @TipoParqueDesc = 'Parque Nacional', @Superficie = 10000.00;
             EXEC Area_Infraestructura.SP_CrearParque @Nombre = 'Parque Nacional Semilla', @Provincia = 'Mendoza', @TipoParqueDesc = 'Parque Nacional', @Superficie = 130000.00;
             EXEC Area_Infraestructura.SP_CrearParque @Nombre = 'Reserva Natural Bossero', @Provincia = 'Buenos Aires', @TipoParqueDesc = 'Reserva Natural', @Superficie = 12000.00;

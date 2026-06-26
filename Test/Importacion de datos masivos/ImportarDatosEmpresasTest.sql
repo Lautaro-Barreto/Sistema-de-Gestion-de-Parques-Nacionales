@@ -29,6 +29,11 @@ EXEC Area_Negocios.Sp_ImportarDatosEmpresas
     @RutaArchivoEmpresas = 'C:\ArchivosTPBDA\registro-organizaciones-distinguidas-sact.csv',
     @CrearConcesiones = 1;
 
+-- Para ver que las empresas no se duplicaron
+select * from area_negocios.empresa_concesionaria;
+-- Para ver que los tipos de actividad tampoco
+select * from area_negocios.tipo_actividad_concesion;
+
 -- Para ver las concesiones de cada empresa, junto con la actividad y las fechas de inicio y fin
 select concesion.IdConcesion, ec.Nombre as Empresa, p.Nombre as Parque, concesion.Fecha_Inicio, concesion.Fecha_Fin, tac.Descripcion as Actividad from area_negocios.concesion concesion
 INNER JOIN area_negocios.empresa_concesionaria ec ON concesion.IdEmpresa = ec.IdEmpresa

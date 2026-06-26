@@ -15,6 +15,7 @@ CREATE OR ALTER PROCEDURE Area_Negocios.Sp_AreaNegociosSeed
 AS
 BEGIN
     BEGIN TRY
+        set nocount on;
         BEGIN TRANSACTION;
 
         -- Crear al menos 5 empresas concesionarias
@@ -57,6 +58,6 @@ BEGIN
     BEGIN CATCH
         ROLLBACK TRANSACTION;
         DECLARE @ErrorMessage VARCHAR(255) = ERROR_MESSAGE();
-        RAISERROR('Error al generar seed data del área de infraestructura: %s', 16, 1, @ErrorMessage);
+        RAISERROR('Error al generar seed data del área de negocios: %s', 16, 1, @ErrorMessage);
     END CATCH
 END
