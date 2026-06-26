@@ -12,8 +12,6 @@ EXEC Area_Infraestructura.Sp_ReporteVisitas
 PRINT 'Reporte de Ingresos'
 EXEC Area_Comercial.Sp_ReporteIngresos
 
-
-
 PRINT 'Reporte Deudores'
 PRINT 'Insertamos datos para los canon porque no hay'
 GO
