@@ -45,7 +45,6 @@ BEGIN
             RAISERROR('DNI inválido: debe contener solo números y tener entre 7 y 8 dígitos.', 16, 1);
         END
 
-<<<<<<< HEAD:Scripts/Stored Procedures/Seguridad/UPSERT Guia/Sp_ModificarGuiaEncriptado.sql
         --Para validar los repetidos toca abrir la llave
         OPEN SYMMETRIC KEY SymKey_DNI_SGPN DECRYPTION BY CERTIFICATE Certificado_DNI_SGPN;
 
@@ -57,12 +56,6 @@ BEGIN
             --cierra la llave  y manda el error
             CLOSE SYMMETRIC KEY SymKey_DNI_SGPN;
             PRINT 'Error: El DNI proporcionado ya está registrado para otro guía.'
-=======
-        DECLARE @IdGuiaRepetido INT
-        SELECT @IdGuiaRepetido = IdGuia FROM Area_Excursiones.Guia WHERE DNI = @Dni AND IdGuia != @IdGuia
-        IF @IdGuiaRepetido IS NOT NULL
-        BEGIN
->>>>>>> feature/ABMs-basicos:Scripts/Stored Procedures/ABMs/Area Excursiones/Individuales/Sp_ModificarGuia.sql
             RAISERROR('El DNI proporcionado ya está registrado para otro guía. Guia Numero: %d', 16, 1, @IdGuiaRepetido)
         END
 
