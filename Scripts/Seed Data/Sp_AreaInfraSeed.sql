@@ -145,8 +145,12 @@ BEGIN
                     DECLARE @NomGp VARCHAR(30) = (SELECT nya.nombre FROM @nombresYapellidos nya WHERE nya.id = CAST(RAND()*(@limSup - @limInf)+@limInf AS INT));
                     DECLARE @ApeGp VARCHAR(30) = (SELECT nya.apellido FROM @nombresYapellidos nya WHERE nya.id = CAST(RAND()*(@limSup - @limInf)+@limInf AS INT));
                     DECLARE @Ingreso DATE = DATEADD(DAY, -CAST(RAND() * 3000 AS INT), GETDATE());
-                    INSERT INTO Area_Infraestructura.Guardaparque (IdParque, Dni, Nombre, Apellido, Fecha_Ingreso, Activo)
-                    VALUES (@RandParqueGp, @DniGp, @NomGp, @ApeGp, @Ingreso, 1);
+                    DECLARE @ParqueNombre VARCHAR(80) 
+                    SELECT @ParqueNombre = Nombre FROM Area_Infraestructura.Parque WHERE IdParque = @RandParqueGp
+
+                    EXEC Area_Infraestructura.SP_CrearGuardaparque @Nombre = @NomGp,@Apellido = @ApeGp,@Dni = @DniGp,@Parque = @ParqueNombre ,@Fecha_ingreso = @Ingreso,
+                    @Fecha_Egreso = '01/07/2027' ,@Activo = 1
+                        
                     SET @GpNo = @GpNo + 1;
                 END
             END;
@@ -164,8 +168,8 @@ BEGIN
         
     END TRY
     BEGIN CATCH
+        ROLLBACK TRANSACTION;
         DECLARE @ErrorMessage VARCHAR(255) = ERROR_MESSAGE();
         RAISERROR('Error al generar seed data del área de infraestructura: %s', 16, 1, @ErrorMessage);
-        ROLLBACK TRANSACTION;
     END CATCH
 END

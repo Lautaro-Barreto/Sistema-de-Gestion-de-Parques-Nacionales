@@ -7,10 +7,10 @@
 */
 USE SGParquesNacionales
 PRINT 'Reporte de visitas'
-EXEC Area_Infraestructura.Sp_ReporteVisitas @IdParque = 5
+EXEC Area_Infraestructura.Sp_ReporteVisitas @Parque = 'Parque Nacional De Los Payasos'
 
 PRINT 'Reporte de Ingresos'
-EXEC Area_Comercial.Sp_ReporteIngresos @IdParque = 5
+EXEC Area_Comercial.Sp_ReporteIngresos @Parque = 'Parque Nacional De Los Payasos'
 
 PRINT 'Reporte Deudores'
 PRINT 'Insertamos datos para los canon porque no hay'
@@ -65,3 +65,9 @@ ROLLBACK TRANSACTION
 EXEC Area_Infraestructura.Sp_Reporte_VisitasAnuales  @Año = 2026 -- Le agregué el año para evitar que se junte con otros años
 
 EXEC Area_Infraestructura.Sp_ReporteParquesYConcesionesXML
+
+EXEC Area_Excursiones.Sp_ReporteRankingActividades @NombreParque = 'Parque Nacional De Los Payasos'
+
+EXEC Area_Infraestructura.Sp_ReporteOperativoParque @NombreParque = 'Parque Nacional De Los Payasos'
+
+EXEC Area_Comercial.Sp_HistorialVentasParque @NombreParque = 'Parque Nacional De Los Payasos'

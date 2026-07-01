@@ -139,8 +139,8 @@ BEGIN
                         SET @NomGuia = (SELECT nombre FROM @NomYApeGuias WHERE id = CAST(RAND()*(@limSup - @limInf)+@limInf AS INT));
                         SET @ApeGuia = (SELECT apellido FROM @NomYApeGuias WHERE id = CAST(RAND()*(@limSup - @limInf)+@limInf AS INT));
                         SET @TituloGuia = 'Licenciado en turismo';
-                        INSERT INTO Area_Excursiones.Guia (DNI, IdParque, IdEspecialidad, Nombre, Apellido, Titulo)
-                        VALUES (@DniGuia, @RandParqueGuia, @RandEspId, @NomGuia, @ApeGuia, @TituloGuia);
+
+                        EXEC Area_Excursiones.Sp_CrearGuia @DniGuia, @RandParqueGuia, @RandEspId, @NomGuia, @ApeGuia, @TituloGuia
                         DECLARE @NewGuiaId INT = SCOPE_IDENTITY();
                         SET @GuiaNo = @GuiaNo + 1;
                     END
